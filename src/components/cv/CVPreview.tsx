@@ -3,7 +3,6 @@
 "use client";
 
 import { useCV } from "@/contexts/CVContext";
-import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 
 export const CVPreview: React.FC = () => {

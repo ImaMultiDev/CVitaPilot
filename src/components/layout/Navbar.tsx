@@ -4,7 +4,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button } from "@/components/ui/Button";
 
 const navigation = [
   { name: "Editor", href: "/", icon: "✏️" },
@@ -47,13 +46,6 @@ export const Navbar: React.FC = () => {
                 </Link>
               );
             })}
-          </div>
-
-          <div className="flex items-center space-x-3">
-            <Button variant="secondary" size="sm">
-              Exportar PDF
-            </Button>
-            <Button size="sm">Guardar CV</Button>
           </div>
         </div>
       </div>

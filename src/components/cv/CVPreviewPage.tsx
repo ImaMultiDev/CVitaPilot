@@ -7,7 +7,7 @@ import { CVPreview } from "./CVPreview";
 import { useCV } from "@/contexts/CVContext";
 
 export const CVPreviewPage: React.FC = () => {
-  const { state, saveCV } = useCV();
+  const { saveCV } = useCV();
 
   const handleSaveCV = () => {
     const name = prompt("Nombre para este CV:");

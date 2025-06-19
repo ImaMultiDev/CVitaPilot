@@ -3,15 +3,22 @@
 "use client";
 
 import { useState } from "react";
-import { useCV } from "@/contexts/CVContext";
-import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Toggle } from "@/components/ui/Toggle";
+import {
+  toggleSkill,
+  toggleCompetence,
+  toggleExperience,
+  toggleEducation,
+} from "@/lib/actions/cv-actions";
+import { CVData } from "@/types/cv";
 
-export const Sidebar: React.FC = () => {
-  const { state, dispatch, getSelectedSkills, getSelectedCompetences } =
-    useCV();
+interface SidebarProps {
+  cvData: CVData;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
   const [activeSection, setActiveSection] = useState<string>("skills");
 
   const sections = [
@@ -28,16 +35,56 @@ export const Sidebar: React.FC = () => {
     { id: "database", name: "Bases de Datos", icon: "🗄️" },
     { id: "tool", name: "Herramientas", icon: "🔧" },
     { id: "library", name: "Librerías", icon: "📚" },
+    { id: "orm", name: "ORM", icon: "🔗" },
+    { id: "ai", name: "IA", icon: "🤖" },
   ];
+
+  const handleToggleSkill = async (skillId: string) => {
+    try {
+      await toggleSkill(skillId);
+      window.location.reload(); // Recarga para mostrar cambios
+    } catch (error) {
+      console.error("Error toggling skill:", error);
+    }
+  };
+
+  const handleToggleCompetence = async (competenceId: string) => {
+    try {
+      await toggleCompetence(competenceId);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error toggling competence:", error);
+    }
+  };
+
+  const handleToggleExperience = async (experienceId: string) => {
+    try {
+      await toggleExperience(experienceId);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error toggling experience:", error);
+    }
+  };
+
+  const handleToggleEducation = async (educationId: string) => {
+    try {
+      await toggleEducation(educationId);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error toggling education:", error);
+    }
+  };
 
   const renderSkillsSection = () => {
     return (
       <div className="space-y-4">
         {skillCategories.map((category) => {
-          const skills = state.currentCV.skills.filter(
+          const skills = cvData.skills.filter(
             (skill) => skill.category === category.id
           );
           const selectedCount = skills.filter((skill) => skill.selected).length;
+
+          if (skills.length === 0) return null;
 
           return (
             <Card key={category.id} className="p-4">
@@ -60,9 +107,7 @@ export const Sidebar: React.FC = () => {
                     <span className="text-sm text-gray-700">{skill.name}</span>
                     <Toggle
                       checked={skill.selected}
-                      onChange={() =>
-                        dispatch({ type: "TOGGLE_SKILL", payload: skill.id })
-                      }
+                      onChange={() => handleToggleSkill(skill.id)}
                     />
                   </div>
                 ))}
@@ -75,7 +120,7 @@ export const Sidebar: React.FC = () => {
   };
 
   const renderCompetencesSection = () => {
-    const selectedCount = state.currentCV.competences.filter(
+    const selectedCount = cvData.competences.filter(
       (comp) => comp.selected
     ).length;
 
@@ -84,12 +129,12 @@ export const Sidebar: React.FC = () => {
         <div className="flex items-center justify-between mb-3">
           <h4 className="font-medium text-gray-900">Competencias</h4>
           <Badge variant="info">
-            {selectedCount}/{state.currentCV.competences.length}
+            {selectedCount}/{cvData.competences.length}
           </Badge>
         </div>
 
         <div className="space-y-2 max-h-60 overflow-y-auto">
-          {state.currentCV.competences.map((competence) => (
+          {cvData.competences.map((competence) => (
             <div
               key={competence.id}
               className="flex items-center justify-between"
@@ -97,12 +142,7 @@ export const Sidebar: React.FC = () => {
               <span className="text-sm text-gray-700">{competence.name}</span>
               <Toggle
                 checked={competence.selected}
-                onChange={() =>
-                  dispatch({
-                    type: "TOGGLE_COMPETENCE",
-                    payload: competence.id,
-                  })
-                }
+                onChange={() => handleToggleCompetence(competence.id)}
               />
             </div>
           ))}
@@ -112,7 +152,7 @@ export const Sidebar: React.FC = () => {
   };
 
   const renderExperiencesSection = () => {
-    const selectedCount = state.currentCV.experiences.filter(
+    const selectedCount = cvData.experiences.filter(
       (exp) => exp.selected
     ).length;
 
@@ -121,12 +161,12 @@ export const Sidebar: React.FC = () => {
         <div className="flex items-center justify-between mb-3">
           <h4 className="font-medium text-gray-900">Experiencias</h4>
           <Badge variant="info">
-            {selectedCount}/{state.currentCV.experiences.length}
+            {selectedCount}/{cvData.experiences.length}
           </Badge>
         </div>
 
         <div className="space-y-3 max-h-60 overflow-y-auto">
-          {state.currentCV.experiences.map((experience) => (
+          {cvData.experiences.map((experience) => (
             <div
               key={experience.id}
               className="border-l-4 border-gray-200 pl-3"
@@ -138,17 +178,12 @@ export const Sidebar: React.FC = () => {
                   </h5>
                   <p className="text-xs text-gray-600">{experience.company}</p>
                   <p className="text-xs text-gray-500">
-                    {experience.startDate}
+                    {experience.startDate} - {experience.endDate || "Presente"}
                   </p>
                 </div>
                 <Toggle
                   checked={experience.selected}
-                  onChange={() =>
-                    dispatch({
-                      type: "TOGGLE_EXPERIENCE",
-                      payload: experience.id,
-                    })
-                  }
+                  onChange={() => handleToggleExperience(experience.id)}
                 />
               </div>
             </div>
@@ -159,21 +194,19 @@ export const Sidebar: React.FC = () => {
   };
 
   const renderEducationSection = () => {
-    const selectedCount = state.currentCV.education.filter(
-      (edu) => edu.selected
-    ).length;
+    const selectedCount = cvData.education.filter((edu) => edu.selected).length;
 
     return (
       <Card className="p-4">
         <div className="flex items-center justify-between mb-3">
           <h4 className="font-medium text-gray-900">Formación</h4>
           <Badge variant="info">
-            {selectedCount}/{state.currentCV.education.length}
+            {selectedCount}/{cvData.education.length}
           </Badge>
         </div>
 
         <div className="space-y-3 max-h-60 overflow-y-auto">
-          {state.currentCV.education.map((edu) => (
+          {cvData.education.map((edu) => (
             <div key={edu.id} className="border-l-4 border-gray-200 pl-3">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -189,13 +222,36 @@ export const Sidebar: React.FC = () => {
                 </div>
                 <Toggle
                   checked={edu.selected}
-                  onChange={() =>
-                    dispatch({ type: "TOGGLE_EDUCATION", payload: edu.id })
-                  }
+                  onChange={() => handleToggleEducation(edu.id)}
                 />
               </div>
             </div>
           ))}
+        </div>
+      </Card>
+    );
+  };
+
+  const renderLanguagesSection = () => {
+    return (
+      <Card className="p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="font-medium text-gray-900">Idiomas</h4>
+          <Badge variant="info">{cvData.languages.length}</Badge>
+        </div>
+        <div className="space-y-2 max-h-60 overflow-y-auto">
+          {cvData.languages.map((language) => (
+            <div
+              key={language.id}
+              className="flex items-center justify-between border rounded-lg p-2"
+            >
+              <span className="text-sm text-gray-700">{language.name}</span>
+              <Badge variant="default">{language.level}</Badge>
+            </div>
+          ))}
+        </div>
+        <div className="mt-3 text-xs text-gray-500">
+          💡 Los idiomas se muestran siempre en el CV
         </div>
       </Card>
     );
@@ -212,26 +268,21 @@ export const Sidebar: React.FC = () => {
       case "education":
         return renderEducationSection();
       case "languages":
-        return (
-          <Card className="p-4">
-            <h4 className="font-medium text-gray-900 mb-3">Idiomas</h4>
-            <div className="space-y-2">
-              {state.currentCV.languages.map((language) => (
-                <div
-                  key={language.id}
-                  className="flex items-center justify-between"
-                >
-                  <span className="text-sm text-gray-700">{language.name}</span>
-                  <Badge variant="default">{language.level}</Badge>
-                </div>
-              ))}
-            </div>
-          </Card>
-        );
+        return renderLanguagesSection();
       default:
         return null;
     }
   };
+
+  // Calcular estadísticas
+  const selectedSkills = cvData.skills.filter((s) => s.selected).length;
+  const selectedCompetences = cvData.competences.filter(
+    (c) => c.selected
+  ).length;
+  const selectedExperiences = cvData.experiences.filter(
+    (e) => e.selected
+  ).length;
+  const selectedEducation = cvData.education.filter((e) => e.selected).length;
 
   return (
     <div className="w-80 bg-gray-50 border-r border-gray-200 h-screen overflow-y-auto">
@@ -267,18 +318,36 @@ export const Sidebar: React.FC = () => {
             Resumen del CV
           </h4>
           <div className="space-y-1 text-xs text-blue-800">
-            <div>🛠️ {getSelectedSkills().length} habilidades seleccionadas</div>
-            <div>🎯 {getSelectedCompetences().length} competencias activas</div>
-            <div>
-              💼 {state.currentCV.experiences.filter((e) => e.selected).length}{" "}
-              experiencias incluidas
-            </div>
-            <div>
-              🎓 {state.currentCV.education.filter((e) => e.selected).length}{" "}
-              títulos mostrados
+            <div>🛠️ {selectedSkills} habilidades seleccionadas</div>
+            <div>🎯 {selectedCompetences} competencias activas</div>
+            <div>💼 {selectedExperiences} experiencias incluidas</div>
+            <div>🎓 {selectedEducation} títulos mostrados</div>
+            <div>🌍 {cvData.languages.length} idiomas</div>
+          </div>
+          <div className="mt-3 pt-2 border-t border-blue-200">
+            <div className="text-xs font-medium text-blue-900">
+              Total elementos:{" "}
+              {selectedSkills +
+                selectedCompetences +
+                selectedExperiences +
+                selectedEducation +
+                cvData.languages.length}
             </div>
           </div>
         </Card>
+
+        {/* Sync Notice */}
+        <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+          <div className="flex items-center space-x-2">
+            <span className="text-green-600">✅</span>
+            <span className="text-xs font-medium text-green-800">
+              Sincronizado con Base de Datos
+            </span>
+          </div>
+          <div className="text-xs text-green-700 mt-1">
+            Los cambios se guardan automáticamente en PostgreSQL
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -24,3 +24,41 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Print styles for PDF export */
+@media print {
+  body {
+    margin: 0;
+    padding: 0;
+    background: white !important;
+    color: black !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-content {
+    max-width: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 20px !important;
+  }
+
+  * {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Ensure page breaks work well */
+  h1,
+  h2,
+  h3 {
+    page-break-after: avoid;
+  }
+
+  .print-page-break {
+    page-break-before: always;
+  }
+}

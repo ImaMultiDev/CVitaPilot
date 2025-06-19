@@ -49,11 +49,15 @@ export const SettingsPage: React.FC = () => {
 
         if (importedData.currentCV) {
           // Aquí podrías añadir validación de datos
-          confirm(
-            "¿Deseas importar estos datos? Esto sobrescribirá tu información actual."
-          ) && alert("Funcionalidad de importación en desarrollo");
+          if (
+            confirm(
+              "¿Deseas importar estos datos? Esto sobrescribirá tu información actual."
+            )
+          ) {
+            alert("Funcionalidad de importación en desarrollo");
+          }
         }
-      } catch (error) {
+      } catch {
         alert(
           "Error al importar el archivo. Asegúrate de que sea un archivo válido."
         );

@@ -4,7 +4,6 @@
 
 import { useCV } from "@/contexts/CVContext";
 import { Card } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
 import { useCVAnalytics } from "@/hooks/useCVAnalytics";
 
 export const DashboardStats: React.FC = () => {

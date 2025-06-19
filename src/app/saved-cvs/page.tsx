@@ -1,16 +1,12 @@
-// src/app/saved-cvs/page.tsx
+// src/app/saved-cvs/page.tsx - VERSIÓN SIMPLIFICADA CON PRISMA
 
 import { MainLayout } from "@/components/layout/MainLayout";
-import { SavedCVsPage } from "@/components/saved";
-import { CVAnalytics } from "@/components/analytics/CVAnalytics";
+import { SavedCVsPage } from "@/components/saved/SavedCVsPage";
 
-export default function SavedCVs() {
+export default function SavedCVsPageRoute() {
   return (
     <MainLayout>
-      <div className="p-6">
-        <CVAnalytics />
-        <SavedCVsPage />
-      </div>
+      <SavedCVsPage />
     </MainLayout>
   );
 }
