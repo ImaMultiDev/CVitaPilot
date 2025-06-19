@@ -227,20 +227,20 @@ La aplicación estará disponible en `http://localhost:3000`
 │              [NOMBRE COMPLETO]                          │
 │              [PUESTO OBJETIVO]                          │
 ├─────────────────┬───────────────────────────────────────┤
-│   SIDEBAR       │           CONTENIDO PRINCIPAL        │
-│   (33%)         │                (67%)                 │
+│   SIDEBAR       │           CONTENIDO PRINCIPAL         │
+│   (33%)         │                (67%)                  │
 │                 │                                       │
-│ Personal Data   │ About me                             │
-│ • Teléfono      │ [Descripción profesional]           │
+│ Personal Data   │ About me                              │
+│ • Teléfono      │ [Descripción profesional]             │
 │ • Email         │                                       │
-│ • LinkedIn      │ Experience                           │
-│ • GitHub        │ [Lista de experiencias]             │
+│ • LinkedIn      │ Experience                            │
+│ • GitHub        │ [Lista de experiencias]               │
 │ • Website       │                                       │
-│ • Ubicación     │ Formation                            │
-│                 │ [Formación oficial]                  │
+│ • Ubicación     │ Formation                             │
+│                 │ [Formación oficial]                   │
 │ Competencies    │                                       │
-│ [Lista inline]  │ Other formation                      │
-│                 │ [Cursos adicionales]                 │
+│ [Lista inline]  │ Other formation                       │
+│                 │ [Cursos adicionales]                  │
 │ Languages       │                                       │
 │ [Nivel por      │                                       │
 │  idioma]        │                                       │
@@ -388,6 +388,6 @@ Este proyecto es de **uso personal y profesional**. El código fuente puede ser 
 
 ---
 
-**¡Gracias por usar CV Gestor! 🚀**
+**¡Gracias por usar CV Gestor!**
 
 _Una herramienta profesional desarrollada por y para desarrolladores que buscan destacar en su carrera profesional._

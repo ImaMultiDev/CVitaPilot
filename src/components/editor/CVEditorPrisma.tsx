@@ -339,9 +339,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Editor de CV con Prisma
-        </h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Editor de CV</h1>
         {currentCVName && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-3">
             <p className="text-blue-800">
@@ -349,12 +347,15 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
             </p>
           </div>
         )}
-        <p className="text-gray-600">
-          Sistema de persistencia real con base de datos PostgreSQL
-        </p>
-        <div className="text-xs text-gray-500 mt-2">
-          ✅ Estado persistente | ✅ Server Actions | ✅ Prisma ORM
-        </div>
+      </div>
+
+      <div className="text-center">
+        <Button
+          onClick={handleSaveCV}
+          className="bg-green-600 hover:bg-green-700 text-white"
+        >
+          💾 Guardar CV como nueva versión
+        </Button>
       </div>
 
       {/* Personal Information */}
