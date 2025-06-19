@@ -27,28 +27,237 @@ body {
 
 /* Print styles for PDF export */
 @media print {
-  body {
-    margin: 0;
-    padding: 0;
-    background: white !important;
-    color: black !important;
+
+  /* Remove browser headers and footers */
+  @page {
+    margin: 0.5in;
+    size: A4;
   }
 
-  .no-print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    font-size: 12px !important;
+  }
+
+  /* Hide elements that shouldn't print */
+  .no-print,
+  nav,
+  header,
+  footer,
+  .navbar {
     display: none !important;
   }
 
+  /* Show only the CV content */
   .print-content {
+    display: block !important;
+    visibility: visible !important;
+    position: relative !important;
+    width: 100% !important;
     max-width: none !important;
     box-shadow: none !important;
     border: none !important;
     margin: 0 !important;
-    padding: 20px !important;
+    padding: 0 !important;
+    background: white !important;
   }
 
-  * {
-    background: white !important;
-    color: black !important;
+  /* Two column layout adjustments for print */
+  .print-content .flex {
+    height: auto !important;
+    min-height: auto !important;
+  }
+
+  /* Header adjustments */
+  .print-content .py-6 {
+    padding-top: 15px !important;
+    padding-bottom: 15px !important;
+  }
+
+  .print-content .text-4xl {
+    font-size: 24px !important;
+  }
+
+  .print-content .text-xl {
+    font-size: 16px !important;
+  }
+
+  /* Ensure sidebar and header stay gray in print */
+  .print-content .bg-gray-700 {
+    background-color: #374151 !important;
+    color: white !important;
+  }
+
+  .print-content .bg-cyan-500 {
+    background-color: #06b6d4 !important;
+    color: white !important;
+  }
+
+  .print-content .text-white {
+    color: white !important;
+  }
+
+  .print-content .text-gray-300 {
+    color: #d1d5db !important;
+  }
+
+  .print-content .text-gray-200 {
+    color: #e5e7eb !important;
+  }
+
+  /* Ensure header borders show correctly */
+  .print-content .border-gray-600 {
+    border-color: #4b5563 !important;
+  }
+
+  /* Complete solution to eliminate browser headers/footers */
+  @page {
+    margin: 0mm !important;
+    size: A4;
+
+    /* Try to remove headers and footers */
+    @top-left {
+      content: "";
+    }
+
+    @top-center {
+      content: "";
+    }
+
+    @top-right {
+      content: "";
+    }
+
+    @bottom-left {
+      content: "";
+    }
+
+    @bottom-center {
+      content: "";
+    }
+
+    @bottom-right {
+      content: "";
+    }
+  }
+
+  @media print {
+
+    /* Hide everything except our CV */
+    * {
+      visibility: hidden !important;
+    }
+
+    /* Make our CV content visible */
+    .print-content,
+    .print-content * {
+      visibility: visible !important;
+    }
+
+    /* Full page positioning to override browser margins */
+    html,
+    body {
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 210mm !important;
+      height: 297mm !important;
+      overflow: hidden !important;
+    }
+
+    .print-content {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 210mm !important;
+      height: 297mm !important;
+      margin: 0 !important;
+      padding: 12mm !important;
+      box-sizing: border-box !important;
+      background: white !important;
+      z-index: 9999 !important;
+    }
+
+    /* Hide navigation and other UI elements */
+    nav,
+    .navbar,
+    button,
+    .no-print {
+      display: none !important;
+      visibility: hidden !important;
+    }
+  }
+
+  .print-content .text-gray-900 {
+    color: #111827 !important;
+  }
+
+  .print-content .text-gray-700 {
+    color: #374151 !important;
+  }
+
+  .print-content .text-gray-600 {
+    color: #4b5563 !important;
+  }
+
+  .print-content .text-gray-500 {
+    color: #6b7280 !important;
+  }
+
+  /* Compact spacing for print */
+  .print-content .mb-8 {
+    margin-bottom: 12px !important;
+  }
+
+  .print-content .mb-6 {
+    margin-bottom: 8px !important;
+  }
+
+  .print-content .mb-4 {
+    margin-bottom: 6px !important;
+  }
+
+  .print-content .mb-3 {
+    margin-bottom: 4px !important;
+  }
+
+  .print-content .mb-2 {
+    margin-bottom: 3px !important;
+  }
+
+  .print-content .mb-1 {
+    margin-bottom: 2px !important;
+  }
+
+  .print-content .p-6 {
+    padding: 12px !important;
+  }
+
+  .print-content .p-8 {
+    padding: 12px !important;
+  }
+
+  .print-content .space-y-4>*+* {
+    margin-top: 8px !important;
+  }
+
+  .print-content .space-y-3>*+* {
+    margin-top: 6px !important;
+  }
+
+  .print-content .space-y-2>*+* {
+    margin-top: 4px !important;
+  }
+
+  .print-content .space-y-1>*+* {
+    margin-top: 2px !important;
   }
 
   /* Ensure page breaks work well */
@@ -58,7 +267,24 @@ body {
     page-break-after: avoid;
   }
 
-  .print-page-break {
-    page-break-before: always;
+  section {
+    page-break-inside: avoid;
+  }
+
+  /* Ensure borders show up */
+  .print-content .border-b-2 {
+    border-bottom: 2px solid #e5e7eb !important;
+  }
+
+  .print-content .border-l-4 {
+    border-left: 4px solid #d1d5db !important;
+  }
+
+  .print-content .border-gray-200 {
+    border-color: #e5e7eb !important;
+  }
+
+  .print-content .border-gray-300 {
+    border-color: #d1d5db !important;
   }
 }

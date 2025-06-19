@@ -58,7 +58,7 @@ export default async function PreviewPage() {
   const currentCVName = await getCurrentCVName();
 
   return (
-    <MainLayout showSidebar={true} cvData={currentCV}>
+    <MainLayout showSidebar={false}>
       <div className="bg-gray-50 min-h-screen py-8">
         <CVPreviewPrisma cvData={currentCV} currentCVName={currentCVName} />
       </div>

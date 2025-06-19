@@ -73,7 +73,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
     location: "",
     startYear: "",
     endYear: "",
-    type: "formal" as const,
+    type: "formal" as "formal" | "additional",
     duration: "",
   });
 
@@ -183,7 +183,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
           location: "",
           startYear: "",
           endYear: "",
-          type: "formal",
+          type: "formal" as "formal" | "additional",
           duration: "",
         });
         window.location.reload();
@@ -719,6 +719,20 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         <div className="bg-gray-50 p-4 rounded-lg mb-4">
           <h4 className="font-medium mb-3">Añadir nueva formación</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Select
+              label="Tipo de formación"
+              value={newEducation.type}
+              onChange={(e) =>
+                setNewEducation((prev) => ({
+                  ...prev,
+                  type: e.target.value as "formal" | "additional",
+                }))
+              }
+              options={[
+                { value: "formal", label: "📚 Formación Oficial" },
+                { value: "additional", label: "🎓 Otra Formación" },
+              ]}
+            />
             <Input
               label="Título"
               value={newEducation.title}
@@ -796,7 +810,20 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
               className="border rounded-lg p-4 flex items-start justify-between"
             >
               <div className="flex-1">
-                <h4 className="font-semibold">{education.title}</h4>
+                <div className="flex items-center gap-2 mb-1">
+                  <h4 className="font-semibold">{education.title}</h4>
+                  <span
+                    className={`text-xs px-2 py-1 rounded-full ${
+                      education.type === "formal"
+                        ? "bg-blue-100 text-blue-800"
+                        : "bg-green-100 text-green-800"
+                    }`}
+                  >
+                    {education.type === "formal"
+                      ? "📚 Oficial"
+                      : "🎓 Adicional"}
+                  </span>
+                </div>
                 <p className="text-gray-600">
                   {education.institution} - {education.location}
                 </p>
