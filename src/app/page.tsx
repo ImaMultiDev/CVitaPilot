@@ -1,5 +1,12 @@
-import HomePage from "@/views/Home/HomePage";
+// src/app/page.tsx
 
-export default function Home() {
-  return <HomePage />;
+import { CVEditor } from "@/components/editor/CVEditor";
+import { MainLayout } from "@/components/layout/MainLayout";
+
+export default function HomePage() {
+  return (
+    <MainLayout showSidebar={true}>
+      <CVEditor />
+    </MainLayout>
+  );
 }
