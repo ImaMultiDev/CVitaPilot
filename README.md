@@ -1,6 +1,6 @@
 # CV Gestor - Generador Profesional de Curriculum Vitae
 
-Una aplicación web moderna y profesional para crear, personalizar y gestionar múltiples versiones de tu CV. Desarrollada con **Next.js 15**, **Prisma** y **PostgreSQL** para ofrecer persistencia real y un diseño elegante optimizado para PDF.
+Una aplicación web moderna y profesional para crear, personalizar y gestionar múltiples versiones de tu CV con **formatos duales**: **Visual** para reclutadores humanos y **ATS** para sistemas automáticos. Desarrollada con **Next.js 15**, **Prisma** y **PostgreSQL** para ofrecer persistencia real y diseños optimizados tanto para impresión como para compatibilidad ATS.
 
 ![CV Gestor](https://img.shields.io/badge/Version-1.0.0-blue.svg)
 ![Next.js](https://img.shields.io/badge/Next.js-15-black.svg)
@@ -26,13 +26,34 @@ Una aplicación web moderna y profesional para crear, personalizar y gestionar m
 - **Tipografía Optimizada**: Diseño compacto y legible
 - **Colores Corporativos**: Paleta gris oscuro con acentos cyan
 
+### 📄 Formatos Duales de CV
+
+#### 🎨 Formato Visual
+
+- **Diseño Atractivo**: Layout elegante con colores y estilos modernos
+- **Sidebar Informativo**: Datos organizados en columnas profesionales
+- **Colores Corporativos**: Paleta gris oscuro con acentos cyan
+- **Impacto Visual**: Perfecto para reclutadores humanos
+
+#### 🤖 Formato ATS (Applicant Tracking System)
+
+- **Optimizado para Sistemas Automatizados**: Diseño simple que garantiza compatibilidad con software de reclutamiento
+- **Estructura Estándar**: Layout lineal sin elementos gráficos complejos
+- **Fuente Universal**: Arial/sans-serif para máxima legibilidad automática
+- **Texto Negro sobre Blanco**: Máximo contraste para parsing óptimo
+- **Keywords Destacadas**: Tecnologías y competencias claramente separadas
+- **Secciones en Mayúsculas**: Headers reconocibles por algoritmos
+- **Márgenes Profesionales**: Espaciado adecuado para impresión limpia
+
 ### 📄 Exportación PDF Perfecta
 
 - **Formato A4**: Optimizado para impresión estándar
+- **Dual Format Support**: Mantiene estilos específicos de cada formato
 - **Estilos de Impresión**: Los colores y diseño se mantienen en el PDF
 - **Sin Distracciones**: Oculta automáticamente elementos de navegación
-- **Guía de Usuario**: Instrucciones para obtener PDFs limpios
+- **Guía Inteligente**: Instrucciones específicas según formato seleccionado
 - **Vista Previa Limpia**: Página dedicada sin sidebar de edición
+- **Impresión por Páginas**: Opción para imprimir páginas individuales
 
 ### 💾 Persistencia con Base de Datos
 
@@ -200,10 +221,15 @@ La aplicación estará disponible en `http://localhost:3000`
 
 ### 👁️ Vista Previa (`/preview`)
 
-1. **Diseño Profesional**: CV elegante de dos columnas
-2. **Sin Distracciones**: Solo el CV, sin sidebar de edición
-3. **Exportar PDF**: Botón dedicado con guía de uso
-4. **Indicador de CV**: Muestra qué CV estás previsualizando
+1. **Selector de Formato**: Alterna entre formato Visual y ATS
+   - **🎨 Formato Visual**: Diseño atractivo con colores para reclutadores humanos
+   - **🤖 Formato ATS**: Optimizado para sistemas automáticos de selección
+2. **Diseño Profesional**: Layouts específicos según el formato elegido
+3. **Sin Distracciones**: Solo el CV, sin sidebar de edición
+4. **Exportar PDF**: Botones dedicados con guías específicas por formato
+5. **Impresión Selectiva**: Imprime el CV completo o páginas individuales
+6. **Indicador de CV**: Muestra qué CV estás previsualizando
+7. **Instrucciones Dinámicas**: Guías de impresión adaptadas al formato seleccionado
 
 ### 💼 Mis CVs (`/saved-cvs`)
 
@@ -217,6 +243,61 @@ La aplicación estará disponible en `http://localhost:3000`
 1. **Información de la App**: Versión, tecnologías, desarrollador
 2. **Repositorio**: Enlace directo al código fuente
 3. **Consejos de Uso**: Tips para optimizar tu flujo de trabajo
+
+## 🤖 Optimización ATS (Applicant Tracking System)
+
+### ¿Qué es un Sistema ATS?
+
+Los **Applicant Tracking Systems** son software utilizados por empresas para filtrar y gestionar candidatos automáticamente. Estos sistemas escanean CVs buscando keywords específicas y estructuras reconocibles antes de que lleguen a un reclutador humano.
+
+### 🎯 Características del Formato ATS en CV Gestor
+
+#### ✅ Optimizaciones Implementadas
+
+1. **Fuente Estándar**: Arial/sans-serif para máxima compatibilidad
+2. **Estructura Lineal**: Sin columnas complejas o elementos flotantes
+3. **Encabezados Claros**: Secciones en MAYÚSCULAS para fácil reconocimiento
+4. **Texto Plano**: Sin elementos gráficos que confundan el parsing
+5. **Contraste Máximo**: Texto negro sobre fondo blanco
+6. **Separación Clara**: Keywords y tecnologías separadas por comas
+7. **Orden Lógico**: Flujo estándar de información
+8. **Márgenes Adecuados**: Espaciado profesional (20mm laterales, 15mm verticales)
+
+#### 📊 Secciones Optimizadas
+
+- **INFORMACIÓN DE CONTACTO**: Grid simple con datos esenciales
+- **PERFIL PROFESIONAL**: Descripción clara sin adornos
+- **HABILIDADES TÉCNICAS**: Organizadas por categorías reconocibles
+- **COMPETENCIAS PROFESIONALES**: Lista separada por comas
+- **HABILIDADES INTERPERSONALES**: Soft skills destacadas
+- **EXPERIENCIA LABORAL**: Formato cronológico con tecnologías explícitas
+- **FORMACIÓN ACADÉMICA**: Títulos y fechas en formato estándar
+- **CERTIFICACIONES**: Con IDs y URLs de verificación
+- **IDIOMAS**: Niveles claramente especificados
+
+### 🔄 Cuándo Usar Cada Formato
+
+#### 🎨 Formato Visual - Úsalo cuando:
+
+- Envías CV directamente a reclutadores humanos
+- Participas en entrevistas presenciales
+- La empresa es pequeña/startup sin ATS sofisticados
+- Quieres destacar visualmente tu perfil
+
+#### 🤖 Formato ATS - Úsalo cuando:
+
+- Aplicas a través de portales de empleo online
+- La empresa es grande/corporativa con procesos automatizados
+- El puesto requiere pasar por múltiples filtros automáticos
+- Quieres maximizar compatibilidad con cualquier sistema
+
+### 💡 Consejos para Optimización ATS
+
+1. **Keywords Relevantes**: Incluye términos exactos del job posting
+2. **Nombres Completos**: Usa nombres completos de tecnologías (JavaScript, no JS)
+3. **Formatos Estándar**: Fechas en formato MM/YYYY
+4. **Secciones Estándar**: Mantén nombres de sección reconocibles
+5. **Sin Creatividad Gráfica**: El formato ATS prioriza funcionalidad sobre diseño
 
 ## 🎨 Características del Diseño
 
@@ -364,13 +445,21 @@ interface Education {
 - **Architecture**: Server Actions, App Router
 - **Development**: ESLint, Prettier, Git
 
+### Funcionalidades Implementadas ✅
+
+- **✅ Formatos Duales**: Formato Visual y ATS implementados
+- **✅ Optimización ATS**: Diseño específico para sistemas automáticos
+- **✅ Impresión Selectiva**: Páginas individuales o CV completo
+- **✅ Instrucciones Dinámicas**: Guías específicas por formato
+
 ### Posibles Mejoras Futuras
 
-- **Templates Múltiples**: Diferentes diseños de CV
+- **Templates Múltiples**: Más variaciones de diseño para cada formato
 - **Integración LinkedIn**: Importar datos automáticamente
-- **AI Suggestions**: Mejoras sugeridas por IA
+- **AI Suggestions**: Mejoras sugeridas por IA para optimización ATS
 - **Multi-idioma**: Soporte para múltiples idiomas
 - **Cloud Sync**: Sincronización en la nube opcional
+- **Análisis ATS**: Puntuación de compatibilidad con sistemas automáticos
 
 ## 📞 Contacto
 

@@ -1,14 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-  Font,
-} from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import { CVData } from "@/types/cv";
 
 // Registrar fuentes (opcional, usa fuentes del sistema por defecto)
