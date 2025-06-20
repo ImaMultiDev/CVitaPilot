@@ -27,7 +27,8 @@ export const ExperienceFormPrisma: React.FC<ExperienceFormPrismaProps> = ({
     startDate: experience?.startDate || "",
     endDate: experience?.endDate || "",
     contractType: experience?.contractType || "",
-    workType: experience?.workType || "",
+    workSchedule: experience?.workSchedule || "",
+    workModality: experience?.workModality || "",
     description: experience?.description || "",
     technologies: experience?.technologies || [],
     selected: experience?.selected || true,
@@ -35,18 +36,29 @@ export const ExperienceFormPrisma: React.FC<ExperienceFormPrismaProps> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const contractTypes = [
-    { value: "indefinido", label: "Contrato indefinido" },
-    { value: "temporal", label: "Contrato temporal" },
-    { value: "practicas", label: "Contrato en prácticas" },
-    { value: "freelance", label: "Freelance" },
-    { value: "autonomo", label: "Autónomo" },
+    { value: "Contrato indefinido", label: "Contrato indefinido" },
+    { value: "Contrato temporal", label: "Contrato temporal" },
+    { value: "Contrato en prácticas", label: "Contrato en prácticas" },
+    { value: "Contrato de formación", label: "Contrato de formación" },
+    { value: "Contrato de obra", label: "Contrato de obra" },
+    { value: "Freelance", label: "Freelance" },
+    { value: "Autónomo", label: "Autónomo" },
+    { value: "Prácticas no laborales", label: "Prácticas no laborales" },
   ];
 
-  const workTypes = [
-    { value: "completa", label: "Jornada completa" },
-    { value: "parcial", label: "Jornada parcial" },
-    { value: "remoto", label: "Trabajo remoto" },
-    { value: "hibrido", label: "Híbrido" },
+  const workSchedules = [
+    { value: "Jornada completa", label: "Jornada completa" },
+    { value: "Jornada parcial", label: "Jornada parcial" },
+    { value: "Media jornada", label: "Media jornada" },
+    { value: "Jornada intensiva", label: "Jornada intensiva" },
+    { value: "Jornada flexible", label: "Jornada flexible" },
+  ];
+
+  const workModalities = [
+    { value: "Presencial", label: "Presencial" },
+    { value: "Remoto", label: "Remoto" },
+    { value: "Híbrido", label: "Híbrido" },
+    { value: "Teletrabajo", label: "Teletrabajo" },
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -131,7 +143,7 @@ export const ExperienceFormPrisma: React.FC<ExperienceFormPrismaProps> = ({
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Select
             label="Tipo de contrato"
             value={formData.contractType}
@@ -143,11 +155,20 @@ export const ExperienceFormPrisma: React.FC<ExperienceFormPrismaProps> = ({
           />
           <Select
             label="Tipo de jornada"
-            value={formData.workType}
+            value={formData.workSchedule}
             onChange={(e) =>
-              setFormData((prev) => ({ ...prev, workType: e.target.value }))
+              setFormData((prev) => ({ ...prev, workSchedule: e.target.value }))
             }
-            options={workTypes}
+            options={workSchedules}
+            required
+          />
+          <Select
+            label="Modalidad de trabajo"
+            value={formData.workModality}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, workModality: e.target.value }))
+            }
+            options={workModalities}
             required
           />
         </div>

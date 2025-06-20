@@ -13,17 +13,29 @@ import {
   addCompetence,
   addSkill,
   addLanguage,
+  addSoftSkill,
   addExperience,
   addEducation,
+  addCertification,
+  addAchievement,
+  addReference,
   deleteSkill,
   deleteCompetence,
   deleteLanguage,
+  deleteSoftSkill,
   deleteExperience,
   deleteEducation,
+  deleteCertification,
+  deleteAchievement,
+  deleteReference,
   toggleSkill,
   toggleCompetence,
+  toggleSoftSkill,
   toggleExperience,
   toggleEducation,
+  toggleCertification,
+  toggleAchievement,
+  toggleReference,
   saveCurrentCVAs,
 } from "@/lib/actions/cv-actions";
 import { CVData } from "@/types/cv";
@@ -41,6 +53,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
 
   // States for new items
   const [newCompetence, setNewCompetence] = useState("");
+  const [newSoftSkill, setNewSoftSkill] = useState("");
   const [newSkill, setNewSkill] = useState({
     name: "",
     category: "language" as
@@ -56,14 +69,26 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
     name: "",
     level: "A1" as "A1" | "A2" | "B1" | "B2" | "C1" | "C2" | "Nativo",
   });
-  const [newExperience, setNewExperience] = useState({
+  const [newExperience, setNewExperience] = useState<{
+    position: string;
+    company: string;
+    location: string;
+    startDate: string;
+    endDate: string;
+    contractType: string;
+    workSchedule: string;
+    workModality: string;
+    description: string;
+    technologies: string;
+  }>({
     position: "",
     company: "",
     location: "",
     startDate: "",
     endDate: "",
-    contractType: "indefinido" as const,
-    workType: "presencial" as const,
+    contractType: "Contrato indefinido",
+    workSchedule: "Jornada completa",
+    workModality: "Presencial",
     description: "",
     technologies: "",
   });
@@ -75,6 +100,34 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
     endYear: "",
     type: "formal" as "formal" | "additional",
     duration: "",
+  });
+  const [newCertification, setNewCertification] = useState({
+    name: "",
+    issuer: "",
+    date: "",
+    expiryDate: "",
+    credentialId: "",
+    url: "",
+  });
+  const [newAchievement, setNewAchievement] = useState({
+    title: "",
+    type: "project" as "achievement" | "project",
+    description: "",
+    date: "",
+    company: "",
+    technologies: "",
+    metrics: "",
+    url: "",
+  });
+  const [newReference, setNewReference] = useState({
+    name: "",
+    position: "",
+    company: "",
+    relationship: "",
+    phone: "",
+    email: "",
+    yearsWorking: "",
+    selected: true,
   });
 
   const handleAboutMeUpdate = async () => {
@@ -97,6 +150,21 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         window.location.reload();
       } catch (error) {
         console.error("Error adding competence:", error);
+      }
+    }
+  };
+
+  const handleAddSoftSkill = async () => {
+    if (newSoftSkill.trim()) {
+      try {
+        await addSoftSkill({
+          name: newSoftSkill.trim(),
+          selected: true,
+        });
+        setNewSoftSkill("");
+        window.location.reload();
+      } catch (error) {
+        console.error("Error adding soft skill:", error);
       }
     }
   };
@@ -154,8 +222,9 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
           location: "",
           startDate: "",
           endDate: "",
-          contractType: "indefinido",
-          workType: "presencial",
+          contractType: "Contrato indefinido",
+          workSchedule: "Jornada completa",
+          workModality: "Presencial",
           description: "",
           technologies: "",
         });
@@ -193,6 +262,68 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
     }
   };
 
+  const handleAddCertification = async () => {
+    if (newCertification.name.trim() && newCertification.issuer.trim()) {
+      try {
+        await addCertification({
+          ...newCertification,
+          name: newCertification.name.trim(),
+          issuer: newCertification.issuer.trim(),
+          date: newCertification.date,
+          expiryDate: newCertification.expiryDate || undefined,
+          credentialId: newCertification.credentialId.trim() || undefined,
+          url: newCertification.url.trim() || undefined,
+          selected: true,
+        });
+        setNewCertification({
+          name: "",
+          issuer: "",
+          date: "",
+          expiryDate: "",
+          credentialId: "",
+          url: "",
+        });
+        window.location.reload();
+      } catch (error) {
+        console.error("Error adding certification:", error);
+      }
+    }
+  };
+
+  const handleAddAchievement = async () => {
+    if (newAchievement.title.trim() && newAchievement.description.trim()) {
+      try {
+        await addAchievement({
+          ...newAchievement,
+          title: newAchievement.title.trim(),
+          description: newAchievement.description.trim(),
+          company: newAchievement.company.trim() || undefined,
+          technologies: newAchievement.technologies
+            .trim()
+            .split(",")
+            .map((tech) => tech.trim())
+            .filter((tech) => tech),
+          metrics: newAchievement.metrics.trim() || undefined,
+          url: newAchievement.url.trim() || undefined,
+          selected: true,
+        });
+        setNewAchievement({
+          title: "",
+          type: "project" as "achievement" | "project",
+          description: "",
+          date: "",
+          company: "",
+          technologies: "",
+          metrics: "",
+          url: "",
+        });
+        window.location.reload();
+      } catch (error) {
+        console.error("Error adding achievement:", error);
+      }
+    }
+  };
+
   const handleDeleteSkill = async (skillId: string) => {
     if (confirm("¿Estás seguro de que quieres eliminar esta habilidad?")) {
       try {
@@ -211,6 +342,19 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         window.location.reload();
       } catch (error) {
         console.error("Error deleting competence:", error);
+      }
+    }
+  };
+
+  const handleDeleteSoftSkill = async (softSkillId: string) => {
+    if (
+      confirm("¿Estás seguro de que quieres eliminar esta habilidad blanda?")
+    ) {
+      try {
+        await deleteSoftSkill(softSkillId);
+        window.location.reload();
+      } catch (error) {
+        console.error("Error deleting soft skill:", error);
       }
     }
   };
@@ -248,6 +392,28 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
     }
   };
 
+  const handleDeleteCertification = async (certificationId: string) => {
+    if (confirm("¿Estás seguro de que quieres eliminar esta certificación?")) {
+      try {
+        await deleteCertification(certificationId);
+        window.location.reload();
+      } catch (error) {
+        console.error("Error deleting certification:", error);
+      }
+    }
+  };
+
+  const handleDeleteAchievement = async (achievementId: string) => {
+    if (confirm("¿Estás seguro de que quieres eliminar este logro/proyecto?")) {
+      try {
+        await deleteAchievement(achievementId);
+        window.location.reload();
+      } catch (error) {
+        console.error("Error deleting achievement:", error);
+      }
+    }
+  };
+
   const handleToggleSkill = async (skillId: string) => {
     try {
       await toggleSkill(skillId);
@@ -266,6 +432,15 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
     }
   };
 
+  const handleToggleSoftSkill = async (softSkillId: string) => {
+    try {
+      await toggleSoftSkill(softSkillId);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error toggling soft skill:", error);
+    }
+  };
+
   const handleToggleExperience = async (experienceId: string) => {
     try {
       await toggleExperience(experienceId);
@@ -281,6 +456,65 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
       window.location.reload();
     } catch (error) {
       console.error("Error toggling education:", error);
+    }
+  };
+
+  const handleToggleCertification = async (certificationId: string) => {
+    try {
+      await toggleCertification(certificationId);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error toggling certification:", error);
+    }
+  };
+
+  const handleToggleAchievement = async (achievementId: string) => {
+    try {
+      await toggleAchievement(achievementId);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error toggling achievement:", error);
+    }
+  };
+
+  const handleAddReference = async () => {
+    if (newReference.name && newReference.position && newReference.company) {
+      try {
+        await addReference(newReference);
+        setNewReference({
+          name: "",
+          position: "",
+          company: "",
+          relationship: "",
+          phone: "",
+          email: "",
+          yearsWorking: "",
+          selected: true,
+        });
+        window.location.reload();
+      } catch (error) {
+        console.error("Error adding reference:", error);
+      }
+    }
+  };
+
+  const handleDeleteReference = async (referenceId: string) => {
+    if (confirm("¿Estás seguro de que quieres eliminar esta referencia?")) {
+      try {
+        await deleteReference(referenceId);
+        window.location.reload();
+      } catch (error) {
+        console.error("Error deleting reference:", error);
+      }
+    }
+  };
+
+  const handleToggleReference = async (referenceId: string) => {
+    try {
+      await toggleReference(referenceId);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error toggling reference:", error);
     }
   };
 
@@ -358,18 +592,20 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         </Button>
       </div>
 
-      {/* Personal Information */}
+      {/* Información Personal */}
       <PersonalInfoFormPrisma initialData={initialData.personalInfo} />
 
-      {/* About Me */}
+      {/* Perfil Profesional */}
       <Card>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Sobre mí</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          Perfil Profesional
+        </h3>
         <div className="space-y-4">
           <Textarea
             value={aboutMeText}
             onChange={(e) => setAboutMeText(e.target.value)}
             rows={4}
-            placeholder="Describe brevemente tu perfil profesional..."
+            placeholder="Describe tu experiencia, fortalezas y objetivos profesionales..."
           />
           <Button onClick={handleAboutMeUpdate} size="sm">
             Actualizar descripción
@@ -377,7 +613,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         </div>
       </Card>
 
-      {/* Languages */}
+      {/* Idiomas */}
       <Card>
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Idiomas</h3>
 
@@ -419,7 +655,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
           </div>
         </div>
 
-        {/* Existing languages */}
+        {/* Idiomas existentes */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {initialData.languages.map((language) => (
             <div
@@ -445,7 +681,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         </div>
       </Card>
 
-      {/* Skills by Category */}
+      {/* Habilidades por Categoría */}
       <Card>
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           Habilidades Técnicas
@@ -489,7 +725,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
           </div>
         </div>
 
-        {/* Existing skills by category */}
+        {/* Habilidades existentes por categoría */}
         {Object.entries(skillsByCategory).map(([category, skills]) => (
           <div key={category} className="mb-6">
             <h4 className="text-md font-semibold text-gray-800 mb-3">
@@ -573,13 +809,62 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         </div>
       </Card>
 
-      {/* Experiences */}
+      {/* Habilidades Blandas */}
+      <Card>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          Habilidades Blandas
+        </h3>
+
+        {/* Add new soft skill */}
+        <div className="bg-gray-50 p-4 rounded-lg mb-4">
+          <h4 className="font-medium mb-3">Añadir nueva habilidad blanda</h4>
+          <div className="flex space-x-2">
+            <Input
+              value={newSoftSkill}
+              onChange={(e) => setNewSoftSkill(e.target.value)}
+              placeholder="Ej: Liderazgo, Creatividad, Negociación..."
+              className="flex-1"
+            />
+            <Button onClick={handleAddSoftSkill} size="sm">
+              ➕ Añadir
+            </Button>
+          </div>
+        </div>
+
+        {/* Existing soft skills */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {initialData.softSkills.map((softSkill) => (
+            <div
+              key={softSkill.id}
+              className="flex items-center justify-between border rounded-lg p-2"
+            >
+              <span className="text-sm">{softSkill.name}</span>
+              <div className="flex items-center space-x-1">
+                <Toggle
+                  checked={softSkill.selected}
+                  onChange={() => handleToggleSoftSkill(softSkill.id)}
+                />
+                <Button
+                  onClick={() => handleDeleteSoftSkill(softSkill.id)}
+                  size="sm"
+                  variant="secondary"
+                  className="text-red-600 hover:text-red-700 p-1"
+                >
+                  🗑️
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Experiencias */}
       <Card>
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           Experiencia Laboral
         </h3>
 
-        {/* Add new experience */}
+        {/* Añadir nueva experiencia */}
         <div className="bg-gray-50 p-4 rounded-lg mb-4">
           <h4 className="font-medium mb-3">Añadir nueva experiencia</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
@@ -638,6 +923,58 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
                 }))
               }
             />
+            <Select
+              label="Tipo de contrato"
+              value={newExperience.contractType}
+              onChange={(e) =>
+                setNewExperience((prev) => ({
+                  ...prev,
+                  contractType: e.target.value,
+                }))
+              }
+              options={[
+                { value: "Contrato indefinido", label: "Contrato indefinido" },
+                { value: "Contrato temporal", label: "Contrato temporal" },
+                {
+                  value: "Contrato en prácticas",
+                  label: "Contrato en prácticas",
+                },
+                { value: "Freelance", label: "Freelance" },
+                { value: "Autónomo", label: "Autónomo" },
+              ]}
+            />
+            <Select
+              label="Tipo de jornada"
+              value={newExperience.workSchedule}
+              onChange={(e) =>
+                setNewExperience((prev) => ({
+                  ...prev,
+                  workSchedule: e.target.value,
+                }))
+              }
+              options={[
+                { value: "Jornada completa", label: "Jornada completa" },
+                { value: "Jornada parcial", label: "Jornada parcial" },
+                { value: "Media jornada", label: "Media jornada" },
+                { value: "Jornada flexible", label: "Jornada flexible" },
+              ]}
+            />
+            <Select
+              label="Modalidad de trabajo"
+              value={newExperience.workModality}
+              onChange={(e) =>
+                setNewExperience((prev) => ({
+                  ...prev,
+                  workModality: e.target.value,
+                }))
+              }
+              options={[
+                { value: "Presencial", label: "Presencial" },
+                { value: "Remoto", label: "Remoto" },
+                { value: "Híbrido", label: "Híbrido" },
+                { value: "Teletrabajo", label: "Teletrabajo" },
+              ]}
+            />
             <Input
               label="Tecnologías"
               value={newExperience.technologies}
@@ -667,7 +1004,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
           </Button>
         </div>
 
-        {/* Existing experiences */}
+        {/* Experiencias existentes */}
         <div className="space-y-3">
           {initialData.experiences.map((experience) => (
             <div
@@ -681,6 +1018,10 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
                 </p>
                 <p className="text-sm text-gray-500">
                   {experience.startDate} - {experience.endDate || "Presente"}
+                </p>
+                <p className="text-xs text-gray-600 mb-2">
+                  {experience.contractType} • {experience.workSchedule} •{" "}
+                  {experience.workModality}
                 </p>
                 {experience.description && (
                   <p className="text-sm text-gray-700 mt-2">
@@ -712,11 +1053,11 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         </div>
       </Card>
 
-      {/* Education */}
+      {/* Formación */}
       <Card>
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Formación</h3>
 
-        {/* Add new education */}
+        {/* Añadir nueva formación */}
         <div className="bg-gray-50 p-4 rounded-lg mb-4">
           <h4 className="font-medium mb-3">Añadir nueva formación</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -803,7 +1144,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
           </Button>
         </div>
 
-        {/* Existing education */}
+        {/* Formación existente */}
         <div className="space-y-3">
           {initialData.education.map((education) => (
             <div
@@ -852,7 +1193,466 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         </div>
       </Card>
 
-      {/* Save CV */}
+      {/* Certificaciones */}
+      <Card>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          Certificaciones
+        </h3>
+
+        {/* Añadir nueva certificación */}
+        <div className="bg-gray-50 p-4 rounded-lg mb-4">
+          <h4 className="font-medium mb-3">Añadir nueva certificación</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Input
+              label="Nombre de la certificación"
+              value={newCertification.name}
+              onChange={(e) =>
+                setNewCertification((prev) => ({
+                  ...prev,
+                  name: e.target.value,
+                }))
+              }
+              placeholder="Ej: AWS Cloud Practitioner"
+            />
+            <Input
+              label="Organización emisora"
+              value={newCertification.issuer}
+              onChange={(e) =>
+                setNewCertification((prev) => ({
+                  ...prev,
+                  issuer: e.target.value,
+                }))
+              }
+              placeholder="Ej: Amazon Web Services"
+            />
+            <Input
+              label="Fecha de obtención"
+              type="date"
+              value={newCertification.date}
+              onChange={(e) =>
+                setNewCertification((prev) => ({
+                  ...prev,
+                  date: e.target.value,
+                }))
+              }
+            />
+            <Input
+              label="Fecha de expiración (opcional)"
+              type="date"
+              value={newCertification.expiryDate}
+              onChange={(e) =>
+                setNewCertification((prev) => ({
+                  ...prev,
+                  expiryDate: e.target.value,
+                }))
+              }
+            />
+            <Input
+              label="ID del certificado (opcional)"
+              value={newCertification.credentialId}
+              onChange={(e) =>
+                setNewCertification((prev) => ({
+                  ...prev,
+                  credentialId: e.target.value,
+                }))
+              }
+              placeholder="Ej: AWS-CP-2024-123456"
+            />
+            <Input
+              label="URL de verificación (opcional)"
+              value={newCertification.url}
+              onChange={(e) =>
+                setNewCertification((prev) => ({
+                  ...prev,
+                  url: e.target.value,
+                }))
+              }
+              placeholder="Ej: https://verify.example.com/cert123"
+            />
+          </div>
+          <Button onClick={handleAddCertification} size="sm" className="mt-3">
+            🏆 Añadir certificación
+          </Button>
+        </div>
+
+        {/* Certificaciones existentes */}
+        <div className="space-y-3">
+          {initialData.certifications.map((certification) => (
+            <div
+              key={certification.id}
+              className="border rounded-lg p-4 flex items-start justify-between"
+            >
+              <div className="flex-1">
+                <h4 className="font-semibold flex items-center gap-2">
+                  🏆 {certification.name}
+                </h4>
+                <p className="text-gray-600">{certification.issuer}</p>
+                <p className="text-sm text-gray-500">
+                  📅 Obtenida: {certification.date}
+                  {certification.expiryDate && (
+                    <span> • Expira: {certification.expiryDate}</span>
+                  )}
+                </p>
+                {certification.credentialId && (
+                  <p className="text-xs text-gray-600">
+                    🆔 ID: {certification.credentialId}
+                  </p>
+                )}
+                {certification.url && (
+                  <p className="text-xs text-blue-600">
+                    🔗{" "}
+                    <a
+                      href={certification.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:underline"
+                    >
+                      Verificar certificado
+                    </a>
+                  </p>
+                )}
+              </div>
+              <div className="flex items-center space-x-2 ml-4">
+                <Toggle
+                  checked={certification.selected}
+                  onChange={() => handleToggleCertification(certification.id)}
+                />
+                <Button
+                  onClick={() => handleDeleteCertification(certification.id)}
+                  size="sm"
+                  variant="secondary"
+                  className="text-red-600 hover:text-red-700"
+                >
+                  🗑️
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Logros y Proyectos */}
+      <Card>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          🏆 Logros y Proyectos Destacados
+        </h3>
+
+        {/* Añadir nuevo logro/proyecto */}
+        <div className="bg-gray-50 p-4 rounded-lg mb-4">
+          <h4 className="font-medium mb-3">Añadir nuevo logro/proyecto</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Select
+              label="Tipo"
+              value={newAchievement.type}
+              onChange={(e) =>
+                setNewAchievement((prev) => ({
+                  ...prev,
+                  type: e.target.value as "achievement" | "project",
+                }))
+              }
+              options={[
+                { value: "project", label: "🚀 Proyecto" },
+                { value: "achievement", label: "🏆 Logro/Reconocimiento" },
+              ]}
+            />
+            <Input
+              label="Título"
+              value={newAchievement.title}
+              onChange={(e) =>
+                setNewAchievement((prev) => ({
+                  ...prev,
+                  title: e.target.value,
+                }))
+              }
+              placeholder="Ej: Desarrollo de Sistema ERP"
+            />
+            <Input
+              label="Fecha/Período"
+              value={newAchievement.date}
+              onChange={(e) =>
+                setNewAchievement((prev) => ({
+                  ...prev,
+                  date: e.target.value,
+                }))
+              }
+              placeholder="Ej: 2024, 2023-2024"
+            />
+            <Input
+              label="Empresa/Organización (opcional)"
+              value={newAchievement.company}
+              onChange={(e) =>
+                setNewAchievement((prev) => ({
+                  ...prev,
+                  company: e.target.value,
+                }))
+              }
+              placeholder="Ej: ERRIBERRI S.L."
+            />
+            <Input
+              label="Tecnologías utilizadas"
+              value={newAchievement.technologies}
+              onChange={(e) =>
+                setNewAchievement((prev) => ({
+                  ...prev,
+                  technologies: e.target.value,
+                }))
+              }
+              placeholder="Ej: React, Node.js, PostgreSQL"
+            />
+            <Input
+              label="Métricas de impacto (opcional)"
+              value={newAchievement.metrics}
+              onChange={(e) =>
+                setNewAchievement((prev) => ({
+                  ...prev,
+                  metrics: e.target.value,
+                }))
+              }
+              placeholder="Ej: Aumentó eficiencia en 25%"
+            />
+            <Input
+              label="URL del proyecto (opcional)"
+              value={newAchievement.url}
+              onChange={(e) =>
+                setNewAchievement((prev) => ({
+                  ...prev,
+                  url: e.target.value,
+                }))
+              }
+              placeholder="Ej: https://github.com/usuario/proyecto"
+            />
+          </div>
+          <Textarea
+            label="Descripción"
+            value={newAchievement.description}
+            onChange={(e) =>
+              setNewAchievement((prev) => ({
+                ...prev,
+                description: e.target.value,
+              }))
+            }
+            placeholder="Describe el proyecto/logro, tu rol, tecnologías utilizadas y resultados obtenidos..."
+            rows={3}
+            className="mt-3"
+          />
+          <Button onClick={handleAddAchievement} size="sm" className="mt-3">
+            🏆 Añadir logro/proyecto
+          </Button>
+        </div>
+
+        {/* Logros/Proyectos existentes */}
+        <div className="space-y-3">
+          {initialData.achievements.map((achievement) => (
+            <div
+              key={achievement.id}
+              className="border rounded-lg p-4 flex items-start justify-between"
+            >
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <h4 className="font-semibold flex items-center gap-2">
+                    {achievement.type === "project" ? "🚀" : "🏆"}{" "}
+                    {achievement.title}
+                  </h4>
+                  <span
+                    className={`text-xs px-2 py-1 rounded-full ${
+                      achievement.type === "project"
+                        ? "bg-blue-100 text-blue-800"
+                        : "bg-yellow-100 text-yellow-800"
+                    }`}
+                  >
+                    {achievement.type === "project" ? "Proyecto" : "Logro"}
+                  </span>
+                </div>
+                {achievement.company && (
+                  <p className="text-gray-600 text-sm">{achievement.company}</p>
+                )}
+                <p className="text-sm text-gray-500 mb-2">
+                  📅 {achievement.date}
+                </p>
+                <p className="text-sm text-gray-700 mb-2 leading-relaxed">
+                  {achievement.description}
+                </p>
+                {achievement.technologies.length > 0 && (
+                  <p className="text-xs text-blue-600 mb-1">
+                    🔧 {achievement.technologies.join(", ")}
+                  </p>
+                )}
+                {achievement.metrics && (
+                  <p className="text-xs text-green-600 mb-1">
+                    📊 {achievement.metrics}
+                  </p>
+                )}
+                {achievement.url && (
+                  <p className="text-xs text-purple-600">
+                    🔗{" "}
+                    <a
+                      href={achievement.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:underline"
+                    >
+                      Ver proyecto
+                    </a>
+                  </p>
+                )}
+              </div>
+              <div className="flex items-center space-x-2 ml-4">
+                <Toggle
+                  checked={achievement.selected}
+                  onChange={() => handleToggleAchievement(achievement.id)}
+                />
+                <Button
+                  onClick={() => handleDeleteAchievement(achievement.id)}
+                  size="sm"
+                  variant="secondary"
+                  className="text-red-600 hover:text-red-700"
+                >
+                  🗑️
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Referencias Profesionales */}
+      <Card>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          📋 Referencias Profesionales
+        </h3>
+
+        {/* Añadir nueva referencia */}
+        <div className="bg-gray-50 p-4 rounded-lg mb-4">
+          <h4 className="font-medium mb-3">Añadir nueva referencia</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Input
+              label="Nombre completo"
+              value={newReference.name}
+              onChange={(e) =>
+                setNewReference((prev) => ({
+                  ...prev,
+                  name: e.target.value,
+                }))
+              }
+              placeholder="Ej: Ana García López"
+            />
+            <Input
+              label="Cargo/Posición"
+              value={newReference.position}
+              onChange={(e) =>
+                setNewReference((prev) => ({
+                  ...prev,
+                  position: e.target.value,
+                }))
+              }
+              placeholder="Ej: Directora de Tecnología"
+            />
+            <Input
+              label="Empresa"
+              value={newReference.company}
+              onChange={(e) =>
+                setNewReference((prev) => ({
+                  ...prev,
+                  company: e.target.value,
+                }))
+              }
+              placeholder="Ej: ERRIBERRI S.L."
+            />
+            <Input
+              label="Relación profesional"
+              value={newReference.relationship}
+              onChange={(e) =>
+                setNewReference((prev) => ({
+                  ...prev,
+                  relationship: e.target.value,
+                }))
+              }
+              placeholder="Ej: Supervisor directo, Compañero de equipo"
+            />
+            <Input
+              label="Teléfono"
+              value={newReference.phone}
+              onChange={(e) =>
+                setNewReference((prev) => ({
+                  ...prev,
+                  phone: e.target.value,
+                }))
+              }
+              placeholder="Ej: +34 600 123 456"
+            />
+            <Input
+              label="Email"
+              value={newReference.email}
+              onChange={(e) =>
+                setNewReference((prev) => ({
+                  ...prev,
+                  email: e.target.value,
+                }))
+              }
+              placeholder="Ej: ana.garcia@empresa.com"
+            />
+            <Input
+              label="Años trabajando juntos"
+              value={newReference.yearsWorking}
+              onChange={(e) =>
+                setNewReference((prev) => ({
+                  ...prev,
+                  yearsWorking: e.target.value,
+                }))
+              }
+              placeholder="Ej: 2 años, 6 meses"
+            />
+          </div>
+          <Button onClick={handleAddReference} size="sm" className="mt-3">
+            📋 Añadir referencia
+          </Button>
+        </div>
+
+        {/* Referencias existentes */}
+        <div className="space-y-3">
+          {initialData.references.map((reference) => (
+            <div
+              key={reference.id}
+              className="border rounded-lg p-4 flex items-start justify-between"
+            >
+              <div className="flex-1">
+                <h4 className="font-semibold text-gray-900 mb-1">
+                  {reference.name}
+                </h4>
+                <p className="text-gray-700 text-sm">
+                  {reference.position} en {reference.company}
+                </p>
+                <p className="text-gray-600 text-sm mb-2">
+                  {reference.relationship}
+                </p>
+                <div className="flex flex-wrap gap-4 text-xs text-gray-500">
+                  {reference.phone && <span>📞 {reference.phone}</span>}
+                  {reference.email && <span>✉️ {reference.email}</span>}
+                  {reference.yearsWorking && (
+                    <span>⏱️ {reference.yearsWorking}</span>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center space-x-2 ml-4">
+                <Toggle
+                  checked={reference.selected}
+                  onChange={() => handleToggleReference(reference.id)}
+                />
+                <Button
+                  onClick={() => handleDeleteReference(reference.id)}
+                  size="sm"
+                  variant="secondary"
+                  className="text-red-600 hover:text-red-700"
+                >
+                  🗑️
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Guardar CV */}
       <Card>
         <div className="text-center">
           <Button

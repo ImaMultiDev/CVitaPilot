@@ -125,18 +125,20 @@ export const CVEditor: React.FC = () => {
         </div>
       </div>
 
-      {/* Personal Information */}
+      {/* Información Personal */}
       <PersonalInfoForm />
 
-      {/* About Me */}
+      {/* Perfil Profesional */}
       <Card>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Sobre mí</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          Perfil Profesional
+        </h3>
         <div className="space-y-4">
           <Textarea
             value={aboutMeText}
             onChange={(e) => setAboutMeText(e.target.value)}
             rows={4}
-            placeholder="Describe brevemente tu perfil profesional..."
+            placeholder="Describe tu experiencia, fortalezas y objetivos profesionales..."
           />
           <Button onClick={handleAboutMeUpdate} size="sm">
             Actualizar descripción

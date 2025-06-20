@@ -9,8 +9,12 @@ import { Toggle } from "@/components/ui/Toggle";
 import {
   toggleSkill,
   toggleCompetence,
+  toggleSoftSkill,
   toggleExperience,
   toggleEducation,
+  toggleCertification,
+  toggleAchievement,
+  toggleReference,
 } from "@/lib/actions/cv-actions";
 import { CVData } from "@/types/cv";
 
@@ -24,8 +28,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
   const sections = [
     { id: "skills", name: "Habilidades", icon: "🛠️" },
     { id: "competences", name: "Competencias", icon: "🎯" },
+    { id: "softSkills", name: "Habilidades Blandas", icon: "🤝" },
     { id: "experiences", name: "Experiencias", icon: "💼" },
     { id: "education", name: "Formación", icon: "🎓" },
+    { id: "certifications", name: "Certificaciones", icon: "🏆" },
+    { id: "achievements", name: "Logros y Proyectos", icon: "🚀" },
+    { id: "references", name: "Referencias", icon: "📋" },
     { id: "languages", name: "Idiomas", icon: "🌍" },
   ];
 
@@ -72,6 +80,42 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
       window.location.reload();
     } catch (error) {
       console.error("Error toggling education:", error);
+    }
+  };
+
+  const handleToggleSoftSkill = async (softSkillId: string) => {
+    try {
+      await toggleSoftSkill(softSkillId);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error toggling soft skill:", error);
+    }
+  };
+
+  const handleToggleCertification = async (certificationId: string) => {
+    try {
+      await toggleCertification(certificationId);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error toggling certification:", error);
+    }
+  };
+
+  const handleToggleAchievement = async (achievementId: string) => {
+    try {
+      await toggleAchievement(achievementId);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error toggling achievement:", error);
+    }
+  };
+
+  const handleToggleReference = async (referenceId: string) => {
+    try {
+      await toggleReference(referenceId);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error toggling reference:", error);
     }
   };
 
@@ -232,6 +276,157 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
     );
   };
 
+  const renderSoftSkillsSection = () => {
+    const selectedCount = cvData.softSkills.filter(
+      (skill) => skill.selected
+    ).length;
+
+    return (
+      <Card className="p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="font-medium text-gray-900">Habilidades Blandas</h4>
+          <Badge variant="info">
+            {selectedCount}/{cvData.softSkills.length}
+          </Badge>
+        </div>
+
+        <div className="space-y-2 max-h-60 overflow-y-auto">
+          {cvData.softSkills.map((softSkill) => (
+            <div
+              key={softSkill.id}
+              className="flex items-center justify-between"
+            >
+              <span className="text-sm text-gray-700">{softSkill.name}</span>
+              <Toggle
+                checked={softSkill.selected}
+                onChange={() => handleToggleSoftSkill(softSkill.id)}
+              />
+            </div>
+          ))}
+        </div>
+      </Card>
+    );
+  };
+
+  const renderCertificationsSection = () => {
+    const selectedCount = cvData.certifications.filter(
+      (cert) => cert.selected
+    ).length;
+
+    return (
+      <Card className="p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="font-medium text-gray-900">Certificaciones</h4>
+          <Badge variant="info">
+            {selectedCount}/{cvData.certifications.length}
+          </Badge>
+        </div>
+
+        <div className="space-y-3 max-h-60 overflow-y-auto">
+          {cvData.certifications.map((cert) => (
+            <div key={cert.id} className="border-l-4 border-gray-200 pl-3">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h5 className="text-sm font-medium text-gray-900">
+                    {cert.name}
+                  </h5>
+                  <p className="text-xs text-gray-600">{cert.issuer}</p>
+                  <p className="text-xs text-gray-500">{cert.date}</p>
+                </div>
+                <Toggle
+                  checked={cert.selected}
+                  onChange={() => handleToggleCertification(cert.id)}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+    );
+  };
+
+  const renderAchievementsSection = () => {
+    const selectedCount = cvData.achievements.filter(
+      (achievement) => achievement.selected
+    ).length;
+
+    return (
+      <Card className="p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="font-medium text-gray-900">Logros y Proyectos</h4>
+          <Badge variant="info">
+            {selectedCount}/{cvData.achievements.length}
+          </Badge>
+        </div>
+
+        <div className="space-y-3 max-h-60 overflow-y-auto">
+          {cvData.achievements.map((achievement) => (
+            <div
+              key={achievement.id}
+              className="border-l-4 border-gray-200 pl-3"
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h5 className="text-sm font-medium text-gray-900 flex items-center gap-1">
+                    {achievement.type === "project" ? "🚀" : "🏆"}{" "}
+                    {achievement.title}
+                  </h5>
+                  {achievement.company && (
+                    <p className="text-xs text-gray-600">
+                      {achievement.company}
+                    </p>
+                  )}
+                  <p className="text-xs text-gray-500">{achievement.date}</p>
+                </div>
+                <Toggle
+                  checked={achievement.selected}
+                  onChange={() => handleToggleAchievement(achievement.id)}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+    );
+  };
+
+  const renderReferencesSection = () => {
+    const selectedCount = cvData.references.filter(
+      (ref) => ref.selected
+    ).length;
+
+    return (
+      <Card className="p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="font-medium text-gray-900">Referencias</h4>
+          <Badge variant="info">
+            {selectedCount}/{cvData.references.length}
+          </Badge>
+        </div>
+
+        <div className="space-y-3 max-h-60 overflow-y-auto">
+          {cvData.references.map((reference) => (
+            <div key={reference.id} className="border-l-4 border-gray-200 pl-3">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h5 className="text-sm font-medium text-gray-900">
+                    {reference.name}
+                  </h5>
+                  <p className="text-xs text-gray-600">{reference.position}</p>
+                  <p className="text-xs text-gray-500">{reference.company}</p>
+                </div>
+                <Toggle
+                  checked={reference.selected}
+                  onChange={() => handleToggleReference(reference.id)}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+    );
+  };
+
   const renderLanguagesSection = () => {
     return (
       <Card className="p-4">
@@ -263,10 +458,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
         return renderSkillsSection();
       case "competences":
         return renderCompetencesSection();
+      case "softSkills":
+        return renderSoftSkillsSection();
       case "experiences":
         return renderExperiencesSection();
       case "education":
         return renderEducationSection();
+      case "certifications":
+        return renderCertificationsSection();
+      case "achievements":
+        return renderAchievementsSection();
+      case "references":
+        return renderReferencesSection();
       case "languages":
         return renderLanguagesSection();
       default:
@@ -279,10 +482,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
   const selectedCompetences = cvData.competences.filter(
     (c) => c.selected
   ).length;
+  const selectedSoftSkills = cvData.softSkills.filter((s) => s.selected).length;
   const selectedExperiences = cvData.experiences.filter(
     (e) => e.selected
   ).length;
   const selectedEducation = cvData.education.filter((e) => e.selected).length;
+  const selectedCertifications = cvData.certifications.filter(
+    (c) => c.selected
+  ).length;
+  const selectedAchievements = cvData.achievements.filter(
+    (a) => a.selected
+  ).length;
+  const selectedReferences = cvData.references.filter((r) => r.selected).length;
 
   return (
     <div className="w-80 bg-gray-50 border-r border-gray-200 h-screen overflow-y-auto">
@@ -320,8 +531,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
           <div className="space-y-1 text-xs text-blue-800">
             <div>🛠️ {selectedSkills} habilidades seleccionadas</div>
             <div>🎯 {selectedCompetences} competencias activas</div>
+            <div>🤝 {selectedSoftSkills} habilidades blandas</div>
             <div>💼 {selectedExperiences} experiencias incluidas</div>
             <div>🎓 {selectedEducation} títulos mostrados</div>
+            <div>🏆 {selectedCertifications} certificaciones</div>
+            <div>🚀 {selectedAchievements} logros/proyectos</div>
+            <div>📋 {selectedReferences} referencias</div>
             <div>🌍 {cvData.languages.length} idiomas</div>
           </div>
           <div className="mt-3 pt-2 border-t border-blue-200">
@@ -329,8 +544,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
               Total elementos:{" "}
               {selectedSkills +
                 selectedCompetences +
+                selectedSoftSkills +
                 selectedExperiences +
                 selectedEducation +
+                selectedCertifications +
+                selectedAchievements +
+                selectedReferences +
                 cvData.languages.length}
             </div>
           </div>

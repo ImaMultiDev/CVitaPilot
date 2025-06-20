@@ -47,8 +47,12 @@ model CV {
   skills           Skill[]
   competences      Competence[]
   interests        Interest[]
+  softSkills       SoftSkill[]
   experiences      Experience[]
   education        Education[]
+  certifications   Certification[]
+  achievements     Achievement[]
+  references       Reference[]
   deliveries       CVDelivery[]
   
   @@map("cvs")
@@ -107,6 +111,19 @@ model Interest {
   @@map("interests")
 }
 
+// Habilidades blandas
+model SoftSkill {
+  id       String  @id @default(cuid())
+  name     String
+  selected Boolean @default(true)
+  
+  // Relación
+  cv       CV      @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId     String
+  
+  @@map("soft_skills")
+}
+
 // Experiencias laborales
 model Experience {
   id           String   @id @default(cuid())
@@ -116,7 +133,8 @@ model Experience {
   startDate    String
   endDate      String?
   contractType String
-  workType     String
+  workSchedule String   // Jornada completa, parcial, etc.
+  workModality String   // Presencial, remoto, híbrido
   description  String
   technologies String[] // Array de strings para las tecnologías
   selected     Boolean  @default(true)
@@ -145,6 +163,63 @@ model Education {
   cvId        String
   
   @@map("education")
+}
+
+// Certificaciones
+model Certification {
+  id           String  @id @default(cuid())
+  name         String
+  issuer       String  // Organización que emite el certificado
+  date         String  // Fecha de obtención
+  expiryDate   String? // Fecha de expiración (opcional)
+  credentialId String? // ID del certificado (opcional)
+  url          String? // URL de verificación (opcional)
+  selected     Boolean @default(true)
+  
+  // Relación
+  cv           CV      @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId         String
+  
+  @@map("certifications")
+}
+
+// Logros y Proyectos Destacados
+model Achievement {
+  id          String  @id @default(cuid())
+  title       String  // Título del logro/proyecto
+  type        String  // "achievement" | "project"
+  description String  // Descripción detallada
+  date        String  // Fecha o período
+  company     String? // Empresa/Organización (opcional)
+  technologies String[] // Tecnologías utilizadas (para proyectos)
+  metrics     String? // Métricas de impacto (ej: "Aumentó ventas 25%")
+  url         String? // URL del proyecto/reconocimiento (opcional)
+  selected    Boolean @default(true)
+  
+  // Relación
+  cv          CV      @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId        String
+  
+  @@map("achievements")
+}
+
+// Referencias Profesionales
+model Reference {
+  id           String  @id @default(cuid())
+  name         String  // Nombre completo
+  position     String  // Cargo/Puesto
+  company      String  // Empresa
+  relationship String  // Relación profesional
+  phone        String  // Teléfono de contacto
+  email        String  // Email de contacto
+  yearsWorking String? // Tiempo trabajando juntos (opcional)
+  selected     Boolean @default(true)
+  
+  // Relación
+  cv           CV      @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId         String
+  
+  @@map("references")
 }
 
 // Entregas del CV

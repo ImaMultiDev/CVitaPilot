@@ -111,7 +111,7 @@ export const CVPreview: React.FC = () => {
       <div className="flex">
         {/* Sidebar */}
         <div className="w-1/3 bg-gray-50 p-6 space-y-6">
-          {/* Languages */}
+          {/* Idiomas */}
           {currentCV.languages.length > 0 && (
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-3 border-b-2 border-blue-600 pb-1">
@@ -171,7 +171,7 @@ export const CVPreview: React.FC = () => {
             </div>
           )}
 
-          {/* Other Information */}
+          {/* Otra Información */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-3 border-b-2 border-blue-600 pb-1">
               Otra Información
@@ -195,11 +195,11 @@ export const CVPreview: React.FC = () => {
 
         {/* Main Content */}
         <div className="flex-1 p-8 space-y-8">
-          {/* About Me */}
+          {/* Perfil Profesional */}
           {currentCV.aboutMe && (
             <section>
               <h3 className="text-xl font-semibold text-gray-900 mb-4 border-b-2 border-blue-600 pb-2">
-                Sobre mí
+                Perfil Profesional
               </h3>
               <p className="text-gray-700 leading-relaxed">
                 {currentCV.aboutMe}
@@ -207,11 +207,11 @@ export const CVPreview: React.FC = () => {
             </section>
           )}
 
-          {/* Experience */}
+          {/* Experiencia Laboral */}
           {selectedExperiences.length > 0 && (
             <section>
               <h3 className="text-xl font-semibold text-gray-900 mb-6 border-b-2 border-blue-600 pb-2">
-                Experiencia
+                Experiencia Laboral
               </h3>
               <div className="space-y-6">
                 {selectedExperiences.map((experience) => (
@@ -234,7 +234,8 @@ export const CVPreview: React.FC = () => {
                       </div>
                     </div>
                     <p className="text-sm text-gray-600 mb-2">
-                      {experience.contractType}, {experience.workType}
+                      {experience.contractType}, {experience.workSchedule},{" "}
+                      {experience.workModality}
                     </p>
                     <p className="text-gray-700 mb-3">
                       {experience.description}

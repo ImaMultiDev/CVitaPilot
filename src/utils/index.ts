@@ -2,3 +2,4 @@
 
 export { cvUtils } from "./cvUtils";
 export { dateUtils } from "./dateUtils";
+export { pdfUtils } from "./pdfUtils";

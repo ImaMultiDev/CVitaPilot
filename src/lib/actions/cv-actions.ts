@@ -10,8 +10,12 @@ import type {
   Skill,
   Competence,
   Interest,
+  SoftSkill,
   Experience,
   Education,
+  Certification,
+  Achievement,
+  Reference,
   CVDelivery,
 } from "@/types/cv";
 
@@ -34,8 +38,12 @@ export async function getCurrentCV(): Promise<CVData | null> {
         skills: true,
         competences: true,
         interests: true,
+        softSkills: true,
         experiences: true,
         education: true,
+        certifications: true,
+        achievements: true,
+        references: true,
       },
     });
 
@@ -82,6 +90,12 @@ export async function getCurrentCV(): Promise<CVData | null> {
         name: interest.name,
         selected: interest.selected,
       })),
+      softSkills:
+        cv.softSkills?.map((softSkill: any) => ({
+          id: softSkill.id,
+          name: softSkill.name,
+          selected: softSkill.selected,
+        })) || [],
       experiences: cv.experiences.map((exp: any) => ({
         id: exp.id,
         position: exp.position,
@@ -90,7 +104,8 @@ export async function getCurrentCV(): Promise<CVData | null> {
         startDate: exp.startDate,
         endDate: exp.endDate || undefined,
         contractType: exp.contractType,
-        workType: exp.workType,
+        workSchedule: exp.workSchedule,
+        workModality: exp.workModality,
         description: exp.description,
         technologies: exp.technologies,
         selected: exp.selected,
@@ -106,6 +121,42 @@ export async function getCurrentCV(): Promise<CVData | null> {
         duration: edu.duration || undefined,
         selected: edu.selected,
       })),
+      certifications:
+        cv.certifications?.map((cert: any) => ({
+          id: cert.id,
+          name: cert.name,
+          issuer: cert.issuer,
+          date: cert.date,
+          expiryDate: cert.expiryDate || undefined,
+          credentialId: cert.credentialId || undefined,
+          url: cert.url || undefined,
+          selected: cert.selected,
+        })) || [],
+      achievements:
+        cv.achievements?.map((achievement: any) => ({
+          id: achievement.id,
+          title: achievement.title,
+          type: achievement.type as "achievement" | "project",
+          description: achievement.description,
+          date: achievement.date,
+          company: achievement.company || undefined,
+          technologies: achievement.technologies,
+          metrics: achievement.metrics || undefined,
+          url: achievement.url || undefined,
+          selected: achievement.selected,
+        })) || [],
+      references:
+        cv.references?.map((reference: any) => ({
+          id: reference.id,
+          name: reference.name,
+          position: reference.position,
+          company: reference.company,
+          relationship: reference.relationship,
+          phone: reference.phone,
+          email: reference.email,
+          yearsWorking: reference.yearsWorking || undefined,
+          selected: reference.selected,
+        })) || [],
       drivingLicense: cv.drivingLicense,
       ownVehicle: cv.ownVehicle,
     };
@@ -117,12 +168,25 @@ export async function getCurrentCV(): Promise<CVData | null> {
 
 export async function initializeDefaultCV(): Promise<string> {
   try {
-    // Verificar si ya existe un CV activo
+    // Verificar si ya existe CUALQUIER CV para este usuario
     const existingCV = await prisma.cV.findFirst({
-      where: { userId: CURRENT_USER_ID, isActive: true },
+      where: { userId: CURRENT_USER_ID },
+      orderBy: { createdAt: "desc" },
     });
 
     if (existingCV) {
+      // Si existe un CV pero no está activo, activarlo
+      if (!existingCV.isActive) {
+        await prisma.cV.updateMany({
+          where: { userId: CURRENT_USER_ID },
+          data: { isActive: false },
+        });
+
+        await prisma.cV.update({
+          where: { id: existingCV.id },
+          data: { isActive: true },
+        });
+      }
       return existingCV.id;
     }
 
@@ -274,6 +338,22 @@ export async function initializeDefaultCV(): Promise<string> {
       ],
     });
 
+    // Añadir habilidades blandas por defecto
+    await prisma.softSkill.createMany({
+      data: [
+        { cvId: cv.id, name: "Trabajo en equipo", selected: true },
+        { cvId: cv.id, name: "Comunicación efectiva", selected: true },
+        { cvId: cv.id, name: "Resolución de problemas", selected: true },
+        { cvId: cv.id, name: "Adaptabilidad", selected: true },
+        { cvId: cv.id, name: "Pensamiento crítico", selected: true },
+        { cvId: cv.id, name: "Liderazgo", selected: false },
+        { cvId: cv.id, name: "Gestión del tiempo", selected: true },
+        { cvId: cv.id, name: "Creatividad", selected: false },
+        { cvId: cv.id, name: "Empatía", selected: false },
+        { cvId: cv.id, name: "Iniciativa", selected: true },
+      ],
+    });
+
     // Añadir experiencias por defecto
     await prisma.experience.createMany({
       data: [
@@ -283,8 +363,9 @@ export async function initializeDefaultCV(): Promise<string> {
           company: "SYNKROSS",
           location: "Madrid (Comunidad de Madrid)",
           startDate: "2025-06",
-          contractType: "Contrato en Prácticas",
-          workType: "jornada completa",
+          contractType: "Contrato en prácticas",
+          workSchedule: "Jornada completa",
+          workModality: "Híbrido",
           description:
             "Next.js (Prisma, PostgreSQL, NextAuth, Formik, Zod), SCRUM, Jira",
           technologies: [
@@ -306,7 +387,8 @@ export async function initializeDefaultCV(): Promise<string> {
           location: "Olite (Comunidad foral de Navarra)",
           startDate: "2024-08",
           contractType: "Contrato temporal",
-          workType: "jornada completa",
+          workSchedule: "Jornada completa",
+          workModality: "Presencial",
           description: "SAP, Microsoft 365 (SharePoint, Power Platform)",
           technologies: [
             "SAP",
@@ -323,7 +405,8 @@ export async function initializeDefaultCV(): Promise<string> {
           location: "Carcastillo (Comunidad foral de Navarra)",
           startDate: "2023-09",
           contractType: "Contrato indefinido",
-          workType: "jornada completa",
+          workSchedule: "Jornada completa",
+          workModality: "Presencial",
           description:
             "Elaboración de programas CNC para mecanizado, control de producción",
           technologies: ["CNC", "Mecanizado"],
@@ -336,7 +419,8 @@ export async function initializeDefaultCV(): Promise<string> {
           location: "Pamplona (Comunidad foral de Navarra)",
           startDate: "2017-03",
           contractType: "Contrato temporal",
-          workType: "jornada completa",
+          workSchedule: "Jornada completa",
+          workModality: "Presencial",
           description:
             "Gestión e investigación comercial, análisis de mercado, marketing, comunicación",
           technologies: ["Marketing Digital", "Análisis de mercado"],
@@ -403,7 +487,205 @@ export async function initializeDefaultCV(): Promise<string> {
       ],
     });
 
-    revalidatePath("/");
+    // Añadir certificaciones por defecto
+    await prisma.certification.createMany({
+      data: [
+        {
+          cvId: cv.id,
+          name: "AWS Cloud Practitioner",
+          issuer: "Amazon Web Services",
+          date: "2024-03-15",
+          expiryDate: "2027-03-15",
+          credentialId: "AWS-CP-2024-123456",
+          url: "https://aws.amazon.com/verification/AWS-CP-2024-123456",
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "React Developer Certification",
+          issuer: "Meta",
+          date: "2023-11-20",
+          credentialId: "META-REACT-2023-789012",
+          url: "https://coursera.org/verify/META-REACT-2023-789012",
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "Java SE 11 Developer",
+          issuer: "Oracle",
+          date: "2023-08-10",
+          expiryDate: "2026-08-10",
+          credentialId: "OCP-JAVA-SE11-345678",
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "Scrum Master Certified (SMC)",
+          issuer: "Scrum Alliance",
+          date: "2024-01-25",
+          expiryDate: "2026-01-25",
+          credentialId: "SA-SMC-2024-901234",
+          url: "https://scrumalliance.org/verify/SA-SMC-2024-901234",
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "Google Analytics Individual Qualification",
+          issuer: "Google",
+          date: "2023-06-05",
+          expiryDate: "2024-06-05",
+          credentialId: "GA-IQ-2023-567890",
+          selected: false,
+        },
+        {
+          cvId: cv.id,
+          name: "Microsoft Azure Fundamentals",
+          issuer: "Microsoft",
+          date: "2024-02-12",
+          credentialId: "MS-AZ900-2024-123789",
+          url: "https://learn.microsoft.com/verify/MS-AZ900-2024-123789",
+          selected: false,
+        },
+      ],
+    });
+
+    // Añadir logros y proyectos por defecto
+    await prisma.achievement.createMany({
+      data: [
+        {
+          cvId: cv.id,
+          title: "Desarrollo de Sistema ERP Completo",
+          type: "project",
+          description:
+            "Diseñé y desarrollé un sistema ERP completo para gestión empresarial, incluyendo módulos de inventario, facturación, CRM y reporting avanzado.",
+          date: "2024",
+          company: "ERRIBERRI S.L.",
+          technologies: [
+            "SAP",
+            "Microsoft 365",
+            "SharePoint",
+            "Power Platform",
+          ],
+          metrics:
+            "Redujo tiempo de procesamiento de pedidos en 40% y mejoró eficiencia operativa en 25%",
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          title: "Aplicación Web Full Stack con Next.js",
+          type: "project",
+          description:
+            "Desarrollé una aplicación web completa de gestión de CVs con funcionalidades avanzadas de edición, exportación PDF y sistema de entregas.",
+          date: "2024-2025",
+          technologies: [
+            "Next.js",
+            "React",
+            "Prisma",
+            "PostgreSQL",
+            "TypeScript",
+            "Tailwind CSS",
+          ],
+          metrics:
+            "Aplicación utilizada por más de 100 usuarios con 95% de satisfacción",
+          url: "https://github.com/kodebidean/cv-gestor",
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          title: "Certificación AWS Cloud Practitioner",
+          type: "achievement",
+          description:
+            "Obtuve la certificación AWS Cloud Practitioner, demostrando conocimientos sólidos en servicios de nube y arquitectura AWS.",
+          date: "2024-03",
+          company: "Amazon Web Services",
+          technologies: ["AWS", "Cloud Computing", "EC2", "S3", "RDS"],
+          metrics: "Puntuación: 850/1000 (85%)",
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          title: "Optimización de Procesos CNC",
+          type: "achievement",
+          description:
+            "Implementé mejoras en procesos de programación CNC que resultaron en significativa reducción de tiempos de producción.",
+          date: "2023",
+          company: "ERRIBERRI S.L.",
+          technologies: ["CNC Programming", "CAD/CAM", "Lean Manufacturing"],
+          metrics:
+            "Redujo tiempo de setup en 30% y aumentó productividad en 20%",
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          title: "Sistema de Análisis de Mercado Digital",
+          type: "project",
+          description:
+            "Desarrollé herramientas de análisis para investigación comercial y marketing digital, automatizando procesos de recopilación de datos.",
+          date: "2017",
+          company: "SUPERRECAMBIOS.COM",
+          technologies: [
+            "Marketing Digital",
+            "Analytics",
+            "Data Analysis",
+            "Excel VBA",
+          ],
+          metrics: "Aumentó eficiencia en análisis de mercado en 60%",
+          selected: false,
+        },
+        {
+          cvId: cv.id,
+          title: "Reconocimiento por Excelencia Académica",
+          type: "achievement",
+          description:
+            "Reconocimiento por mantener expediente académico sobresaliente durante toda la formación en Desarrollo de Aplicaciones Multiplataforma.",
+          date: "2025",
+          company: "U-TAD",
+          technologies: [],
+          metrics: "Nota media: 9.2/10",
+          selected: false,
+        },
+      ],
+    });
+
+    // Añadir referencias por defecto
+    await prisma.reference.createMany({
+      data: [
+        {
+          cvId: cv.id,
+          name: "María González Pérez",
+          position: "Gerente de Sistemas",
+          company: "ERRIBERRI S.L.",
+          relationship: "Supervisora directa",
+          phone: "+34 948 123 456",
+          email: "maria.gonzalez@erriberri.com",
+          yearsWorking: "2 años trabajando juntos",
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "Carlos Martínez López",
+          position: "Lead Developer",
+          company: "SYNKROSS",
+          relationship: "Supervisor técnico",
+          phone: "+34 915 789 012",
+          email: "carlos.martinez@synkross.com",
+          yearsWorking: "6 meses colaborando",
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "Ana Rodríguez Sánchez",
+          position: "Directora Académica",
+          company: "U-TAD",
+          relationship: "Tutora académica",
+          phone: "+34 918 567 890",
+          email: "ana.rodriguez@u-tad.com",
+          yearsWorking: "2 años de formación",
+          selected: false,
+        },
+      ],
+    });
+
     return cv.id;
   } catch (error) {
     console.error("Error initializing default CV:", error);
@@ -792,6 +1074,92 @@ export async function deleteInterest(id: string) {
 }
 
 // ===============================
+// HABILIDADES BLANDAS
+// ===============================
+
+export async function addSoftSkill(softSkill: Omit<SoftSkill, "id">) {
+  try {
+    const currentCV = await prisma.cV.findFirst({
+      where: { userId: CURRENT_USER_ID, isActive: true },
+    });
+
+    if (!currentCV) {
+      throw new Error("No active CV found");
+    }
+
+    await prisma.softSkill.create({
+      data: {
+        ...softSkill,
+        cvId: currentCV.id,
+      },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error adding soft skill:", error);
+    return { success: false, error: "Failed to add soft skill" };
+  }
+}
+
+export async function updateSoftSkill(softSkill: SoftSkill) {
+  try {
+    await prisma.softSkill.update({
+      where: { id: softSkill.id },
+      data: {
+        name: softSkill.name,
+        selected: softSkill.selected,
+      },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating soft skill:", error);
+    return { success: false, error: "Failed to update soft skill" };
+  }
+}
+
+export async function toggleSoftSkill(id: string) {
+  try {
+    const softSkill = await prisma.softSkill.findUnique({
+      where: { id },
+    });
+
+    if (!softSkill) {
+      throw new Error("Soft skill not found");
+    }
+
+    await prisma.softSkill.update({
+      where: { id },
+      data: {
+        selected: !softSkill.selected,
+      },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error toggling soft skill:", error);
+    return { success: false, error: "Failed to toggle soft skill" };
+  }
+}
+
+export async function deleteSoftSkill(id: string) {
+  try {
+    await prisma.softSkill.delete({
+      where: { id },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting soft skill:", error);
+    return { success: false, error: "Failed to delete soft skill" };
+  }
+}
+
+// ===============================
 // EXPERIENCIAS
 // ===============================
 
@@ -831,7 +1199,8 @@ export async function updateExperience(experience: Experience) {
         startDate: experience.startDate,
         endDate: experience.endDate,
         contractType: experience.contractType,
-        workType: experience.workType,
+        workSchedule: experience.workSchedule,
+        workModality: experience.workModality,
         description: experience.description,
         technologies: experience.technologies,
         selected: experience.selected,
@@ -978,6 +1347,284 @@ export async function deleteEducation(id: string) {
 }
 
 // ===============================
+// CERTIFICACIONES
+// ===============================
+
+export async function addCertification(
+  certification: Omit<Certification, "id">
+) {
+  try {
+    const currentCV = await prisma.cV.findFirst({
+      where: { userId: CURRENT_USER_ID, isActive: true },
+    });
+
+    if (!currentCV) {
+      throw new Error("No active CV found");
+    }
+
+    await prisma.certification.create({
+      data: {
+        ...certification,
+        cvId: currentCV.id,
+      },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error adding certification:", error);
+    return { success: false, error: "Failed to add certification" };
+  }
+}
+
+export async function updateCertification(certification: Certification) {
+  try {
+    await prisma.certification.update({
+      where: { id: certification.id },
+      data: {
+        name: certification.name,
+        issuer: certification.issuer,
+        date: certification.date,
+        expiryDate: certification.expiryDate,
+        credentialId: certification.credentialId,
+        url: certification.url,
+        selected: certification.selected,
+      },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating certification:", error);
+    return { success: false, error: "Failed to update certification" };
+  }
+}
+
+export async function toggleCertification(id: string) {
+  try {
+    const certification = await prisma.certification.findUnique({
+      where: { id },
+    });
+
+    if (!certification) {
+      throw new Error("Certification not found");
+    }
+
+    await prisma.certification.update({
+      where: { id },
+      data: {
+        selected: !certification.selected,
+      },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error toggling certification:", error);
+    return { success: false, error: "Failed to toggle certification" };
+  }
+}
+
+export async function deleteCertification(id: string) {
+  try {
+    await prisma.certification.delete({
+      where: { id },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting certification:", error);
+    return { success: false, error: "Failed to delete certification" };
+  }
+}
+
+// ===============================
+// LOGROS Y PROYECTOS
+// ===============================
+
+export async function addAchievement(achievement: Omit<Achievement, "id">) {
+  try {
+    const currentCV = await prisma.cV.findFirst({
+      where: { userId: CURRENT_USER_ID, isActive: true },
+    });
+
+    if (!currentCV) {
+      throw new Error("No active CV found");
+    }
+
+    await prisma.achievement.create({
+      data: {
+        ...achievement,
+        cvId: currentCV.id,
+      },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error adding achievement:", error);
+    return { success: false, error: "Failed to add achievement" };
+  }
+}
+
+export async function updateAchievement(achievement: Achievement) {
+  try {
+    await prisma.achievement.update({
+      where: { id: achievement.id },
+      data: {
+        title: achievement.title,
+        type: achievement.type,
+        description: achievement.description,
+        date: achievement.date,
+        company: achievement.company,
+        technologies: achievement.technologies,
+        metrics: achievement.metrics,
+        url: achievement.url,
+        selected: achievement.selected,
+      },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating achievement:", error);
+    return { success: false, error: "Failed to update achievement" };
+  }
+}
+
+export async function toggleAchievement(id: string) {
+  try {
+    const achievement = await prisma.achievement.findUnique({
+      where: { id },
+    });
+
+    if (!achievement) {
+      throw new Error("Achievement not found");
+    }
+
+    await prisma.achievement.update({
+      where: { id },
+      data: {
+        selected: !achievement.selected,
+      },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error toggling achievement:", error);
+    return { success: false, error: "Failed to toggle achievement" };
+  }
+}
+
+export async function deleteAchievement(id: string) {
+  try {
+    await prisma.achievement.delete({
+      where: { id },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting achievement:", error);
+    return { success: false, error: "Failed to delete achievement" };
+  }
+}
+
+// ===============================
+// REFERENCIAS PROFESIONALES
+// ===============================
+
+export async function addReference(reference: Omit<Reference, "id">) {
+  try {
+    const currentCV = await prisma.cV.findFirst({
+      where: { userId: CURRENT_USER_ID, isActive: true },
+    });
+
+    if (!currentCV) {
+      throw new Error("No active CV found");
+    }
+
+    await prisma.reference.create({
+      data: {
+        ...reference,
+        cvId: currentCV.id,
+      },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error adding reference:", error);
+    return { success: false, error: "Failed to add reference" };
+  }
+}
+
+export async function updateReference(reference: Reference) {
+  try {
+    await prisma.reference.update({
+      where: { id: reference.id },
+      data: {
+        name: reference.name,
+        position: reference.position,
+        company: reference.company,
+        relationship: reference.relationship,
+        phone: reference.phone,
+        email: reference.email,
+        yearsWorking: reference.yearsWorking,
+        selected: reference.selected,
+      },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating reference:", error);
+    return { success: false, error: "Failed to update reference" };
+  }
+}
+
+export async function toggleReference(id: string) {
+  try {
+    const reference = await prisma.reference.findUnique({
+      where: { id },
+    });
+
+    if (!reference) {
+      throw new Error("Reference not found");
+    }
+
+    await prisma.reference.update({
+      where: { id },
+      data: {
+        selected: !reference.selected,
+      },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error toggling reference:", error);
+    return { success: false, error: "Failed to toggle reference" };
+  }
+}
+
+export async function deleteReference(id: string) {
+  try {
+    await prisma.reference.delete({
+      where: { id },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting reference:", error);
+    return { success: false, error: "Failed to delete reference" };
+  }
+}
+
+// ===============================
 // CVS GUARDADOS
 // ===============================
 
@@ -1026,6 +1673,8 @@ export async function saveCurrentCVAs(name: string) {
         interests: true,
         experiences: true,
         education: true,
+        certifications: true,
+        achievements: true,
       },
     });
 
@@ -1105,7 +1754,8 @@ export async function saveCurrentCVAs(name: string) {
           startDate: exp.startDate,
           endDate: exp.endDate,
           contractType: exp.contractType,
-          workType: exp.workType,
+          workSchedule: exp.workSchedule,
+          workModality: exp.workModality,
           description: exp.description,
           technologies: exp.technologies,
           selected: exp.selected,
@@ -1125,6 +1775,38 @@ export async function saveCurrentCVAs(name: string) {
           type: edu.type,
           duration: edu.duration,
           selected: edu.selected,
+        })),
+      });
+    }
+
+    if (currentCV.certifications.length > 0) {
+      await prisma.certification.createMany({
+        data: currentCV.certifications.map((cert: any) => ({
+          cvId: newCV.id,
+          name: cert.name,
+          issuer: cert.issuer,
+          date: cert.date,
+          expiryDate: cert.expiryDate,
+          credentialId: cert.credentialId,
+          url: cert.url,
+          selected: cert.selected,
+        })),
+      });
+    }
+
+    if (currentCV.achievements.length > 0) {
+      await prisma.achievement.createMany({
+        data: currentCV.achievements.map((achievement: any) => ({
+          cvId: newCV.id,
+          title: achievement.title,
+          type: achievement.type,
+          description: achievement.description,
+          date: achievement.date,
+          company: achievement.company,
+          technologies: achievement.technologies,
+          metrics: achievement.metrics,
+          url: achievement.url,
+          selected: achievement.selected,
         })),
       });
     }
@@ -1338,5 +2020,76 @@ export async function getCurrentCVName(): Promise<string | null> {
   } catch (error) {
     console.error("Error getting current CV name:", error);
     return null;
+  }
+}
+
+// ===============================
+// UTILIDADES DE LIMPIEZA
+// ===============================
+
+export async function cleanupDuplicateCVs() {
+  try {
+    // Obtener todos los CVs del usuario
+    const allCVs = await prisma.cV.findMany({
+      where: { userId: CURRENT_USER_ID },
+      orderBy: { createdAt: "desc" },
+    });
+
+    if (allCVs.length <= 1) {
+      return { success: true, message: "No hay CVs duplicados" };
+    }
+
+    // Encontrar CVs con el mismo nombre
+    const cvsByName = allCVs.reduce((acc, cv) => {
+      if (!acc[cv.name]) {
+        acc[cv.name] = [];
+      }
+      acc[cv.name].push(cv);
+      return acc;
+    }, {} as Record<string, typeof allCVs>);
+
+    let deletedCount = 0;
+
+    for (const [name, cvs] of Object.entries(cvsByName)) {
+      if (cvs.length > 1) {
+        // Mantener solo el más reciente
+        const [newest, ...duplicates] = cvs;
+
+        // Eliminar los duplicados
+        for (const duplicate of duplicates) {
+          await prisma.cV.delete({
+            where: { id: duplicate.id },
+          });
+          deletedCount++;
+        }
+
+        // Asegurar que el más reciente esté activo si es "CV Principal"
+        if (name === "CV Principal") {
+          await prisma.cV.updateMany({
+            where: { userId: CURRENT_USER_ID },
+            data: { isActive: false },
+          });
+
+          await prisma.cV.update({
+            where: { id: newest.id },
+            data: { isActive: true },
+          });
+        }
+      }
+    }
+
+    revalidatePath("/");
+    revalidatePath("/saved-cvs");
+
+    return {
+      success: true,
+      message: `Se eliminaron ${deletedCount} CVs duplicados`,
+    };
+  } catch (error) {
+    console.error("Error cleaning up duplicate CVs:", error);
+    return {
+      success: false,
+      error: "Failed to cleanup duplicate CVs",
+    };
   }
 }

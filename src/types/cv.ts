@@ -45,7 +45,8 @@ export interface Experience {
   startDate: string;
   endDate?: string;
   contractType: string;
-  workType: string;
+  workSchedule: string; // Jornada completa, parcial
+  workModality: string; // Presencial, remoto, híbrido
   description: string;
   technologies: string[];
   selected: boolean;
@@ -69,6 +70,48 @@ export interface Interest {
   selected: boolean;
 }
 
+export interface SoftSkill {
+  id: string;
+  name: string;
+  selected: boolean;
+}
+
+export interface Certification {
+  id: string;
+  name: string;
+  issuer: string; // Organización que emite el certificado
+  date: string; // Fecha de obtención
+  expiryDate?: string; // Fecha de expiración (opcional)
+  credentialId?: string; // ID del certificado (opcional)
+  url?: string; // URL de verificación (opcional)
+  selected: boolean;
+}
+
+export interface Achievement {
+  id: string;
+  title: string; // Título del logro/proyecto
+  type: "achievement" | "project"; // Tipo: logro o proyecto
+  description: string; // Descripción detallada
+  date: string; // Fecha o período
+  company?: string; // Empresa/Organización (opcional)
+  technologies: string[]; // Tecnologías utilizadas (para proyectos)
+  metrics?: string; // Métricas de impacto (ej: "Aumentó ventas 25%")
+  url?: string; // URL del proyecto/reconocimiento (opcional)
+  selected: boolean;
+}
+
+export interface Reference {
+  id: string;
+  name: string; // Nombre completo
+  position: string; // Cargo/Puesto
+  company: string; // Empresa
+  relationship: string; // Relación profesional
+  phone: string; // Teléfono de contacto
+  email: string; // Email de contacto
+  yearsWorking?: string; // Tiempo trabajando juntos (opcional)
+  selected: boolean;
+}
+
 export interface CVData {
   personalInfo: PersonalInfo;
   aboutMe: string;
@@ -76,8 +119,12 @@ export interface CVData {
   skills: Skill[];
   competences: Competence[];
   interests: Interest[];
+  softSkills: SoftSkill[];
   experiences: Experience[];
   education: Education[];
+  certifications: Certification[];
+  achievements: Achievement[];
+  references: Reference[];
   drivingLicense: boolean;
   ownVehicle: boolean;
 }
