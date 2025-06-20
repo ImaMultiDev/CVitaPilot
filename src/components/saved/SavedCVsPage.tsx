@@ -69,7 +69,9 @@ export const SavedCVsPage: React.FC = () => {
         <div className="flex justify-center items-center h-64">
           <div className="text-center">
             <div className="text-2xl mb-2">⏳</div>
-            <div className="text-gray-600">Cargando CVs guardados...</div>
+            <div className="text-gray-600 dark:text-gray-400">
+              Cargando CVs guardados...
+            </div>
           </div>
         </div>
       </div>
@@ -80,19 +82,19 @@ export const SavedCVsPage: React.FC = () => {
     <div className="max-w-7xl mx-auto p-6">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
             Mis CVs Guardados
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-400">
             Gestiona y selecciona tus curriculums guardados
           </p>
         </div>
         <div className="text-right">
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-gray-600 dark:text-gray-400">
             <span className="font-semibold text-lg">{savedCVs.length}</span> CVs
             guardados
           </div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-gray-500 dark:text-gray-500">
             Versiones respaldadas en PostgreSQL
           </div>
         </div>
@@ -101,10 +103,10 @@ export const SavedCVsPage: React.FC = () => {
       {savedCVs.length === 0 ? (
         <Card className="text-center py-12">
           <div className="text-6xl mb-4">📄</div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
             No tienes CVs guardados
           </h3>
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
             Comienza creando y guardando tu primer CV desde el editor
           </p>
           <Button onClick={() => (window.location.href = "/")}>
@@ -116,7 +118,7 @@ export const SavedCVsPage: React.FC = () => {
           {/* CV Activo Destacado */}
           {savedCVs.find((cv) => cv.isActive) && (
             <div className="mb-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
                 <span className="mr-2">⭐</span>
                 CV Activo Actualmente
               </h2>
@@ -125,17 +127,17 @@ export const SavedCVsPage: React.FC = () => {
                 .map((activeCV) => (
                   <Card
                     key={activeCV.id}
-                    className="bg-green-50 border-green-200"
+                    className="bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800"
                   >
                     <div className="flex justify-between items-center">
                       <div>
-                        <h3 className="text-lg font-semibold text-green-800">
+                        <h3 className="text-lg font-semibold text-green-800 dark:text-green-300">
                           {activeCV.name}
                         </h3>
-                        <p className="text-sm text-green-600">
+                        <p className="text-sm text-green-600 dark:text-green-400">
                           Este CV se está usando actualmente en el editor
                         </p>
-                        <div className="text-xs text-green-500 mt-1">
+                        <div className="text-xs text-green-500 dark:text-green-400 mt-1">
                           📅 Creado:{" "}
                           {new Date(activeCV.createdAt).toLocaleDateString()}
                           {" • "}
@@ -161,20 +163,20 @@ export const SavedCVsPage: React.FC = () => {
 
           {/* Lista de CVs Guardados */}
           <div className="mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
               <span className="mr-2">💾</span>
               Versiones Guardadas (
               {savedCVs.filter((cv) => !cv.isActive).length})
             </h2>
 
             {savedCVs.filter((cv) => !cv.isActive).length === 0 ? (
-              <Card className="text-center py-8 bg-gray-50">
-                <div className="text-gray-500">
+              <Card className="text-center py-8 bg-gray-50 dark:bg-gray-800">
+                <div className="text-gray-500 dark:text-gray-400">
                   No hay versiones adicionales guardadas
                 </div>
-                <div className="text-sm text-gray-400 mt-2">
-                  Guarda nuevas versiones desde el editor usando "Guardar CV
-                  como nueva versión"
+                <div className="text-sm text-gray-400 dark:text-gray-500 mt-2">
+                  Guarda nuevas versiones desde el editor usando &ldquo;Guardar
+                  CV como nueva versión&rdquo;
                 </div>
               </Card>
             ) : (
@@ -193,10 +195,10 @@ export const SavedCVsPage: React.FC = () => {
                     >
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex-1">
-                          <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
                             {savedCV.name}
                           </h3>
-                          <div className="text-sm text-gray-600 space-y-1">
+                          <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
                             <div className="flex items-center space-x-4">
                               <span className="flex items-center">
                                 📅{" "}
@@ -213,7 +215,7 @@ export const SavedCVsPage: React.FC = () => {
                             </div>
                             {savedCV.deliveryCount > 0 && (
                               <div className="flex items-center">
-                                <span className="text-blue-600">
+                                <span className="text-blue-600 dark:text-blue-400">
                                   📤 {savedCV.deliveryCount} entregas
                                   registradas
                                 </span>
@@ -245,8 +247,8 @@ export const SavedCVsPage: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="pt-3 border-t border-gray-200">
-                        <div className="text-xs text-gray-500">
+                      <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
                           Guardado hace{" "}
                           {Math.floor(
                             (Date.now() -
@@ -262,14 +264,14 @@ export const SavedCVsPage: React.FC = () => {
             )}
           </div>
 
-          <Card className="bg-blue-50 border-blue-200">
+          <Card className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
             <div className="flex items-start space-x-3">
-              <div className="text-blue-600 text-xl">💡</div>
+              <div className="text-blue-600 dark:text-blue-400 text-xl">💡</div>
               <div>
-                <h3 className="font-semibold text-blue-900 mb-2">
+                <h3 className="font-semibold text-blue-900 dark:text-blue-300 mb-2">
                   ¿Cómo funciona?
                 </h3>
-                <div className="text-sm text-blue-800 space-y-1">
+                <div className="text-sm text-blue-800 dark:text-blue-300 space-y-1">
                   <div>
                     • <strong>Activar:</strong> Carga el CV seleccionado como
                     activo para editar

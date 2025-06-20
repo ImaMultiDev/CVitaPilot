@@ -41,7 +41,7 @@ export const PersonalInfoFormPrisma: React.FC<PersonalInfoFormPrismaProps> = ({
 
   return (
     <Card>
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
         Información Personal
       </h3>
       <form onSubmit={handleSubmit} className="space-y-4">

@@ -4,11 +4,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ThemeToggle } from "@/components/ui";
 
 const navigation = [
   { name: "Editor", href: "/", icon: "✏️" },
   { name: "Mis CVs", href: "/saved-cvs", icon: "📄" },
   { name: "Vista Previa", href: "/preview", icon: "👁️" },
+  { name: "Guía CV", href: "/guia-cv", icon: "📚" },
   { name: "Configuración", href: "/settings", icon: "⚙️" },
 ];
 
@@ -16,13 +18,13 @@ export const Navbar: React.FC = () => {
   const pathname = usePathname();
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
+    <nav className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
               <span className="text-2xl">📝</span>
-              <span className="text-xl font-bold text-gray-900">
+              <span className="text-xl font-bold text-gray-900 dark:text-white">
                 CV Manager
               </span>
             </Link>
@@ -37,8 +39,8 @@ export const Navbar: React.FC = () => {
                   href={item.href}
                   className={`inline-flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     isActive
-                      ? "bg-blue-100 text-blue-700"
-                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                      ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
+                      : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800"
                   }`}
                 >
                   <span className="mr-2">{item.icon}</span>
@@ -46,6 +48,9 @@ export const Navbar: React.FC = () => {
                 </Link>
               );
             })}
+            <div className="ml-3">
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </div>

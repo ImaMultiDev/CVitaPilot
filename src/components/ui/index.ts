@@ -8,3 +8,4 @@ export { Modal } from "./Modal";
 export { Card } from "./Card";
 export { Badge } from "./Badge";
 export { Toggle } from "./Toggle";
+export { ThemeToggle } from "./ThemeToggle";

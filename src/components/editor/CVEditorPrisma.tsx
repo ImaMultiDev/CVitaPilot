@@ -573,10 +573,12 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Editor de CV</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          Editor de CV
+        </h1>
         {currentCVName && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-3">
-            <p className="text-blue-800">
+          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-3 mb-3">
+            <p className="text-blue-800 dark:text-blue-200">
               <span className="font-semibold">CV Activo:</span> {currentCVName}
             </p>
           </div>
@@ -597,7 +599,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
 
       {/* Perfil Profesional */}
       <Card>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           Perfil Profesional
         </h3>
         <div className="space-y-4">
@@ -615,11 +617,15 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
 
       {/* Idiomas */}
       <Card>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Idiomas</h3>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          Idiomas
+        </h3>
 
         {/* Add new language */}
-        <div className="bg-gray-50 p-4 rounded-lg mb-4">
-          <h4 className="font-medium mb-3">Añadir nuevo idioma</h4>
+        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg mb-4">
+          <h4 className="font-medium text-gray-900 dark:text-white mb-3">
+            Añadir nuevo idioma
+          </h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <Input
               label="Nombre del idioma"
@@ -663,8 +669,10 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
               className="flex items-center justify-between border rounded-lg p-3"
             >
               <div>
-                <span className="font-medium">{language.name}</span>
-                <span className="text-sm text-gray-500 ml-2">
+                <span className="font-medium text-gray-900 dark:text-white">
+                  {language.name}
+                </span>
+                <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">
                   ({language.level})
                 </span>
               </div>
@@ -683,13 +691,15 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
 
       {/* Habilidades por Categoría */}
       <Card>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           Habilidades Técnicas
         </h3>
 
         {/* Add new skill */}
-        <div className="bg-gray-50 p-4 rounded-lg mb-4">
-          <h4 className="font-medium mb-3">Añadir nueva habilidad</h4>
+        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg mb-4">
+          <h4 className="font-medium text-gray-900 dark:text-white mb-3">
+            Añadir nueva habilidad
+          </h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <Input
               label="Nombre de la habilidad"
@@ -728,7 +738,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         {/* Habilidades existentes por categoría */}
         {Object.entries(skillsByCategory).map(([category, skills]) => (
           <div key={category} className="mb-6">
-            <h4 className="text-md font-semibold text-gray-800 mb-3">
+            <h4 className="text-md font-semibold text-gray-800 dark:text-gray-200 mb-3">
               {categoryNames[category as keyof typeof categoryNames] ||
                 category}
             </h4>
@@ -738,7 +748,9 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
                   key={skill.id}
                   className="flex items-center justify-between border rounded-lg p-2"
                 >
-                  <span className="text-sm">{skill.name}</span>
+                  <span className="text-sm text-gray-900 dark:text-white">
+                    {skill.name}
+                  </span>
                   <div className="flex items-center space-x-1">
                     <Toggle
                       checked={skill.selected}
@@ -762,13 +774,15 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
 
       {/* Competences */}
       <Card>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           Competencias Profesionales
         </h3>
 
         {/* Add new competence */}
-        <div className="bg-gray-50 p-4 rounded-lg mb-4">
-          <h4 className="font-medium mb-3">Añadir nueva competencia</h4>
+        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg mb-4">
+          <h4 className="font-medium text-gray-900 dark:text-white mb-3">
+            Añadir nueva competencia
+          </h4>
           <div className="flex space-x-2">
             <Input
               value={newCompetence}
@@ -789,7 +803,9 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
               key={competence.id}
               className="flex items-center justify-between border rounded-lg p-2"
             >
-              <span className="text-sm">{competence.name}</span>
+              <span className="text-sm text-gray-900 dark:text-white">
+                {competence.name}
+              </span>
               <div className="flex items-center space-x-1">
                 <Toggle
                   checked={competence.selected}
@@ -811,13 +827,15 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
 
       {/* Habilidades Blandas */}
       <Card>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           Habilidades Blandas
         </h3>
 
         {/* Add new soft skill */}
-        <div className="bg-gray-50 p-4 rounded-lg mb-4">
-          <h4 className="font-medium mb-3">Añadir nueva habilidad blanda</h4>
+        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg mb-4">
+          <h4 className="font-medium text-gray-900 dark:text-white mb-3">
+            Añadir nueva habilidad blanda
+          </h4>
           <div className="flex space-x-2">
             <Input
               value={newSoftSkill}
@@ -838,7 +856,9 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
               key={softSkill.id}
               className="flex items-center justify-between border rounded-lg p-2"
             >
-              <span className="text-sm">{softSkill.name}</span>
+              <span className="text-sm text-gray-900 dark:text-white">
+                {softSkill.name}
+              </span>
               <div className="flex items-center space-x-1">
                 <Toggle
                   checked={softSkill.selected}
@@ -860,13 +880,15 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
 
       {/* Experiencias */}
       <Card>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           Experiencia Laboral
         </h3>
 
         {/* Añadir nueva experiencia */}
-        <div className="bg-gray-50 p-4 rounded-lg mb-4">
-          <h4 className="font-medium mb-3">Añadir nueva experiencia</h4>
+        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg mb-4">
+          <h4 className="font-medium text-gray-900 dark:text-white mb-3">
+            Añadir nueva experiencia
+          </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
             <Input
               label="Puesto"
@@ -1012,24 +1034,26 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
               className="border rounded-lg p-4 flex items-start justify-between"
             >
               <div className="flex-1">
-                <h4 className="font-semibold">{experience.position}</h4>
-                <p className="text-gray-600">
+                <h4 className="font-semibold text-gray-900 dark:text-white">
+                  {experience.position}
+                </h4>
+                <p className="text-gray-600 dark:text-gray-300">
                   {experience.company} - {experience.location}
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   {experience.startDate} - {experience.endDate || "Presente"}
                 </p>
-                <p className="text-xs text-gray-600 mb-2">
+                <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
                   {experience.contractType} • {experience.workSchedule} •{" "}
                   {experience.workModality}
                 </p>
                 {experience.description && (
-                  <p className="text-sm text-gray-700 mt-2">
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mt-2">
                     {experience.description}
                   </p>
                 )}
                 {experience.technologies && (
-                  <p className="text-sm text-blue-600 mt-1">
+                  <p className="text-sm text-blue-600 dark:text-blue-400 mt-1">
                     🔧 {experience.technologies}
                   </p>
                 )}
@@ -1055,11 +1079,15 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
 
       {/* Formación */}
       <Card>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Formación</h3>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          Formación
+        </h3>
 
         {/* Añadir nueva formación */}
-        <div className="bg-gray-50 p-4 rounded-lg mb-4">
-          <h4 className="font-medium mb-3">Añadir nueva formación</h4>
+        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg mb-4">
+          <h4 className="font-medium text-gray-900 dark:text-white mb-3">
+            Añadir nueva formación
+          </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <Select
               label="Tipo de formación"
@@ -1153,7 +1181,9 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
             >
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <h4 className="font-semibold">{education.title}</h4>
+                  <h4 className="font-semibold text-gray-900 dark:text-white">
+                    {education.title}
+                  </h4>
                   <span
                     className={`text-xs px-2 py-1 rounded-full ${
                       education.type === "formal"
@@ -1166,10 +1196,10 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
                       : "🎓 Adicional"}
                   </span>
                 </div>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-300">
                   {education.institution} - {education.location}
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   {education.startYear} - {education.endYear}
                   {education.duration && ` (${education.duration})`}
                 </p>
@@ -1195,13 +1225,15 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
 
       {/* Certificaciones */}
       <Card>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           Certificaciones
         </h3>
 
         {/* Añadir nueva certificación */}
-        <div className="bg-gray-50 p-4 rounded-lg mb-4">
-          <h4 className="font-medium mb-3">Añadir nueva certificación</h4>
+        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg mb-4">
+          <h4 className="font-medium text-gray-900 dark:text-white mb-3">
+            Añadir nueva certificación
+          </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <Input
               label="Nombre de la certificación"
@@ -1283,23 +1315,25 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
               className="border rounded-lg p-4 flex items-start justify-between"
             >
               <div className="flex-1">
-                <h4 className="font-semibold flex items-center gap-2">
+                <h4 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                   🏆 {certification.name}
                 </h4>
-                <p className="text-gray-600">{certification.issuer}</p>
-                <p className="text-sm text-gray-500">
+                <p className="text-gray-600 dark:text-gray-300">
+                  {certification.issuer}
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   📅 Obtenida: {certification.date}
                   {certification.expiryDate && (
                     <span> • Expira: {certification.expiryDate}</span>
                   )}
                 </p>
                 {certification.credentialId && (
-                  <p className="text-xs text-gray-600">
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
                     🆔 ID: {certification.credentialId}
                   </p>
                 )}
                 {certification.url && (
-                  <p className="text-xs text-blue-600">
+                  <p className="text-xs text-blue-600 dark:text-blue-400">
                     🔗{" "}
                     <a
                       href={certification.url}
@@ -1333,13 +1367,15 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
 
       {/* Logros y Proyectos */}
       <Card>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           🏆 Logros y Proyectos Destacados
         </h3>
 
         {/* Añadir nuevo logro/proyecto */}
-        <div className="bg-gray-50 p-4 rounded-lg mb-4">
-          <h4 className="font-medium mb-3">Añadir nuevo logro/proyecto</h4>
+        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg mb-4">
+          <h4 className="font-medium text-gray-900 dark:text-white mb-3">
+            Añadir nuevo logro/proyecto
+          </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <Select
               label="Tipo"
@@ -1449,7 +1485,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
             >
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <h4 className="font-semibold flex items-center gap-2">
+                  <h4 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                     {achievement.type === "project" ? "🚀" : "🏆"}{" "}
                     {achievement.title}
                   </h4>
@@ -1464,26 +1500,28 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
                   </span>
                 </div>
                 {achievement.company && (
-                  <p className="text-gray-600 text-sm">{achievement.company}</p>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm">
+                    {achievement.company}
+                  </p>
                 )}
-                <p className="text-sm text-gray-500 mb-2">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
                   📅 {achievement.date}
                 </p>
-                <p className="text-sm text-gray-700 mb-2 leading-relaxed">
+                <p className="text-sm text-gray-700 dark:text-gray-300 mb-2 leading-relaxed">
                   {achievement.description}
                 </p>
                 {achievement.technologies.length > 0 && (
-                  <p className="text-xs text-blue-600 mb-1">
+                  <p className="text-xs text-blue-600 dark:text-blue-400 mb-1">
                     🔧 {achievement.technologies.join(", ")}
                   </p>
                 )}
                 {achievement.metrics && (
-                  <p className="text-xs text-green-600 mb-1">
+                  <p className="text-xs text-green-600 dark:text-green-400 mb-1">
                     📊 {achievement.metrics}
                   </p>
                 )}
                 {achievement.url && (
-                  <p className="text-xs text-purple-600">
+                  <p className="text-xs text-purple-600 dark:text-purple-400">
                     🔗{" "}
                     <a
                       href={achievement.url}
@@ -1517,13 +1555,15 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
 
       {/* Referencias Profesionales */}
       <Card>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           📋 Referencias Profesionales
         </h3>
 
         {/* Añadir nueva referencia */}
-        <div className="bg-gray-50 p-4 rounded-lg mb-4">
-          <h4 className="font-medium mb-3">Añadir nueva referencia</h4>
+        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg mb-4">
+          <h4 className="font-medium text-gray-900 dark:text-white mb-3">
+            Añadir nueva referencia
+          </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <Input
               label="Nombre completo"
@@ -1616,16 +1656,16 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
               className="border rounded-lg p-4 flex items-start justify-between"
             >
               <div className="flex-1">
-                <h4 className="font-semibold text-gray-900 mb-1">
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
                   {reference.name}
                 </h4>
-                <p className="text-gray-700 text-sm">
+                <p className="text-gray-700 dark:text-gray-300 text-sm">
                   {reference.position} en {reference.company}
                 </p>
-                <p className="text-gray-600 text-sm mb-2">
+                <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">
                   {reference.relationship}
                 </p>
-                <div className="flex flex-wrap gap-4 text-xs text-gray-500">
+                <div className="flex flex-wrap gap-4 text-xs text-gray-500 dark:text-gray-400">
                   {reference.phone && <span>📞 {reference.phone}</span>}
                   {reference.email && <span>✉️ {reference.email}</span>}
                   {reference.yearsWorking && (

@@ -1,0 +1,1 @@
+export { GuiaCVPage } from "./GuiaCVPage";

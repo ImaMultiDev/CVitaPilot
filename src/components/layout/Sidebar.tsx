@@ -135,7 +135,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-2">
                   <span>{category.icon}</span>
-                  <h4 className="font-medium text-gray-900">{category.name}</h4>
+                  <h4 className="font-medium text-gray-900 dark:text-white">
+                    {category.name}
+                  </h4>
                 </div>
                 <Badge variant="info">
                   {selectedCount}/{skills.length}
@@ -148,7 +150,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
                     key={skill.id}
                     className="flex items-center justify-between"
                   >
-                    <span className="text-sm text-gray-700">{skill.name}</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                      {skill.name}
+                    </span>
                     <Toggle
                       checked={skill.selected}
                       onChange={() => handleToggleSkill(skill.id)}
@@ -171,7 +175,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
     return (
       <Card className="p-4">
         <div className="flex items-center justify-between mb-3">
-          <h4 className="font-medium text-gray-900">Competencias</h4>
+          <h4 className="font-medium text-gray-900 dark:text-white">
+            Competencias
+          </h4>
           <Badge variant="info">
             {selectedCount}/{cvData.competences.length}
           </Badge>
@@ -183,7 +189,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
               key={competence.id}
               className="flex items-center justify-between"
             >
-              <span className="text-sm text-gray-700">{competence.name}</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">
+                {competence.name}
+              </span>
               <Toggle
                 checked={competence.selected}
                 onChange={() => handleToggleCompetence(competence.id)}
@@ -203,7 +211,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
     return (
       <Card className="p-4">
         <div className="flex items-center justify-between mb-3">
-          <h4 className="font-medium text-gray-900">Experiencias</h4>
+          <h4 className="font-medium text-gray-900 dark:text-white">
+            Experiencias
+          </h4>
           <Badge variant="info">
             {selectedCount}/{cvData.experiences.length}
           </Badge>
@@ -243,7 +253,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
     return (
       <Card className="p-4">
         <div className="flex items-center justify-between mb-3">
-          <h4 className="font-medium text-gray-900">Formación</h4>
+          <h4 className="font-medium text-gray-900 dark:text-white">
+            Formación
+          </h4>
           <Badge variant="info">
             {selectedCount}/{cvData.education.length}
           </Badge>
@@ -284,7 +296,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
     return (
       <Card className="p-4">
         <div className="flex items-center justify-between mb-3">
-          <h4 className="font-medium text-gray-900">Habilidades Blandas</h4>
+          <h4 className="font-medium text-gray-900 dark:text-white">
+            Habilidades Blandas
+          </h4>
           <Badge variant="info">
             {selectedCount}/{cvData.softSkills.length}
           </Badge>
@@ -296,7 +310,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
               key={softSkill.id}
               className="flex items-center justify-between"
             >
-              <span className="text-sm text-gray-700">{softSkill.name}</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">
+                {softSkill.name}
+              </span>
               <Toggle
                 checked={softSkill.selected}
                 onChange={() => handleToggleSoftSkill(softSkill.id)}
@@ -431,7 +447,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
     return (
       <Card className="p-4">
         <div className="flex items-center justify-between mb-3">
-          <h4 className="font-medium text-gray-900">Idiomas</h4>
+          <h4 className="font-medium text-gray-900 dark:text-white">Idiomas</h4>
           <Badge variant="info">{cvData.languages.length}</Badge>
         </div>
         <div className="space-y-2 max-h-60 overflow-y-auto">
@@ -440,7 +456,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
               key={language.id}
               className="flex items-center justify-between border rounded-lg p-2"
             >
-              <span className="text-sm text-gray-700">{language.name}</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">
+                {language.name}
+              </span>
               <Badge variant="default">{language.level}</Badge>
             </div>
           ))}
@@ -496,9 +514,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
   const selectedReferences = cvData.references.filter((r) => r.selected).length;
 
   return (
-    <div className="w-80 bg-gray-50 border-r border-gray-200 h-screen overflow-y-auto">
+    <div className="w-80 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-screen overflow-y-auto">
       <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           Personalizar CV
         </h3>
 
@@ -510,8 +528,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
               onClick={() => setActiveSection(section.id)}
               className={`w-full flex items-center space-x-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                 activeSection === section.id
-                  ? "bg-blue-100 text-blue-700"
-                  : "text-gray-600 hover:bg-gray-100"
+                  ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
+                  : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
               }`}
             >
               <span>{section.icon}</span>
@@ -524,11 +542,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
         {renderSection()}
 
         {/* Quick Stats */}
-        <Card className="mt-6 p-4 bg-blue-50 border-blue-200">
-          <h4 className="text-sm font-medium text-blue-900 mb-2">
+        <Card className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700">
+          <h4 className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">
             Resumen del CV
           </h4>
-          <div className="space-y-1 text-xs text-blue-800">
+          <div className="space-y-1 text-xs text-blue-800 dark:text-blue-200">
             <div>🛠️ {selectedSkills} habilidades seleccionadas</div>
             <div>🎯 {selectedCompetences} competencias activas</div>
             <div>🤝 {selectedSoftSkills} habilidades blandas</div>
@@ -539,8 +557,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
             <div>📋 {selectedReferences} referencias</div>
             <div>🌍 {cvData.languages.length} idiomas</div>
           </div>
-          <div className="mt-3 pt-2 border-t border-blue-200">
-            <div className="text-xs font-medium text-blue-900">
+          <div className="mt-3 pt-2 border-t border-blue-200 dark:border-blue-700">
+            <div className="text-xs font-medium text-blue-900 dark:text-blue-100">
               Total elementos:{" "}
               {selectedSkills +
                 selectedCompetences +

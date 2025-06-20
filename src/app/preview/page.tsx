@@ -59,7 +59,7 @@ export default async function PreviewPage() {
 
   return (
     <MainLayout showSidebar={false}>
-      <div className="bg-gray-50 min-h-screen py-8">
+      <div className="bg-gray-50 dark:bg-gray-900 min-h-screen py-8">
         <CVPreviewPrisma cvData={currentCV} currentCVName={currentCVName} />
       </div>
     </MainLayout>

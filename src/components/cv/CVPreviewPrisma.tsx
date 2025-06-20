@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/Button";
 import { CVData } from "@/types/cv";
-import { pdfUtils } from "@/utils/pdfUtils";
 
 interface CVPreviewPrismaProps {
   cvData: CVData;
@@ -13,81 +12,45 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
   cvData,
   currentCVName,
 }) => {
-  // Export Page 1 to PDF
-  const handleExportPage1 = async () => {
-    try {
-      const filename = pdfUtils.generateFilename(cvData);
-      const page1Name = filename.replace(".pdf", "_Pagina1.pdf");
-
-      // Intentar método avanzado primero
-      try {
-        pdfUtils.prepareElementForExport("cv-page-1");
-        await new Promise((resolve) => setTimeout(resolve, 200));
-        await pdfUtils.exportToPDFUltraSimple("cv-page-1", page1Name);
-        pdfUtils.cleanupAfterExport("cv-page-1");
-        alert("✅ Página 1 exportada exitosamente");
-      } catch (advancedError) {
-        console.warn(
-          "Error en método avanzado, usando impresión:",
-          advancedError
-        );
-        // Fallback: usar window.print con focus en página 1
-        handlePrintPage("cv-page-1", "Página 1");
-      }
-    } catch (error) {
-      console.error("Error al exportar Página 1:", error);
-      alert(
-        "Error al exportar Página 1. Usa el botón Imprimir como alternativa."
-      );
-    }
-  };
-
-  // Export Page 2 to PDF
-  const handleExportPage2 = async () => {
-    try {
-      const filename = pdfUtils.generateFilename(cvData);
-      const page2Name = filename.replace(".pdf", "_Pagina2.pdf");
-
-      // Intentar método avanzado primero
-      try {
-        pdfUtils.prepareElementForExport("cv-page-2");
-        await new Promise((resolve) => setTimeout(resolve, 200));
-        await pdfUtils.exportToPDFUltraSimple("cv-page-2", page2Name);
-        pdfUtils.cleanupAfterExport("cv-page-2");
-        alert("✅ Página 2 exportada exitosamente");
-      } catch (advancedError) {
-        console.warn(
-          "Error en método avanzado, usando impresión:",
-          advancedError
-        );
-        // Fallback: usar window.print con focus en página 2
-        handlePrintPage("cv-page-2", "Página 2");
-      }
-    } catch (error) {
-      console.error("Error al exportar Página 2:", error);
-      alert(
-        "Error al exportar Página 2. Usa el botón Imprimir como alternativa."
-      );
-    }
-  };
-
-  // Helper function for printing individual pages
+  // Helper function for printing individual pages (CORREGIDO)
   const handlePrintPage = (pageId: string, pageName: string) => {
-    // Ocultar temporalmente la otra página
+    // Obtener referencias a las páginas
     const page1 = document.getElementById("cv-page-1");
     const page2 = document.getElementById("cv-page-2");
     const targetPage = document.getElementById(pageId);
 
     if (!targetPage) return;
 
+    // Guardar estados originales
     const originalDisplay1 = page1?.style.display || "";
     const originalDisplay2 = page2?.style.display || "";
+    const originalVisibility1 = page1?.style.visibility || "";
+    const originalVisibility2 = page2?.style.visibility || "";
 
-    // Mostrar solo la página objetivo
-    if (pageId === "cv-page-1" && page2) {
-      page2.style.display = "none";
-    } else if (pageId === "cv-page-2" && page1) {
-      page1.style.display = "none";
+    // Agregar clase temporal para identificar qué página imprimir
+    document.body.classList.add(`print-only-${pageId}`);
+
+    // Aplicar estilos específicos para la página a imprimir
+    if (pageId === "cv-page-1") {
+      // Mostrar solo página 1
+      if (page1) {
+        page1.style.display = "block";
+        page1.style.visibility = "visible";
+      }
+      if (page2) {
+        page2.style.display = "none";
+        page2.style.visibility = "hidden";
+      }
+    } else if (pageId === "cv-page-2") {
+      // Mostrar solo página 2
+      if (page1) {
+        page1.style.display = "none";
+        page1.style.visibility = "hidden";
+      }
+      if (page2) {
+        page2.style.display = "block";
+        page2.style.visibility = "visible";
+      }
     }
 
     // Configurar título
@@ -106,47 +69,64 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
     setTimeout(() => {
       window.print();
 
-      // Restaurar estado original
+      // Restaurar estado original después de la impresión
       setTimeout(() => {
-        if (page1) page1.style.display = originalDisplay1;
-        if (page2) page2.style.display = originalDisplay2;
+        // Remover clase temporal
+        document.body.classList.remove(`print-only-${pageId}`);
+
+        // Restaurar estilos originales
+        if (page1) {
+          page1.style.display = originalDisplay1;
+          page1.style.visibility = originalVisibility1;
+        }
+        if (page2) {
+          page2.style.display = originalDisplay2;
+          page2.style.visibility = originalVisibility2;
+        }
         document.title = originalTitle;
-      }, 100);
-    }, 200);
+      }, 500);
+    }, 300);
   };
 
-  // Export both pages sequentially
-  const handleExportBothPages = async () => {
-    try {
-      await handleExportPage1();
-      // Pequeña pausa entre exportaciones
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      await handleExportPage2();
-
-      alert("✅ Ambas páginas exportadas exitosamente");
-    } catch (error) {
-      console.error("Error al exportar ambas páginas:", error);
-      alert("Error al exportar. Prueba exportar las páginas individualmente.");
-    }
-  };
-
-  // Función alternativa para usar window.print (como respaldo)
+  // Función mejorada para impresión completa del CV
   const handlePrintPDF = () => {
-    // Set print title
+    // Configurar título del documento
     const originalTitle = document.title;
     const fileName = `CV_${cvData.personalInfo.name.replace(/\s+/g, "_")}`;
     document.title = fileName;
 
-    // Asegurar que todas las páginas estén completamente renderizadas
+    // Asegurar que todas las páginas estén visibles y correctamente formateadas
+    const page1 = document.getElementById("cv-page-1");
+    const page2 = document.getElementById("cv-page-2");
+
+    if (page1) {
+      page1.style.display = "block";
+      page1.style.visibility = "visible";
+    }
+    if (page2) {
+      page2.style.display = "block";
+      page2.style.visibility = "visible";
+    }
+
+    // Agregar clase temporal para mejorar estilos de impresión
+    document.body.classList.add("printing-cv");
+
+    // Mostrar instrucciones antes de abrir el diálogo
+    alert(
+      `🖨️ Se abrirá el diálogo de impresión para el CV completo.\n\n📋 Configuración recomendada:\n• Destino: "Guardar como PDF"\n• Tamaño: A4\n• Orientación: Vertical\n• Márgenes: Predeterminados\n• Desactivar: "Encabezados y pies de página"\n\n✅ El PDF mantendrá todos los colores y formatos exactamente como se ven en pantalla.`
+    );
+
+    // Pequeña pausa para que el usuario lea las instrucciones
     setTimeout(() => {
-      // Trigger print dialog (user can save as PDF)
+      // Abrir diálogo de impresión
       window.print();
 
-      // Restore original title
+      // Limpiar después de la impresión
       setTimeout(() => {
+        document.body.classList.remove("printing-cv");
         document.title = originalTitle;
-      }, 100);
-    }, 200);
+      }, 1000);
+    }, 500);
   };
 
   // Filter selected items
@@ -190,7 +170,7 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6 dark:bg-">
       {/* Estilos CSS para impresión y exportación PDF */}
       <style jsx>{`
         /* Estilos para exportación PDF - Colores compatibles con html2canvas */
@@ -275,80 +255,153 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
         }
 
         @media print {
+          /* Configuración de página sin márgenes */
+          @page {
+            margin: 0mm !important;
+            padding: 0mm !important;
+            size: A4 portrait;
+          }
+
+          /* Configuración global para impresión */
           * {
             -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
             color-adjust: exact !important;
           }
 
+          html,
           body {
             margin: 0 !important;
             padding: 0 !important;
+            width: 100% !important;
+            height: auto !important;
+            background: white !important;
           }
 
-          .page-1 {
-            page-break-after: always !important;
-            break-after: page !important;
-            min-height: 297mm !important; /* A4 height */
-            height: 297mm !important;
-            overflow: hidden !important;
-          }
-
-          .page-2 {
-            page-break-before: always !important;
-            break-before: page !important;
-            page-break-after: avoid !important;
-            break-after: avoid !important;
-            min-height: 297mm !important;
-          }
-
+          /* Ocultar elementos que no se deben imprimir */
           .no-print {
             display: none !important;
           }
 
-          /* Asegurar que el contenido de la página 2 se vea */
+          /* Configuración para imprimir CV completo (ambas páginas) */
+          body.printing-cv .page-1 {
+            page-break-after: always !important;
+            break-after: page !important;
+            width: 100% !important;
+            min-height: 297mm !important;
+            display: block !important;
+            visibility: visible !important;
+          }
+
+          body.printing-cv .page-2 {
+            page-break-before: always !important;
+            break-before: page !important;
+            page-break-after: avoid !important;
+            break-after: avoid !important;
+            width: 100% !important;
+            min-height: 297mm !important;
+            display: block !important;
+            visibility: visible !important;
+            /* Remover espacios y líneas de separación visual */
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+            border-top: none !important;
+          }
+
+          /* Configuración para imprimir página individual */
+          body.print-only-cv-page-1 .page-1 {
+            display: block !important;
+            visibility: visible !important;
+            width: 100% !important;
+            min-height: 297mm !important;
+          }
+
+          body.print-only-cv-page-1 .page-2 {
+            display: none !important;
+          }
+
+          body.print-only-cv-page-2 .page-1 {
+            display: none !important;
+          }
+
+          body.print-only-cv-page-2 .page-2 {
+            display: block !important;
+            visibility: visible !important;
+            width: 100% !important;
+            min-height: 297mm !important;
+            page-break-before: avoid !important;
+            /* Remover espacios y líneas de separación visual */
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+            border-top: none !important;
+          }
+
+          /* Asegurar que todo el contenido se vea correctamente */
+          .page-1 *,
           .page-2 * {
             visibility: visible !important;
             opacity: 1 !important;
           }
 
-          /* Evitar saltos de página dentro de secciones */
+          /* Evitar saltos de página dentro de secciones importantes */
+          .page-1 section,
           .page-2 section {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
           }
 
-          /* Forzar que ambas páginas se impriman */
+          /* Configuración del contenido principal */
           .print-content {
             display: block !important;
             width: 100% !important;
             height: auto !important;
+            max-width: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
           }
 
-          /* Asegurar que la página 2 no se oculte */
-          [data-page="2"] {
-            display: block !important;
-            visibility: visible !important;
-            position: relative !important;
-            z-index: 1 !important;
+          /* Eliminar márgenes del contenedor principal */
+          .max-w-4xl {
+            max-width: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+
+          /* Asegurar que las páginas ocupen todo el espacio */
+          .page-1,
+          .page-2 {
+            margin: 0 !important;
+            box-shadow: none !important;
+            border: none !important;
+          }
+
+          /* Asegurar que los colores se mantengan */
+          .bg-gray-700,
+          .bg-cyan-500 {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
           }
         }
 
-        /* Estilos para vista previa en pantalla */
-        .page-1 {
-          min-height: 100vh;
-        }
-        .page-2 {
-          margin-top: 2rem;
-          border-top: 2px dashed #e5e7eb;
-          padding-top: 2rem;
+        /* Estilos para vista previa en pantalla (solo cuando NO se está imprimiendo) */
+        @media screen {
+          .page-1 {
+            min-height: 100vh;
+          }
+          .page-2 {
+            margin-top: 2rem;
+            border-top: 2px dashed #e5e7eb;
+            padding-top: 2rem;
+          }
         }
       `}</style>
 
       {/* CV Active Indicator */}
       {currentCVName && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 shadow-sm no-print">
+        <div className="bg-blue-50 dark:bg-blue-900/80 border border-blue-200 dark:border-blue-800 rounded-lg p-4 shadow-sm no-print">
           <div className="text-center">
-            <p className="text-blue-800">
+            <p className="text-blue-800 dark:text-blue-200">
               <span className="font-semibold">📄 Previsualizando CV:</span>{" "}
               {currentCVName}
             </p>
@@ -356,40 +409,50 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
         </div>
       )}
 
-      {/* Export Controls */}
+      {/* Print Control */}
       <div className="text-center mb-2 no-print">
-        <div className="flex justify-center gap-2 mb-3 flex-wrap">
-          <Button onClick={handleExportPage1} variant="primary" size="sm">
-            📄 Exportar Página 1
+        <div className="flex justify-center gap-3 mb-3">
+          <Button onClick={handlePrintPDF} variant="primary" size="lg">
+            🖨️ Imprimir CV Completo
           </Button>
-          <Button onClick={handleExportPage2} variant="primary" size="sm">
-            📄 Exportar Página 2
+          <Button
+            onClick={() => handlePrintPage("cv-page-1", "Página 1")}
+            variant="secondary"
+            size="sm"
+          >
+            📄 Imprimir Solo Página 1
           </Button>
-          <Button onClick={handleExportBothPages} variant="secondary" size="sm">
-            📥 Exportar Ambas
-          </Button>
-          <Button onClick={handlePrintPDF} variant="secondary" size="sm">
-            🖨️ Imprimir
+          <Button
+            onClick={() => handlePrintPage("cv-page-2", "Página 2")}
+            variant="secondary"
+            size="sm"
+          >
+            📄 Imprimir Solo Página 2
           </Button>
         </div>
-        <div className="mt-3 text-xs text-gray-600 bg-gray-50 rounded-lg px-3 py-2 max-w-2xl mx-auto">
-          <p className="font-medium">💡 Opciones de exportación:</p>
-          <p>
-            <strong>Exportar Página 1/2:</strong> Intenta exportación
-            automática, si falla usa impresión del navegador.
+        <div className="mt-3 text-xs text-gray-600 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/80 rounded-lg px-4 py-3 max-w-2xl mx-auto border border-blue-200 dark:border-blue-800">
+          <p className="font-medium text-blue-900 dark:text-blue-100 mb-2">
+            🖨️ Instrucciones de impresión:
           </p>
-          <p>
-            <strong>Exportar Ambas:</strong> Exporta ambas páginas
-            secuencialmente.
+          <p className="text-blue-800 dark:text-blue-200">
+            <strong>1.</strong> Haz clic en &quot;Imprimir CV Completo&quot;
+            para imprimir ambas páginas
           </p>
-          <p>
-            <strong>Imprimir:</strong> Diálogo de impresión tradicional (ambas
-            páginas).
+          <p className="text-blue-800 dark:text-blue-200">
+            <strong>2.</strong> En el diálogo de impresión, selecciona
+            &quot;Guardar como PDF&quot; como destino
           </p>
-          <p className="text-xs text-blue-600 mt-1">
-            💡 <strong>Tip:</strong> Si la exportación automática falla, se
-            abrirá el diálogo de impresión donde puedes seleccionar
-            &quot;Guardar como PDF&quot;.
+          <p className="text-blue-800 dark:text-blue-200">
+            <strong>3.</strong> Desactiva &quot;Encabezados y pies de
+            página&quot; para un resultado más limpio
+          </p>
+          <p className="text-blue-800 dark:text-blue-200">
+            <strong>4.</strong> Asegúrate de que el tamaño sea A4 y la
+            orientación vertical
+          </p>
+          <p className="text-xs text-blue-600 dark:text-blue-400 mt-2 font-medium">
+            💡 Los colores y formatos se mantendrán exactamente como se ven en
+            pantalla
           </p>
         </div>
       </div>
