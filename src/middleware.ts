@@ -40,8 +40,9 @@ export function middleware(request: NextRequest) {
       response.cookies.set("cvitapilot-auth", "authenticated", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "lax", // Cambiado de 'strict' a 'lax' para mejor compatibilidad
         maxAge: 60 * 60 * 24 * 7, // 7 días
+        path: "/", // Asegurar que la cookie es válida para toda la app
       });
       return response;
     }

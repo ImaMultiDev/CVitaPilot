@@ -10,8 +10,9 @@ export async function POST() {
   response.cookies.set("cvitapilot-auth", "", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: "lax",
     maxAge: 0, // Expira inmediatamente
+    path: "/", // Mismo path que cuando se creó
   });
 
   return response;
