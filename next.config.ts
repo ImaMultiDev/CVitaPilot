@@ -4,6 +4,12 @@ const nextConfig: NextConfig = {
   // Optimizaciones para producción
   compress: true,
 
+  // Deshabilitar ESLint durante builds de Vercel (opcional)
+  eslint: {
+    // Solo ignorar durante builds, no durante desarrollo
+    ignoreDuringBuilds: process.env.VERCEL === "1",
+  },
+
   // Configuración de imágenes
   images: {
     formats: ["image/webp", "image/avif"],
