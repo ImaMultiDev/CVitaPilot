@@ -1,6 +1,6 @@
 // src/utils/cvUtils.ts
 
-import { CVData, Experience, Education, Skill } from "@/types/cv";
+import type { CVData, Experience, Skill } from "@/types/cv";
 
 export const cvUtils = {
   // Generate a summary of the CV

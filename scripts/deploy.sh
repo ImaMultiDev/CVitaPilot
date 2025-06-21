@@ -77,6 +77,8 @@ check_typescript() {
 # Verificar ESLint
 check_lint() {
     log "Verificando ESLint..."
+    # Asegurar que Prisma está generado antes del lint
+    npx prisma generate > /dev/null 2>&1 || true
     npm run lint
     success "ESLint verificado"
 }

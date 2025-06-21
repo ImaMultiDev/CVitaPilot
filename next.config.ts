@@ -78,10 +78,8 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  // Configuración de PWA (si decides añadirla en el futuro)
-  experimental: {
-    serverComponentsExternalPackages: ["@prisma/client"],
-  },
+  // Configuración de Prisma para Vercel
+  serverExternalPackages: ["@prisma/client"],
 
   // Configuración de dominio personalizado
   async redirects() {
