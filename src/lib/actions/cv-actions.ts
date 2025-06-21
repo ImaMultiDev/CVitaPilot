@@ -879,7 +879,10 @@ export async function toggleSkill(id: string) {
       },
     });
 
+    // Revalidar múltiples rutas para asegurar actualización
     revalidatePath("/");
+    revalidatePath("/preview");
+    revalidatePath("/", "layout");
     return { success: true };
   } catch (error) {
     console.error("Error toggling skill:", error);
@@ -965,7 +968,10 @@ export async function toggleCompetence(id: string) {
       },
     });
 
+    // Revalidar múltiples rutas para asegurar actualización
     revalidatePath("/");
+    revalidatePath("/preview");
+    revalidatePath("/", "layout");
     return { success: true };
   } catch (error) {
     console.error("Error toggling competence:", error);
@@ -2026,6 +2032,24 @@ export async function getCurrentCVName(): Promise<string | null> {
 // ===============================
 // UTILIDADES DE LIMPIEZA
 // ===============================
+
+export async function forceRevalidation() {
+  try {
+    // Revalidar todas las rutas importantes
+    revalidatePath("/");
+    revalidatePath("/preview");
+    revalidatePath("/saved-cvs");
+    revalidatePath("/settings");
+
+    // También revalidar por tags si los usamos
+    revalidatePath("/", "layout");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error forcing revalidation:", error);
+    return { success: false, error: "Failed to force revalidation" };
+  }
+}
 
 export async function cleanupDuplicateCVs() {
   try {

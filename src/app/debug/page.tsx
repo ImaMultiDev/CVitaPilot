@@ -6,6 +6,10 @@ import { useCV } from "@/contexts/CVContext";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useState } from "react";
+import {
+  cleanupDuplicateCVs,
+  forceRevalidation,
+} from "@/lib/actions/cv-actions";
 
 export default function DebugPage() {
   const { state, dispatch, addSkill, addCompetence } = useCV();
@@ -27,13 +31,11 @@ export default function DebugPage() {
   };
 
   const testToggleSkill = () => {
-    if (state.currentCV.skills.length > 0) {
-      const firstSkill = state.currentCV.skills[0];
-      dispatch({
-        type: "TOGGLE_SKILL",
-        payload: firstSkill.id,
-      });
-    }
+    console.log("Testing toggle skill...");
+    dispatch({
+      type: "TOGGLE_SKILL",
+      payload: state.currentCV.skills[0]?.id || "",
+    });
   };
 
   const testUpdatePersonalInfo = () => {
@@ -41,6 +43,35 @@ export default function DebugPage() {
       type: "UPDATE_PERSONAL_INFO",
       payload: { name: testName || "Test Name Updated" },
     });
+  };
+
+  const handleCleanupDuplicates = async () => {
+    if (confirm("¿Estás seguro de que quieres limpiar los CVs duplicados?")) {
+      try {
+        const result = await cleanupDuplicateCVs();
+        if (result.success) {
+          alert(result.message || "CVs duplicados limpiados exitosamente");
+          await forceRevalidation();
+          window.location.reload();
+        } else {
+          alert("Error al limpiar CVs duplicados: " + result.error);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Error inesperado al limpiar CVs duplicados");
+      }
+    }
+  };
+
+  const handleForceRevalidation = async () => {
+    try {
+      await forceRevalidation();
+      alert("Cache actualizada exitosamente");
+      window.location.reload();
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error al actualizar cache");
+    }
   };
 
   return (
@@ -125,6 +156,16 @@ export default function DebugPage() {
               </span>
             </div>
           ))}
+        </div>
+      </Card>
+
+      <Card className="mt-6">
+        <h2 className="text-lg font-semibold mb-4">Acciones</h2>
+        <div className="space-y-4">
+          <Button onClick={handleCleanupDuplicates}>
+            Limpiar CVs Duplicados
+          </Button>
+          <Button onClick={handleForceRevalidation}>Actualizar Cache</Button>
         </div>
       </Card>
     </div>

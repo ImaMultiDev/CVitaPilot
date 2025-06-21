@@ -2,10 +2,11 @@
 
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Toggle } from "@/components/ui/Toggle";
+import { useRouter } from "next/navigation";
 import {
   toggleSkill,
   toggleCompetence,
@@ -15,15 +16,18 @@ import {
   toggleCertification,
   toggleAchievement,
   toggleReference,
+  forceRevalidation,
 } from "@/lib/actions/cv-actions";
-import { CVData } from "@/types/cv";
+import type { CVData } from "@/types/cv";
 
 interface SidebarProps {
   cvData: CVData;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
+  const router = useRouter();
   const [activeSection, setActiveSection] = useState<string>("skills");
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const sections = [
     { id: "skills", name: "Habilidades", icon: "🛠️" },
@@ -47,76 +51,61 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
     { id: "ai", name: "IA", icon: "🤖" },
   ];
 
-  const handleToggleSkill = async (skillId: string) => {
+  // Función helper para manejar actualizaciones
+  const handleUpdate = async (
+    updateFn: () => Promise<{ success: boolean; error?: string }>
+  ) => {
+    if (isUpdating) return; // Prevenir múltiples actualizaciones simultáneas
+
+    setIsUpdating(true);
     try {
-      await toggleSkill(skillId);
-      window.location.reload(); // Recarga para mostrar cambios
+      await updateFn();
+      // Forzar revalidación y refresh suave
+      await forceRevalidation();
+      router.refresh();
+
+      // Pequeño delay para permitir que los cambios se propaguen
+      setTimeout(() => {
+        setIsUpdating(false);
+      }, 500);
     } catch (error) {
-      console.error("Error toggling skill:", error);
+      console.error("Error updating:", error);
+      setIsUpdating(false);
+      // En caso de error, hacer refresh completo como fallback
+      window.location.reload();
     }
+  };
+
+  const handleToggleSkill = async (skillId: string) => {
+    await handleUpdate(() => toggleSkill(skillId));
   };
 
   const handleToggleCompetence = async (competenceId: string) => {
-    try {
-      await toggleCompetence(competenceId);
-      window.location.reload();
-    } catch (error) {
-      console.error("Error toggling competence:", error);
-    }
+    await handleUpdate(() => toggleCompetence(competenceId));
   };
 
   const handleToggleExperience = async (experienceId: string) => {
-    try {
-      await toggleExperience(experienceId);
-      window.location.reload();
-    } catch (error) {
-      console.error("Error toggling experience:", error);
-    }
+    await handleUpdate(() => toggleExperience(experienceId));
   };
 
   const handleToggleEducation = async (educationId: string) => {
-    try {
-      await toggleEducation(educationId);
-      window.location.reload();
-    } catch (error) {
-      console.error("Error toggling education:", error);
-    }
+    await handleUpdate(() => toggleEducation(educationId));
   };
 
   const handleToggleSoftSkill = async (softSkillId: string) => {
-    try {
-      await toggleSoftSkill(softSkillId);
-      window.location.reload();
-    } catch (error) {
-      console.error("Error toggling soft skill:", error);
-    }
+    await handleUpdate(() => toggleSoftSkill(softSkillId));
   };
 
   const handleToggleCertification = async (certificationId: string) => {
-    try {
-      await toggleCertification(certificationId);
-      window.location.reload();
-    } catch (error) {
-      console.error("Error toggling certification:", error);
-    }
+    await handleUpdate(() => toggleCertification(certificationId));
   };
 
   const handleToggleAchievement = async (achievementId: string) => {
-    try {
-      await toggleAchievement(achievementId);
-      window.location.reload();
-    } catch (error) {
-      console.error("Error toggling achievement:", error);
-    }
+    await handleUpdate(() => toggleAchievement(achievementId));
   };
 
   const handleToggleReference = async (referenceId: string) => {
-    try {
-      await toggleReference(referenceId);
-      window.location.reload();
-    } catch (error) {
-      console.error("Error toggling reference:", error);
-    }
+    await handleUpdate(() => toggleReference(referenceId));
   };
 
   const renderSkillsSection = () => {
@@ -516,9 +505,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
   return (
     <div className="w-80 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-screen overflow-y-auto">
       <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Personalizar CV
-        </h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            Personalizar CV
+          </h3>
+          {isUpdating && (
+            <div className="flex items-center text-blue-600 dark:text-blue-400">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
+              <span className="text-xs">Actualizando...</span>
+            </div>
+          )}
+        </div>
 
         {/* Section Tabs */}
         <div className="space-y-1 mb-6">
