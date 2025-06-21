@@ -1,0 +1,88 @@
+{
+  "name": "CVitaPilot - Generador Profesional de CVs",
+  "short_name": "CVitaPilot",
+  "description": "Aplicación profesional para crear, personalizar y gestionar múltiples versiones de tu CV con formatos duales: Visual para reclutadores humanos y ATS para sistemas automáticos.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "es",
+  "dir": "ltr",
+  "categories": ["productivity", "business", "utilities"],
+  "screenshots": [
+    {
+      "src": "/logo_512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "icons": [
+    {
+      "src": "/logo_64.png",
+      "sizes": "64x64",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo_128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo_192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo_512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Editor de CV",
+      "short_name": "Editor",
+      "description": "Crear y editar tu CV",
+      "url": "/",
+      "icons": [
+        {
+          "src": "/logo_192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Vista Previa",
+      "short_name": "Preview",
+      "description": "Ver y descargar tu CV",
+      "url": "/preview",
+      "icons": [
+        {
+          "src": "/logo_192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Mis CVs",
+      "short_name": "CVs",
+      "description": "Gestionar CVs guardados",
+      "url": "/saved-cvs",
+      "icons": [
+        {
+          "src": "/logo_192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

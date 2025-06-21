@@ -1,0 +1,18 @@
+# robots.txt para CVitaPilot
+User-agent: *
+Allow: /
+Allow: /preview
+Allow: /guia-cv
+
+# Bloquear rutas de desarrollo y debug
+Disallow: /debug
+Disallow: /debug-prisma
+Disallow: /api/
+Disallow: /_next/
+Disallow: /src/
+
+# Sitemap
+Sitemap: https://cvitapilot.com/sitemap.xml
+
+# Crawl-delay
+Crawl-delay: 1 

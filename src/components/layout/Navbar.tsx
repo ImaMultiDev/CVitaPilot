@@ -5,6 +5,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/ui";
+import Image from "next/image";
 
 const navigation = [
   { name: "Editor", href: "/", icon: "✏️" },
@@ -23,10 +24,12 @@ export const Navbar: React.FC = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <span className="text-2xl">📝</span>
-              <span className="text-xl font-bold text-gray-900 dark:text-white">
-                CV Manager
-              </span>
+              <Image
+                src="/logo_192x64.png"
+                alt="CVitaPilot"
+                width={96}
+                height={32}
+              />
             </Link>
           </div>
 
