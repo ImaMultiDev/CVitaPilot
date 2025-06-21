@@ -1,6 +1,6 @@
 // src/app/layout.tsx
 
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { CVProvider, ThemeProvider } from "@/contexts";
 import "./globals.css";
@@ -46,7 +46,6 @@ export const metadata: Metadata = {
   ],
   creator: "Imanol Mugueta Unsain",
   publisher: "ImaMultiDev",
-  viewport: "width=device-width, initial-scale=1, shrink-to-fit=no",
   robots: {
     index: true,
     follow: true,
@@ -96,6 +95,17 @@ export const metadata: Metadata = {
     telephone: false,
   },
   manifest: "/manifest.json",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f1f5f9" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f172a" },
+  ],
 };
 
 export default function RootLayout({
