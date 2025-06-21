@@ -141,6 +141,42 @@ export const SettingsPage: React.FC = () => {
         </div>
       </Card>
 
+      {/* Información de Seguridad */}
+      <Card>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          🔐 Seguridad y Acceso
+        </h3>
+        <div className="space-y-4">
+          <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+            <h4 className="font-medium text-gray-900 dark:text-white mb-2">
+              Autenticación Básica Activa
+            </h4>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+              La aplicación está protegida con autenticación básica HTTP. Solo
+              usuarios autorizados pueden acceder.
+            </p>
+            <div className="text-xs text-gray-500 dark:text-gray-400">
+              <p>• Sesión válida por 7 días</p>
+              <p>
+                • Usa el botón &ldquo;Salir&rdquo; en la navbar para cerrar
+                sesión
+              </p>
+              <p>• La autenticación se solicita automáticamente al acceder</p>
+            </div>
+          </div>
+
+          <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+            <h4 className="font-medium text-gray-900 dark:text-white mb-2">
+              ⚠️ Autenticación Temporal
+            </h4>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Esta es una solución temporal. En el futuro se implementará un
+              sistema de autenticación más robusto con usuarios individuales.
+            </p>
+          </div>
+        </div>
+      </Card>
+
       {/* App Information */}
       <Card>
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">

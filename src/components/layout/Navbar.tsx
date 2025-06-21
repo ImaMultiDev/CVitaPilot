@@ -5,7 +5,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/ui";
+import { Button } from "@/components/ui/Button";
 import Image from "next/image";
+import { useState } from "react";
 
 const navigation = [
   { name: "Editor", href: "/", icon: "✏️" },
@@ -17,6 +19,21 @@ const navigation = [
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    if (confirm("¿Estás seguro de que quieres cerrar sesión?")) {
+      setIsLoggingOut(true);
+      try {
+        await fetch("/api/logout", { method: "POST" });
+        // Forzar recarga para que el middleware solicite autenticación nuevamente
+        window.location.href = "/";
+      } catch (error) {
+        console.error("Error al cerrar sesión:", error);
+        setIsLoggingOut(false);
+      }
+    }
+  };
 
   return (
     <nav className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40 transition-colors duration-200">
@@ -51,6 +68,21 @@ export const Navbar: React.FC = () => {
                 </Link>
               );
             })}
+
+            {/* Separador */}
+            <div className="h-6 w-px bg-gray-300 dark:bg-gray-600 mx-2"></div>
+
+            {/* Botón de logout */}
+            <Button
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              variant="secondary"
+              size="sm"
+              className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+            >
+              {isLoggingOut ? "..." : "🚪 Salir"}
+            </Button>
+
             <div className="ml-3">
               <ThemeToggle />
             </div>
