@@ -3,6 +3,8 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { CVProvider, ThemeProvider } from "@/contexts";
+import { SessionProvider } from "@/components/providers/SessionProvider";
+import { auth } from "@/auth";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -108,11 +110,14 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Obtener sesión del servidor para hidratación inicial
+  const session = await auth();
+
   return (
     <html lang="es">
       <head>
@@ -124,9 +129,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider>
-          <CVProvider>{children}</CVProvider>
-        </ThemeProvider>
+        <SessionProvider session={session}>
+          <ThemeProvider>
+            <CVProvider>{children}</CVProvider>
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );

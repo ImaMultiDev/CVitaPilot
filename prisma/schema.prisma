@@ -18,8 +18,11 @@ datasource db {
 model CV {
   id              String   @id @default(cuid())
   name            String
-  userId          String   // Para futuro sistema de usuarios
+  userId          String   // Conectado con usuario autenticado
   isActive        Boolean  @default(true) // CV actual en el editor
+  
+  // Relación con usuario
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   // Información personal
   personalName     String
@@ -240,13 +243,64 @@ model CVDelivery {
   @@map("cv_deliveries")
 }
 
-// Usuario (para futuro)
+// Usuario - Compatible con Auth.js
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?   // Para Credentials Provider
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relaciones Auth.js
+  accounts Account[]
+  sessions Session[]
+  
+  // Relaciones de la aplicación - Conectar CVs con usuario
+  cvs       CV[]
   
   @@map("users")
+}
+
+// Modelos requeridos por Auth.js
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  
+  @@unique([identifier, token])
+  @@map("verification_tokens")
 }

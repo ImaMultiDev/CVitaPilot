@@ -8,6 +8,7 @@ import { ThemeToggle } from "@/components/ui";
 import { Button } from "@/components/ui/Button";
 import Image from "next/image";
 import { useState } from "react";
+import { useSession, signOut } from "next-auth/react";
 
 const navigation = [
   { name: "Editor", href: "/", icon: "✏️" },
@@ -20,33 +21,72 @@ const navigation = [
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const { data: session, status } = useSession();
 
   const handleLogout = async () => {
     if (confirm("¿Estás seguro de que quieres cerrar sesión?")) {
       setIsLoggingOut(true);
       try {
-        await fetch("/api/logout", { method: "POST" });
-        // Forzar recarga para que el middleware solicite autenticación nuevamente
-        window.location.href = "/";
+        await signOut({
+          callbackUrl: "/auth/login",
+          redirect: true,
+        });
       } catch (error) {
         console.error("Error al cerrar sesión:", error);
+        // Fallback - redirigir manualmente
+        window.location.href = "/auth/login";
+      } finally {
         setIsLoggingOut(false);
       }
     }
   };
 
+  // Si la sesión está cargando, mostrar skeleton
+  if (status === "loading") {
+    return (
+      <nav className="bg-white dark:bg-gray-900 shadow-md border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40 transition-colors duration-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex items-center">
+              <div className="border-3 border-gray-200 rounded-xl p-1 animate-pulse">
+                <div className="w-24 h-8 bg-gray-200 dark:bg-gray-700 rounded"></div>
+              </div>
+            </div>
+            <div className="flex items-center space-x-1">
+              <div className="flex space-x-1">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div
+                    key={i}
+                    className="w-20 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"
+                  ></div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    );
+  }
+
+  // Si no hay sesión, no mostrar navbar (usuario está en login)
+  if (!session) {
+    return null;
+  }
+
   return (
-    <nav className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40 transition-colors duration-200">
+    <nav className="bg-white dark:bg-gray-900 shadow-md border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <Image
-                src="/logo_192x64.png"
-                alt="CVitaPilot"
-                width={96}
-                height={32}
-              />
+              <div className="border-3 border-gray-900 rounded-xl p-1 dark:bg-blue-200">
+                <Image
+                  src="/logo_192x64.png"
+                  alt="CVitaPilot"
+                  width={96}
+                  height={32}
+                />
+              </div>
             </Link>
           </div>
 
@@ -71,6 +111,20 @@ export const Navbar: React.FC = () => {
 
             {/* Separador */}
             <div className="h-6 w-px bg-gray-300 dark:bg-gray-600 mx-2"></div>
+
+            {/* Información del usuario */}
+            <div className="flex items-center space-x-2 px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
+              <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
+                <span className="text-xs font-medium text-white">
+                  {(session.user?.name || session.user?.email || "U")
+                    ?.charAt(0)
+                    .toUpperCase()}
+                </span>
+              </div>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300 hidden sm:block">
+                {session.user?.name || session.user?.email || "Usuario"}
+              </span>
+            </div>
 
             {/* Botón de logout */}
             <Button

@@ -63,6 +63,31 @@ export const SettingsPage: React.FC = () => {
     window.location.reload();
   };
 
+  const handleAlternativeLogout = () => {
+    if (
+      confirm(
+        "¿Cerrar sesión con método alternativo? (Más efectivo para HTTP Basic)"
+      )
+    ) {
+      // Método alternativo: intentar autenticación con credenciales inválidas
+      const logoutLink = `https://logout:logout@${window.location.host}/`;
+
+      alert(
+        "Se abrirá una nueva pestaña. Cierra esta pestaña después de que aparezca el diálogo de autenticación."
+      );
+
+      // Abrir nueva pestaña con credenciales inválidas para forzar logout
+      window.open(logoutLink, "_blank");
+
+      // Limpiar cookies y recargar después de un momento
+      setTimeout(() => {
+        document.cookie =
+          "cvitapilot-auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        window.location.href = "/";
+      }, 2000);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
       <div className="text-center mb-8">
@@ -155,7 +180,7 @@ export const SettingsPage: React.FC = () => {
               La aplicación está protegida con autenticación básica HTTP. Solo
               usuarios autorizados pueden acceder.
             </p>
-            <div className="text-xs text-gray-500 dark:text-gray-400">
+            <div className="text-xs text-gray-500 dark:text-gray-400 mb-3">
               <p>• Sesión válida por 7 días</p>
               <p>
                 • Usa el botón &ldquo;Salir&rdquo; en la navbar para cerrar
@@ -163,15 +188,41 @@ export const SettingsPage: React.FC = () => {
               </p>
               <p>• La autenticación se solicita automáticamente al acceder</p>
             </div>
+            <div className="flex space-x-2">
+              <Button
+                onClick={handleAlternativeLogout}
+                size="sm"
+                variant="secondary"
+                className="text-red-600 hover:text-red-700"
+              >
+                🔓 Logout Alternativo
+              </Button>
+            </div>
           </div>
 
           <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
             <h4 className="font-medium text-gray-900 dark:text-white mb-2">
-              ⚠️ Autenticación Temporal
+              ⚠️ Limitación del Logout
+            </h4>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+              La autenticación HTTP Basic tiene una limitación: el navegador
+              cachea las credenciales y no las &ldquo;olvida&rdquo; fácilmente.
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              <strong>Workarounds:</strong> Usar &ldquo;Logout
+              Alternativo&rdquo;, cerrar todas las pestañas del navegador, o
+              usar modo incógnito para sesiones temporales.
+            </p>
+          </div>
+
+          <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            <h4 className="font-medium text-gray-900 dark:text-white mb-2">
+              🔮 Futuro: Autenticación Completa
             </h4>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Esta es una solución temporal. En el futuro se implementará un
-              sistema de autenticación más robusto con usuarios individuales.
+              sistema de autenticación más robusto con usuarios individuales y
+              logout real.
             </p>
           </div>
         </div>

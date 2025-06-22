@@ -3,6 +3,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { getCurrentUser } from "@/auth";
 import type {
   CVData,
   PersonalInfo,
@@ -19,8 +20,18 @@ import type {
   CVDelivery,
 } from "@/types/cv";
 
-// Constante para el usuario actual (temporal)
-const CURRENT_USER_ID = "default-user";
+// Constante temporal para el usuario administrador por defecto
+const CURRENT_USER_ID = "cmc6y4ju80000dma4gwr4uapf"; // ID del usuario administrador creado
+
+// Función helper para obtener el usuario actual (implementaremos gradualmente)
+async function _getCurrentUserId(): Promise<string> {
+  const user = await getCurrentUser();
+  if (!user) {
+    // Fallback al usuario administrador para mantener compatibilidad
+    return CURRENT_USER_ID;
+  }
+  return user.id;
+}
 
 // ===============================
 // CV PRINCIPAL

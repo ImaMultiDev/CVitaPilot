@@ -1,23 +1,25 @@
+import { signOut } from "@/auth";
 import { NextResponse } from "next/server";
 
 export async function POST() {
-  const response = NextResponse.json({
-    success: true,
-    message: "Sesión cerrada",
-  });
+  try {
+    await signOut({
+      redirect: false,
+    });
 
-  // Eliminar la cookie de autenticación
-  response.cookies.set("cvitapilot-auth", "", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 0, // Expira inmediatamente
-    path: "/", // Mismo path que cuando se creó
-  });
-
-  return response;
+    return NextResponse.json(
+      { message: "Sesión cerrada exitosamente" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error al cerrar sesión:", error);
+    return NextResponse.json(
+      { error: "Error al cerrar sesión" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function GET() {
-  return POST(); // Permitir tanto GET como POST
+  return POST(); // Permitir tanto GET como POST para compatibilidad
 }

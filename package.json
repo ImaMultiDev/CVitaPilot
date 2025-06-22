@@ -14,27 +14,34 @@
     "db:studio": "prisma studio",
     "db:reset": "prisma db push --force-reset",
     "prisma:deploy": "prisma migrate deploy",
-    "vercel-build": "prisma generate && prisma db push && next build"
+    "vercel-build": "prisma generate && prisma db push && next build",
+    "auth:create-admin": "node scripts/create-admin.js",
+    "auth:migrate-cvs": "node scripts/migrate-cvs.js",
+    "auth:setup": "prisma db push && node scripts/create-admin.js"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.9.1",
+    "@eslint/eslintrc": "^3",
     "@prisma/client": "^6.10.1",
     "@react-pdf/renderer": "^4.3.0",
     "@tailwindcss/postcss": "^4.1.10",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "bcryptjs": "^3.0.2",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.4",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.1",
     "next": "15.3.4",
+    "next-auth": "^5.0.0-beta.28",
     "prisma": "^6.10.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-to-print": "^3.1.0",
     "tailwindcss": "^4",
-    "@eslint/eslintrc": "^3",
-    "eslint": "^9",
-    "eslint-config-next": "15.3.4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "typescript": "^5"
-  },
-  "devDependencies": {}
+    "typescript": "^5",
+    "zod": "^3.25.67"
+  }
 }

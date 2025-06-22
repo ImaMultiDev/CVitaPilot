@@ -45,5 +45,3 @@ next-env.d.ts
 # docs
 PRE_DEPLOYMENT_CHECKLIST*
 DEPLOYMENT*
-# Variables de entorno Railway (contiene credenciales reales)
-.env.railway
