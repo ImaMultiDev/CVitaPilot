@@ -21,7 +21,7 @@ import type {
 } from "@/types/cv";
 
 // Constante temporal para el usuario administrador por defecto
-const CURRENT_USER_ID = "cmc6y4ju80000dma4gwr4uapf"; // ID del usuario administrador creado
+const CURRENT_USER_ID = "cmc747azb0000dmawfg56ub6j"; // ID del usuario administrador actual
 
 // Función helper para obtener el usuario actual (implementaremos gradualmente)
 async function _getCurrentUserId(): Promise<string> {

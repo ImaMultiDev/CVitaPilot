@@ -17,6 +17,7 @@
     "vercel-build": "prisma generate && prisma db push && next build",
     "auth:create-admin": "node scripts/create-admin.js",
     "auth:migrate-cvs": "node scripts/migrate-cvs.js",
+    "auth:seed-cv": "node scripts/seed-default-cv.js",
     "auth:setup": "prisma db push && node scripts/create-admin.js"
   },
   "dependencies": {
