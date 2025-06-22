@@ -18,8 +18,8 @@ datasource db {
 model CV {
   id              String   @id @default(cuid())
   name            String
-  userId          String   // Conectado con usuario autenticado
-  isActive        Boolean  @default(true) // CV actual en el editor
+  userId          String   
+  isActive        Boolean  @default(true) 
   
   // Relación con usuario
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
