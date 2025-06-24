@@ -50,7 +50,7 @@ export default function LoginPage() {
             <div className="flex justify-center mb-4">
               <div className="border-3 border-gray-900 dark:border-gray-100 rounded-xl p-2 dark:bg-blue-200">
                 <Image
-                  src="/logo_192x64.png"
+                  src="/logo_192X64.png"
                   alt="CVitaPilot"
                   width={120}
                   height={40}

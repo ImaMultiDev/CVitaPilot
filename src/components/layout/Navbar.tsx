@@ -81,7 +81,7 @@ export const Navbar: React.FC = () => {
             <Link href="/" className="flex items-center space-x-2">
               <div className="border-3 border-gray-900 rounded-xl p-1 dark:bg-blue-200">
                 <Image
-                  src="/logo_192x64.png"
+                  src="/logo_192X64.png"
                   alt="CVitaPilot"
                   width={96}
                   height={32}
