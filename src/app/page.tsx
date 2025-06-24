@@ -8,6 +8,9 @@ import {
 import { CVEditorPrisma } from "@/views/CVEditor/CVEditorPrisma";
 import { MainLayout } from "@/components/layout/MainLayout";
 
+// Forzar renderizado dinámico porque usa autenticación
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   // Intentar obtener el CV actual
   let currentCV = await getCurrentCV();

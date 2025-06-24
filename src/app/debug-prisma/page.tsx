@@ -6,6 +6,9 @@ import {
 import { MainLayout } from "@/components/layout/MainLayout";
 import { DebugPrismaClient } from "@/components/debug/DebugPrismaClient";
 
+// Forzar renderizado dinámico porque usa autenticación
+export const dynamic = "force-dynamic";
+
 export default async function DebugPrismaPage() {
   const currentCV = await getCurrentCV();
   const savedCVs = await getSavedCVs();
