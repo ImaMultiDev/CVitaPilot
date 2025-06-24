@@ -9,6 +9,7 @@ import type {
   PersonalInfo,
   Language,
   Skill,
+  SkillCategory,
   Competence,
   Interest,
   SoftSkill,
@@ -18,17 +19,14 @@ import type {
   Achievement,
   Reference,
   CVDelivery,
+  SocialNetwork,
 } from "@/types/cv";
 
-// Constante temporal para el usuario administrador por defecto
-const CURRENT_USER_ID = "cmc747azb0000dmawfg56ub6j"; // ID del usuario administrador actual
-
-// Función helper para obtener el usuario actual (implementaremos gradualmente)
-async function _getCurrentUserId(): Promise<string> {
+// Función helper para obtener el usuario actual - CRÍTICO PARA MULTIUSUARIO
+async function getCurrentUserId(): Promise<string> {
   const user = await getCurrentUser();
-  if (!user) {
-    // Fallback al usuario administrador para mantener compatibilidad
-    return CURRENT_USER_ID;
+  if (!user?.id) {
+    throw new Error("Usuario no autenticado. Debes iniciar sesión.");
   }
   return user.id;
 }
@@ -39,14 +37,24 @@ async function _getCurrentUserId(): Promise<string> {
 
 export async function getCurrentCV(): Promise<CVData | null> {
   try {
+    const userId = await getCurrentUserId();
     const cv = await prisma.cV.findFirst({
       where: {
-        userId: CURRENT_USER_ID,
+        userId: userId,
         isActive: true,
       },
       include: {
         languages: true,
-        skills: true,
+        skills: {
+          include: {
+            category: true,
+          },
+        },
+        skillCategories: {
+          include: {
+            skills: true,
+          },
+        },
         competences: true,
         interests: true,
         softSkills: true,
@@ -55,6 +63,7 @@ export async function getCurrentCV(): Promise<CVData | null> {
         certifications: true,
         achievements: true,
         references: true,
+        socialNetworks: true,
       },
     });
 
@@ -68,9 +77,13 @@ export async function getCurrentCV(): Promise<CVData | null> {
         phone: cv.phone,
         email: cv.email,
         linkedin: cv.linkedin || "",
-        github: cv.github || "",
         website: cv.website || "",
         location: cv.location,
+        socialNetworks: cv.socialNetworks.map((sn: any) => ({
+          id: sn.id,
+          name: sn.name,
+          url: sn.url,
+        })),
       },
       aboutMe: cv.aboutMe || "",
       languages: cv.languages.map((lang) => ({
@@ -78,18 +91,16 @@ export async function getCurrentCV(): Promise<CVData | null> {
         name: lang.name,
         level: lang.level as "A1" | "A2" | "B1" | "B2" | "C1" | "C2" | "Nativo",
       })),
-      skills: cv.skills.map((skill) => ({
+      skills: cv.skills.map((skill: any) => ({
         id: skill.id,
         name: skill.name,
-        category: skill.category as
-          | "language"
-          | "framework"
-          | "tool"
-          | "database"
-          | "orm"
-          | "ai"
-          | "library",
+        categoryId: skill.categoryId,
+        categoryName: skill.category.name,
         selected: skill.selected,
+      })),
+      skillCategories: cv.skillCategories.map((category: any) => ({
+        id: category.id,
+        name: category.name,
       })),
       competences: cv.competences.map((comp: any) => ({
         id: comp.id,
@@ -128,8 +139,6 @@ export async function getCurrentCV(): Promise<CVData | null> {
         location: edu.location,
         startYear: edu.startYear,
         endYear: edu.endYear,
-        type: edu.type as "formal" | "additional",
-        duration: edu.duration || undefined,
         selected: edu.selected,
       })),
       certifications:
@@ -179,9 +188,11 @@ export async function getCurrentCV(): Promise<CVData | null> {
 
 export async function initializeDefaultCV(): Promise<string> {
   try {
+    const userId = await getCurrentUserId();
+
     // Verificar si ya existe CUALQUIER CV para este usuario
     const existingCV = await prisma.cV.findFirst({
-      where: { userId: CURRENT_USER_ID },
+      where: { userId: userId },
       orderBy: { createdAt: "desc" },
     });
 
@@ -189,7 +200,7 @@ export async function initializeDefaultCV(): Promise<string> {
       // Si existe un CV pero no está activo, activarlo
       if (!existingCV.isActive) {
         await prisma.cV.updateMany({
-          where: { userId: CURRENT_USER_ID },
+          where: { userId: userId },
           data: { isActive: false },
         });
 
@@ -204,14 +215,13 @@ export async function initializeDefaultCV(): Promise<string> {
     // Datos iniciales (los que están en el context)
     const defaultData = {
       name: "CV Principal",
-      userId: CURRENT_USER_ID,
+      userId: userId,
       isActive: true,
       personalName: "Imanol Mugueta Unsain",
       position: "Multiplatform Developer",
       phone: "+34 689 18 17 20",
       email: "contact@imamultidev.dev",
       linkedin: "https://www.linkedin.com/in/imanol-mugueta-unsain/",
-      github: "https://github.com/kodebidean",
       website: "https://imamultidev.dev",
       location: "3130 Carcastillo (Navarra)",
       aboutMe:
@@ -232,52 +242,141 @@ export async function initializeDefaultCV(): Promise<string> {
       ],
     });
 
-    // Añadir skills por defecto
+    // Añadir redes sociales por defecto
+    await prisma.socialNetwork.createMany({
+      data: [
+        { cvId: cv.id, name: "GitHub", url: "https://github.com/kodebidean" },
+        { cvId: cv.id, name: "Dev.to", url: "https://dev.to/imamultidev" },
+      ],
+    });
+
+    // Crear categorías de habilidades por defecto
+    const languageCategory = await prisma.skillCategory.create({
+      data: { cvId: cv.id, name: "Lenguajes de Programación" },
+    });
+
+    const frameworkCategory = await prisma.skillCategory.create({
+      data: { cvId: cv.id, name: "Frameworks" },
+    });
+
+    const databaseCategory = await prisma.skillCategory.create({
+      data: { cvId: cv.id, name: "Bases de Datos" },
+    });
+
+    const toolCategory = await prisma.skillCategory.create({
+      data: { cvId: cv.id, name: "Herramientas" },
+    });
+
+    const libraryCategory = await prisma.skillCategory.create({
+      data: { cvId: cv.id, name: "Librerías" },
+    });
+
+    // Añadir skills por defecto con categorías
     await prisma.skill.createMany({
       data: [
         // Programming Languages
         {
           cvId: cv.id,
           name: "JavaScript",
-          category: "language",
+          categoryId: languageCategory.id,
           selected: true,
         },
-        { cvId: cv.id, name: "Java", category: "language", selected: true },
-        { cvId: cv.id, name: "Kotlin", category: "language", selected: true },
-        { cvId: cv.id, name: "Swift", category: "language", selected: true },
-        { cvId: cv.id, name: "Python", category: "language", selected: true },
-        { cvId: cv.id, name: "C++", category: "language", selected: false },
-        { cvId: cv.id, name: "C#", category: "language", selected: false },
+        {
+          cvId: cv.id,
+          name: "Java",
+          categoryId: languageCategory.id,
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "Kotlin",
+          categoryId: languageCategory.id,
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "Swift",
+          categoryId: languageCategory.id,
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "Python",
+          categoryId: languageCategory.id,
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "C++",
+          categoryId: languageCategory.id,
+          selected: false,
+        },
+        {
+          cvId: cv.id,
+          name: "C#",
+          categoryId: languageCategory.id,
+          selected: false,
+        },
 
         // Frameworks
-        { cvId: cv.id, name: "React", category: "framework", selected: true },
-        { cvId: cv.id, name: "Next.js", category: "framework", selected: true },
+        {
+          cvId: cv.id,
+          name: "React",
+          categoryId: frameworkCategory.id,
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "Next.js",
+          categoryId: frameworkCategory.id,
+          selected: true,
+        },
         {
           cvId: cv.id,
           name: "Tailwind",
-          category: "framework",
+          categoryId: frameworkCategory.id,
           selected: true,
         },
-        { cvId: cv.id, name: "Angular", category: "framework", selected: true },
-        { cvId: cv.id, name: "Astro", category: "framework", selected: true },
+        {
+          cvId: cv.id,
+          name: "Angular",
+          categoryId: frameworkCategory.id,
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "Astro",
+          categoryId: frameworkCategory.id,
+          selected: true,
+        },
         {
           cvId: cv.id,
           name: "Spring Boot",
-          category: "framework",
+          categoryId: frameworkCategory.id,
           selected: true,
         },
-        { cvId: cv.id, name: "Flutter", category: "framework", selected: true },
+        {
+          cvId: cv.id,
+          name: "Flutter",
+          categoryId: frameworkCategory.id,
+          selected: true,
+        },
         {
           cvId: cv.id,
           name: "React Native",
-          category: "framework",
+          categoryId: frameworkCategory.id,
           selected: true,
         },
-        { cvId: cv.id, name: "Vue.js", category: "framework", selected: false },
+        {
+          cvId: cv.id,
+          name: "Vue.js",
+          categoryId: frameworkCategory.id,
+          selected: false,
+        },
         {
           cvId: cv.id,
           name: "Jetpack Compose",
-          category: "framework",
+          categoryId: frameworkCategory.id,
           selected: false,
         },
 
@@ -285,37 +384,107 @@ export async function initializeDefaultCV(): Promise<string> {
         {
           cvId: cv.id,
           name: "PostgreSQL",
-          category: "database",
+          categoryId: databaseCategory.id,
           selected: true,
         },
-        { cvId: cv.id, name: "MySQL", category: "database", selected: true },
-        { cvId: cv.id, name: "MongoDB", category: "database", selected: true },
-        { cvId: cv.id, name: "Firebase", category: "database", selected: true },
-        { cvId: cv.id, name: "SQLite", category: "database", selected: false },
+        {
+          cvId: cv.id,
+          name: "MySQL",
+          categoryId: databaseCategory.id,
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "MongoDB",
+          categoryId: databaseCategory.id,
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "Firebase",
+          categoryId: databaseCategory.id,
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "SQLite",
+          categoryId: databaseCategory.id,
+          selected: false,
+        },
         {
           cvId: cv.id,
           name: "SQL Server",
-          category: "database",
+          categoryId: databaseCategory.id,
           selected: false,
         },
 
         // Tools
-        { cvId: cv.id, name: "Git", category: "tool", selected: true },
-        { cvId: cv.id, name: "Docker", category: "tool", selected: false },
-        { cvId: cv.id, name: "Node.js", category: "tool", selected: true },
-        { cvId: cv.id, name: "Postman", category: "tool", selected: false },
-        { cvId: cv.id, name: "Jira", category: "tool", selected: true },
+        {
+          cvId: cv.id,
+          name: "Git",
+          categoryId: toolCategory.id,
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "Docker",
+          categoryId: toolCategory.id,
+          selected: false,
+        },
+        {
+          cvId: cv.id,
+          name: "Node.js",
+          categoryId: toolCategory.id,
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "Postman",
+          categoryId: toolCategory.id,
+          selected: false,
+        },
+        {
+          cvId: cv.id,
+          name: "Jira",
+          categoryId: toolCategory.id,
+          selected: true,
+        },
 
         // Libraries
-        { cvId: cv.id, name: "Prisma", category: "library", selected: true },
-        { cvId: cv.id, name: "NextAuth", category: "library", selected: true },
-        { cvId: cv.id, name: "Formik", category: "library", selected: true },
-        { cvId: cv.id, name: "Zod", category: "library", selected: true },
-        { cvId: cv.id, name: "GSAP", category: "library", selected: false },
+        {
+          cvId: cv.id,
+          name: "Prisma",
+          categoryId: libraryCategory.id,
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "NextAuth",
+          categoryId: libraryCategory.id,
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "Formik",
+          categoryId: libraryCategory.id,
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "Zod",
+          categoryId: libraryCategory.id,
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "GSAP",
+          categoryId: libraryCategory.id,
+          selected: false,
+        },
         {
           cvId: cv.id,
           name: "Bootstrap",
-          category: "library",
+          categoryId: libraryCategory.id,
           selected: false,
         },
       ],
@@ -440,59 +609,44 @@ export async function initializeDefaultCV(): Promise<string> {
       ],
     });
 
-    // Añadir formación por defecto
+    // Añadir formación académica oficial por defecto
     await prisma.education.createMany({
       data: [
         {
           cvId: cv.id,
-          title: "FPS Desarrollo de Aplicaciones Multiplataforma",
+          title:
+            "Técnico Superior en Desarrollo de Aplicaciones Multiplataforma",
           institution: "U-TAD",
-          location: "Madrid (Comunidad de Madrid)",
+          location: "Madrid, España",
           startYear: "2023",
           endYear: "2025",
-          type: "formal",
           selected: true,
         },
         {
           cvId: cv.id,
-          title: "FPI Programación CNC - Mecanizado por arranque de viruta",
+          title: "Técnico en Programación CNC",
           institution: "CIP ETI",
-          location: "Tudela (Comunidad foral de Navarra)",
+          location: "Tudela, Navarra",
           startYear: "2017",
           endYear: "2018",
-          type: "formal",
           selected: false,
         },
         {
           cvId: cv.id,
-          title: "FPS Gestión Comercial y Marketing",
+          title: "Técnico Superior en Gestión Comercial y Marketing",
           institution: "CI Maria Ana Sanz",
-          location: "Pamplona (Comunidad foral de Navarra)",
+          location: "Pamplona, Navarra",
           startYear: "2014",
           endYear: "2016",
-          type: "formal",
           selected: false,
         },
         {
           cvId: cv.id,
-          title: "Curso de Desarrollo Web Full Stack",
-          institution: "Codecademy",
-          location: "Online",
-          startYear: "2022",
-          endYear: "2023",
-          type: "additional",
-          duration: "400 horas",
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          title: "Certificación AWS Cloud Practitioner",
-          institution: "Amazon Web Services",
-          location: "Online",
-          startYear: "2024",
-          endYear: "2024",
-          type: "additional",
-          duration: "120 horas",
+          title: "Bachillerato Científico-Tecnológico",
+          institution: "IES Tierra Estella",
+          location: "Estella, Navarra",
+          startYear: "2012",
+          endYear: "2014",
           selected: false,
         },
       ],
@@ -710,8 +864,9 @@ export async function initializeDefaultCV(): Promise<string> {
 
 export async function updatePersonalInfo(info: Partial<PersonalInfo>) {
   try {
+    const userId = await getCurrentUserId();
     const currentCV = await prisma.cV.findFirst({
-      where: { userId: CURRENT_USER_ID, isActive: true },
+      where: { userId: userId, isActive: true },
     });
 
     if (!currentCV) {
@@ -727,7 +882,6 @@ export async function updatePersonalInfo(info: Partial<PersonalInfo>) {
         email: info.email || currentCV.email,
         linkedin:
           info.linkedin !== undefined ? info.linkedin : currentCV.linkedin,
-        github: info.github !== undefined ? info.github : currentCV.github,
         website: info.website !== undefined ? info.website : currentCV.website,
         location: info.location || currentCV.location,
       },
@@ -743,8 +897,9 @@ export async function updatePersonalInfo(info: Partial<PersonalInfo>) {
 
 export async function updateAboutMe(aboutMe: string) {
   try {
+    const userId = await getCurrentUserId();
     const currentCV = await prisma.cV.findFirst({
-      where: { userId: CURRENT_USER_ID, isActive: true },
+      where: { userId: userId, isActive: true },
     });
 
     if (!currentCV) {
@@ -770,8 +925,9 @@ export async function updateAboutMe(aboutMe: string) {
 
 export async function addLanguage(language: Omit<Language, "id">) {
   try {
+    const userId = await getCurrentUserId();
     const currentCV = await prisma.cV.findFirst({
-      where: { userId: CURRENT_USER_ID, isActive: true },
+      where: { userId: userId, isActive: true },
     });
 
     if (!currentCV) {
@@ -831,8 +987,9 @@ export async function deleteLanguage(id: string) {
 
 export async function addSkill(skill: Omit<Skill, "id">) {
   try {
+    const userId = await getCurrentUserId();
     const currentCV = await prisma.cV.findFirst({
-      where: { userId: CURRENT_USER_ID, isActive: true },
+      where: { userId: userId, isActive: true },
     });
 
     if (!currentCV) {
@@ -841,7 +998,9 @@ export async function addSkill(skill: Omit<Skill, "id">) {
 
     await prisma.skill.create({
       data: {
-        ...skill,
+        name: skill.name,
+        categoryId: skill.categoryId,
+        selected: skill.selected,
         cvId: currentCV.id,
       },
     });
@@ -860,7 +1019,7 @@ export async function updateSkill(skill: Skill) {
       where: { id: skill.id },
       data: {
         name: skill.name,
-        category: skill.category,
+        categoryId: skill.categoryId,
         selected: skill.selected,
       },
     });
@@ -921,8 +1080,9 @@ export async function deleteSkill(id: string) {
 
 export async function addCompetence(competence: Omit<Competence, "id">) {
   try {
+    const userId = await getCurrentUserId();
     const currentCV = await prisma.cV.findFirst({
-      where: { userId: CURRENT_USER_ID, isActive: true },
+      where: { userId: userId, isActive: true },
     });
 
     if (!currentCV) {
@@ -1010,8 +1170,9 @@ export async function deleteCompetence(id: string) {
 
 export async function addInterest(interest: Omit<Interest, "id">) {
   try {
+    const userId = await getCurrentUserId();
     const currentCV = await prisma.cV.findFirst({
-      where: { userId: CURRENT_USER_ID, isActive: true },
+      where: { userId: userId, isActive: true },
     });
 
     if (!currentCV) {
@@ -1096,8 +1257,9 @@ export async function deleteInterest(id: string) {
 
 export async function addSoftSkill(softSkill: Omit<SoftSkill, "id">) {
   try {
+    const userId = await getCurrentUserId();
     const currentCV = await prisma.cV.findFirst({
-      where: { userId: CURRENT_USER_ID, isActive: true },
+      where: { userId: userId, isActive: true },
     });
 
     if (!currentCV) {
@@ -1182,8 +1344,9 @@ export async function deleteSoftSkill(id: string) {
 
 export async function addExperience(experience: Omit<Experience, "id">) {
   try {
+    const userId = await getCurrentUserId();
     const currentCV = await prisma.cV.findFirst({
-      where: { userId: CURRENT_USER_ID, isActive: true },
+      where: { userId: userId, isActive: true },
     });
 
     if (!currentCV) {
@@ -1277,8 +1440,9 @@ export async function deleteExperience(id: string) {
 
 export async function addEducation(education: Omit<Education, "id">) {
   try {
+    const userId = await getCurrentUserId();
     const currentCV = await prisma.cV.findFirst({
-      where: { userId: CURRENT_USER_ID, isActive: true },
+      where: { userId: userId, isActive: true },
     });
 
     if (!currentCV) {
@@ -1310,8 +1474,6 @@ export async function updateEducation(education: Education) {
         location: education.location,
         startYear: education.startYear,
         endYear: education.endYear,
-        type: education.type,
-        duration: education.duration,
         selected: education.selected,
       },
     });
@@ -1371,8 +1533,9 @@ export async function addCertification(
   certification: Omit<Certification, "id">
 ) {
   try {
+    const userId = await getCurrentUserId();
     const currentCV = await prisma.cV.findFirst({
-      where: { userId: CURRENT_USER_ID, isActive: true },
+      where: { userId: userId, isActive: true },
     });
 
     if (!currentCV) {
@@ -1462,8 +1625,9 @@ export async function deleteCertification(id: string) {
 
 export async function addAchievement(achievement: Omit<Achievement, "id">) {
   try {
+    const userId = await getCurrentUserId();
     const currentCV = await prisma.cV.findFirst({
-      where: { userId: CURRENT_USER_ID, isActive: true },
+      where: { userId: userId, isActive: true },
     });
 
     if (!currentCV) {
@@ -1555,8 +1719,9 @@ export async function deleteAchievement(id: string) {
 
 export async function addReference(reference: Omit<Reference, "id">) {
   try {
+    const userId = await getCurrentUserId();
     const currentCV = await prisma.cV.findFirst({
-      where: { userId: CURRENT_USER_ID, isActive: true },
+      where: { userId: userId, isActive: true },
     });
 
     if (!currentCV) {
@@ -1647,9 +1812,10 @@ export async function deleteReference(id: string) {
 
 export async function getSavedCVs() {
   try {
+    const userId = await getCurrentUserId();
     const cvs = await prisma.cV.findMany({
       where: {
-        userId: CURRENT_USER_ID,
+        userId: userId,
       },
       include: {
         deliveries: true,
@@ -1681,17 +1847,20 @@ export async function getSavedCVs() {
 
 export async function saveCurrentCVAs(name: string) {
   try {
+    const userId = await getCurrentUserId();
     const currentCV = await prisma.cV.findFirst({
-      where: { userId: CURRENT_USER_ID, isActive: true },
+      where: { userId: userId, isActive: true },
       include: {
         languages: true,
         skills: true,
+        skillCategories: true,
         competences: true,
         interests: true,
         experiences: true,
         education: true,
         certifications: true,
         achievements: true,
+        socialNetworks: true,
       },
     });
 
@@ -1703,14 +1872,13 @@ export async function saveCurrentCVAs(name: string) {
     const newCV = await prisma.cV.create({
       data: {
         name,
-        userId: CURRENT_USER_ID,
+        userId: userId,
         isActive: false,
         personalName: currentCV.personalName,
         position: currentCV.position,
         phone: currentCV.phone,
         email: currentCV.email,
         linkedin: currentCV.linkedin,
-        github: currentCV.github,
         website: currentCV.website,
         location: currentCV.location,
         aboutMe: currentCV.aboutMe,
@@ -1730,12 +1898,27 @@ export async function saveCurrentCVAs(name: string) {
       });
     }
 
+    // Copiar categorías de habilidades primero
+    const categoryMapping: Record<string, string> = {};
+    if (currentCV.skillCategories.length > 0) {
+      for (const category of currentCV.skillCategories) {
+        const newCategory = await prisma.skillCategory.create({
+          data: {
+            cvId: newCV.id,
+            name: category.name,
+          },
+        });
+        categoryMapping[category.id] = newCategory.id;
+      }
+    }
+
+    // Copiar skills con las nuevas categorías
     if (currentCV.skills.length > 0) {
       await prisma.skill.createMany({
         data: currentCV.skills.map((skill: any) => ({
           cvId: newCV.id,
           name: skill.name,
-          category: skill.category,
+          categoryId: categoryMapping[skill.categoryId],
           selected: skill.selected,
         })),
       });
@@ -1789,8 +1972,6 @@ export async function saveCurrentCVAs(name: string) {
           location: edu.location,
           startYear: edu.startYear,
           endYear: edu.endYear,
-          type: edu.type,
-          duration: edu.duration,
           selected: edu.selected,
         })),
       });
@@ -1828,6 +2009,17 @@ export async function saveCurrentCVAs(name: string) {
       });
     }
 
+    // Copiar redes sociales
+    if (currentCV.socialNetworks.length > 0) {
+      await prisma.socialNetwork.createMany({
+        data: currentCV.socialNetworks.map((sn: any) => ({
+          cvId: newCV.id,
+          name: sn.name,
+          url: sn.url,
+        })),
+      });
+    }
+
     revalidatePath("/saved-cvs");
     return { success: true, cvId: newCV.id };
   } catch (error) {
@@ -1838,9 +2030,10 @@ export async function saveCurrentCVAs(name: string) {
 
 export async function loadCV(cvId: string) {
   try {
+    const userId = await getCurrentUserId();
     // Desactivar el CV actual
     await prisma.cV.updateMany({
-      where: { userId: CURRENT_USER_ID, isActive: true },
+      where: { userId: userId, isActive: true },
       data: { isActive: false },
     });
 
@@ -1914,8 +2107,9 @@ export async function addDelivery(
 
 export async function getSkillsByCategory(category: string) {
   try {
+    const userId = await getCurrentUserId();
     const currentCV = await prisma.cV.findFirst({
-      where: { userId: CURRENT_USER_ID, isActive: true },
+      where: { userId: userId, isActive: true },
       include: { skills: true },
     });
 
@@ -1930,8 +2124,9 @@ export async function getSkillsByCategory(category: string) {
 
 export async function getSelectedSkills() {
   try {
+    const userId = await getCurrentUserId();
     const currentCV = await prisma.cV.findFirst({
-      where: { userId: CURRENT_USER_ID, isActive: true },
+      where: { userId: userId, isActive: true },
       include: { skills: true },
     });
 
@@ -1946,8 +2141,9 @@ export async function getSelectedSkills() {
 
 export async function getSelectedCompetences() {
   try {
+    const userId = await getCurrentUserId();
     const currentCV = await prisma.cV.findFirst({
-      where: { userId: CURRENT_USER_ID, isActive: true },
+      where: { userId: userId, isActive: true },
       include: { competences: true },
     });
 
@@ -1962,8 +2158,9 @@ export async function getSelectedCompetences() {
 
 export async function getSelectedExperiences() {
   try {
+    const userId = await getCurrentUserId();
     const currentCV = await prisma.cV.findFirst({
-      where: { userId: CURRENT_USER_ID, isActive: true },
+      where: { userId: userId, isActive: true },
       include: { experiences: true },
     });
 
@@ -1978,8 +2175,9 @@ export async function getSelectedExperiences() {
 
 export async function getSelectedEducation() {
   try {
+    const userId = await getCurrentUserId();
     const currentCV = await prisma.cV.findFirst({
-      where: { userId: CURRENT_USER_ID, isActive: true },
+      where: { userId: userId, isActive: true },
       include: { education: true },
     });
 
@@ -1997,8 +2195,9 @@ export async function updateOtherInfo(data: {
   ownVehicle: boolean;
 }) {
   try {
+    const userId = await getCurrentUserId();
     const currentCV = await prisma.cV.findFirst({
-      where: { userId: CURRENT_USER_ID, isActive: true },
+      where: { userId: userId, isActive: true },
     });
 
     if (!currentCV) {
@@ -2023,9 +2222,10 @@ export async function updateOtherInfo(data: {
 
 export async function getCurrentCVName(): Promise<string | null> {
   try {
+    const userId = await getCurrentUserId();
     const cv = await prisma.cV.findFirst({
       where: {
-        userId: CURRENT_USER_ID,
+        userId: userId,
         isActive: true,
       },
       select: {
@@ -2064,9 +2264,10 @@ export async function forceRevalidation() {
 
 export async function cleanupDuplicateCVs() {
   try {
+    const userId = await getCurrentUserId();
     // Obtener todos los CVs del usuario
     const allCVs = await prisma.cV.findMany({
-      where: { userId: CURRENT_USER_ID },
+      where: { userId: userId },
       orderBy: { createdAt: "desc" },
     });
 
@@ -2101,7 +2302,7 @@ export async function cleanupDuplicateCVs() {
         // Asegurar que el más reciente esté activo si es "CV Principal"
         if (name === "CV Principal") {
           await prisma.cV.updateMany({
-            where: { userId: CURRENT_USER_ID },
+            where: { userId: userId },
             data: { isActive: false },
           });
 
@@ -2126,5 +2327,151 @@ export async function cleanupDuplicateCVs() {
       success: false,
       error: "Failed to cleanup duplicate CVs",
     };
+  }
+}
+
+// ===============================
+// REDES SOCIALES
+// ===============================
+
+export async function addSocialNetwork(
+  socialNetwork: Omit<SocialNetwork, "id">
+) {
+  try {
+    const userId = await getCurrentUserId();
+    const currentCV = await prisma.cV.findFirst({
+      where: { userId: userId, isActive: true },
+      include: { socialNetworks: true },
+    });
+
+    if (!currentCV) {
+      throw new Error("No active CV found");
+    }
+
+    // Verificar límite máximo de 5 redes sociales
+    if (currentCV.socialNetworks.length >= 5) {
+      return { success: false, error: "Maximum 5 social networks allowed" };
+    }
+
+    await prisma.socialNetwork.create({
+      data: {
+        ...socialNetwork,
+        cvId: currentCV.id,
+      },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error adding social network:", error);
+    return { success: false, error: "Failed to add social network" };
+  }
+}
+
+export async function updateSocialNetwork(socialNetwork: SocialNetwork) {
+  try {
+    await prisma.socialNetwork.update({
+      where: { id: socialNetwork.id },
+      data: {
+        name: socialNetwork.name,
+        url: socialNetwork.url,
+      },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating social network:", error);
+    return { success: false, error: "Failed to update social network" };
+  }
+}
+
+export async function deleteSocialNetwork(id: string) {
+  try {
+    await prisma.socialNetwork.delete({
+      where: { id },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting social network:", error);
+    return { success: false, error: "Failed to delete social network" };
+  }
+}
+
+// ===============================
+// CATEGORÍAS DE HABILIDADES
+// ===============================
+
+export async function addSkillCategory(category: Omit<SkillCategory, "id">) {
+  try {
+    const userId = await getCurrentUserId();
+    const currentCV = await prisma.cV.findFirst({
+      where: { userId: userId, isActive: true },
+      include: { skillCategories: true },
+    });
+
+    if (!currentCV) {
+      throw new Error("No active CV found");
+    }
+
+    // Verificar límite máximo de categorías (opcional)
+    if (currentCV.skillCategories.length >= 20) {
+      return { success: false, error: "Maximum 20 skill categories allowed" };
+    }
+
+    const newCategory = await prisma.skillCategory.create({
+      data: {
+        ...category,
+        cvId: currentCV.id,
+      },
+    });
+
+    revalidatePath("/");
+    return { success: true, category: newCategory };
+  } catch (error) {
+    console.error("Error adding skill category:", error);
+    return { success: false, error: "Failed to add skill category" };
+  }
+}
+
+export async function updateSkillCategory(category: SkillCategory) {
+  try {
+    await prisma.skillCategory.update({
+      where: { id: category.id },
+      data: {
+        name: category.name,
+      },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating skill category:", error);
+    return { success: false, error: "Failed to update skill category" };
+  }
+}
+
+export async function deleteSkillCategory(id: string) {
+  try {
+    // Eliminar en cascada: primero las habilidades, luego la categoría
+    await prisma.$transaction(async (tx) => {
+      // Eliminar todas las habilidades de esta categoría
+      await tx.skill.deleteMany({
+        where: { categoryId: id },
+      });
+
+      // Eliminar la categoría
+      await tx.skillCategory.delete({
+        where: { id },
+      });
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting skill category:", error);
+    return { success: false, error: "Failed to delete skill category" };
   }
 }

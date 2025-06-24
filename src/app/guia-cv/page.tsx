@@ -1,10 +1,10 @@
-import { GuiaCVPage } from "@/components/guia/GuiaCVPage";
 import { MainLayout } from "@/components/layout";
+import { CVGuidePage } from "@/views/CVGuide";
 
 export default function GuiaCVPageRoute() {
   return (
     <MainLayout showSidebar={false}>
-      <GuiaCVPage />
+      <CVGuidePage />
     </MainLayout>
   );
 }

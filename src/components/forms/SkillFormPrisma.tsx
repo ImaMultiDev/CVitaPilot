@@ -6,35 +6,32 @@ import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import { addSkill, updateSkill } from "@/lib/actions/cv-actions";
-import { Skill } from "@/types/cv";
+import { Skill, SkillCategory } from "@/types/cv";
 
 interface SkillFormPrismaProps {
   isOpen: boolean;
   onClose: () => void;
   skill?: Skill;
+  categories: SkillCategory[];
 }
 
 export const SkillFormPrisma: React.FC<SkillFormPrismaProps> = ({
   isOpen,
   onClose,
   skill,
+  categories,
 }) => {
   const [formData, setFormData] = useState<Omit<Skill, "id">>({
     name: skill?.name || "",
-    category: skill?.category || "language",
+    categoryId: skill?.categoryId || categories[0]?.id || "",
     selected: skill?.selected || true,
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  const skillCategories = [
-    { value: "language", label: "Lenguaje de Programación" },
-    { value: "framework", label: "Framework" },
-    { value: "database", label: "Base de Datos" },
-    { value: "tool", label: "Herramienta" },
-    { value: "library", label: "Librería" },
-    { value: "orm", label: "ORM" },
-    { value: "ai", label: "IA" },
-  ];
+  const categoryOptions = categories.map((cat) => ({
+    value: cat.id,
+    label: cat.name,
+  }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,14 +70,14 @@ export const SkillFormPrisma: React.FC<SkillFormPrismaProps> = ({
 
         <Select
           label="Categoría"
-          value={formData.category}
+          value={formData.categoryId}
           onChange={(e) =>
             setFormData((prev) => ({
               ...prev,
-              category: e.target.value as Skill["category"],
+              categoryId: e.target.value,
             }))
           }
-          options={skillCategories}
+          options={categoryOptions}
           required
         />
 

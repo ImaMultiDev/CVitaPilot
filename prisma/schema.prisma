@@ -57,6 +57,8 @@ model CV {
   achievements     Achievement[]
   references       Reference[]
   deliveries       CVDelivery[]
+  socialNetworks   SocialNetwork[]
+  skillCategories  SkillCategory[]
   
   @@map("cvs")
 }
@@ -76,16 +78,34 @@ model Language {
 
 // Habilidades técnicas
 model Skill {
-  id       String  @id @default(cuid())
-  name     String
-  category String  // language, framework, database, tool, library, orm, ai
-  selected Boolean @default(true)
+  id         String        @id @default(cuid())
+  name       String
+  selected   Boolean       @default(true)
   
-  // Relación
-  cv       CV      @relation(fields: [cvId], references: [id], onDelete: Cascade)
-  cvId     String
+  // Relación con categoría
+  category   SkillCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String
+  
+  // Relación con CV
+  cv         CV            @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId       String
   
   @@map("skills")
+}
+
+// Categorías de habilidades dinámicas
+model SkillCategory {
+  id       String @id @default(cuid())
+  name     String // Nombre de la categoría (ej: "Lenguajes de Programación", "Cocina", "Diseño")
+  
+  // Relación con CV
+  cv       CV     @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId     String
+  
+  // Relación con habilidades
+  skills   Skill[]
+  
+  @@map("skill_categories")
 }
 
 // Competencias profesionales
@@ -149,16 +169,14 @@ model Experience {
   @@map("experiences")
 }
 
-// Formación académica
+// Formación académica oficial
 model Education {
   id          String  @id @default(cuid())
-  title       String
-  institution String
-  location    String
-  startYear   String
-  endYear     String
-  type        String  // formal, additional
-  duration    String? // Solo para cursos adicionales
+  title       String  // Título del grado/master/doctorado
+  institution String  // Universidad/Centro educativo
+  location    String  // Ciudad, País
+  startYear   String  // Año de inicio
+  endYear     String  // Año de finalización
   selected    Boolean @default(true)
   
   // Relación
@@ -303,4 +321,17 @@ model VerificationToken {
   
   @@unique([identifier, token])
   @@map("verification_tokens")
+}
+
+// Redes sociales dinámicas
+model SocialNetwork {
+  id       String @id @default(cuid())
+  name     String // LinkedIn, GitHub, Twitter, Instagram, etc.
+  url      String
+  
+  // Relación
+  cv       CV     @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId     String
+  
+  @@map("social_networks")
 }

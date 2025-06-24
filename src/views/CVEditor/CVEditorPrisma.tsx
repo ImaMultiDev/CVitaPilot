@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Textarea } from "@/components/ui/Textarea";
@@ -37,6 +38,9 @@ import {
   toggleAchievement,
   toggleReference,
   saveCurrentCVAs,
+  forceRevalidation,
+  addSkillCategory,
+  deleteSkillCategory,
 } from "@/lib/actions/cv-actions";
 import { CVData } from "@/types/cv";
 
@@ -49,21 +53,50 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
   initialData,
   currentCVName,
 }) => {
+  const router = useRouter();
   const [aboutMeText, setAboutMeText] = useState(initialData.aboutMe);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  // Función helper para manejar actualizaciones (igual que en Sidebar)
+  const handleUpdate = async (
+    updateFn: () => Promise<{ success: boolean; error?: string }>
+  ): Promise<boolean> => {
+    if (isUpdating) return false; // Prevenir múltiples actualizaciones simultáneas
+
+    setIsUpdating(true);
+    try {
+      const result = await updateFn();
+      if (result.success) {
+        // Forzar revalidación y refresh suave
+        await forceRevalidation();
+        router.refresh();
+
+        // Pequeño delay para permitir que los cambios se propaguen
+        setTimeout(() => {
+          setIsUpdating(false);
+        }, 500);
+
+        return true;
+      } else {
+        setIsUpdating(false);
+        return false;
+      }
+    } catch (error) {
+      console.error("Error updating:", error);
+      setIsUpdating(false);
+      // En caso de error, hacer refresh completo como fallback
+      window.location.reload();
+      return false;
+    }
+  };
 
   // States for new items
   const [newCompetence, setNewCompetence] = useState("");
   const [newSoftSkill, setNewSoftSkill] = useState("");
+  const [newCategoryName, setNewCategoryName] = useState("");
   const [newSkill, setNewSkill] = useState({
     name: "",
-    category: "language" as
-      | "language"
-      | "framework"
-      | "tool"
-      | "database"
-      | "orm"
-      | "ai"
-      | "library",
+    categoryId: initialData.skillCategories[0]?.id || "",
   });
   const [newLanguage, setNewLanguage] = useState({
     name: "",
@@ -98,8 +131,6 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
     location: "",
     startYear: "",
     endYear: "",
-    type: "formal" as "formal" | "additional",
-    duration: "",
   });
   const [newCertification, setNewCertification] = useState({
     name: "",
@@ -131,79 +162,125 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
   });
 
   const handleAboutMeUpdate = async () => {
-    try {
-      await updateAboutMe(aboutMeText);
-      window.location.reload(); // Recargar para ver cambios
-    } catch (error) {
-      console.error("Error updating about me:", error);
-    }
+    await handleUpdate(() => updateAboutMe(aboutMeText));
   };
 
   const handleAddCompetence = async () => {
     if (newCompetence.trim()) {
-      try {
-        await addCompetence({
+      const success = await handleUpdate(() =>
+        addCompetence({
           name: newCompetence.trim(),
           selected: true,
-        });
+        })
+      );
+      if (success) {
         setNewCompetence("");
-        window.location.reload();
-      } catch (error) {
-        console.error("Error adding competence:", error);
       }
     }
   };
 
   const handleAddSoftSkill = async () => {
     if (newSoftSkill.trim()) {
-      try {
-        await addSoftSkill({
+      const success = await handleUpdate(() =>
+        addSoftSkill({
           name: newSoftSkill.trim(),
           selected: true,
-        });
+        })
+      );
+      if (success) {
         setNewSoftSkill("");
-        window.location.reload();
-      } catch (error) {
-        console.error("Error adding soft skill:", error);
       }
     }
   };
 
   const handleAddSkill = async () => {
-    if (newSkill.name.trim()) {
-      try {
-        await addSkill({
+    if (newSkill.name.trim() && newSkill.categoryId) {
+      const success = await handleUpdate(() =>
+        addSkill({
           name: newSkill.name.trim(),
-          category: newSkill.category,
+          categoryId: newSkill.categoryId,
           selected: true,
+        })
+      );
+      if (success) {
+        setNewSkill({
+          name: "",
+          categoryId: initialData.skillCategories[0]?.id || "",
         });
-        setNewSkill({ name: "", category: "language" });
-        window.location.reload();
-      } catch (error) {
-        console.error("Error adding skill:", error);
       }
+    }
+  };
+
+  const handleAddCategory = async () => {
+    if (newCategoryName.trim()) {
+      const success = await handleUpdate(() =>
+        addSkillCategory({
+          name: newCategoryName.trim(),
+        })
+      );
+      if (success) {
+        setNewCategoryName("");
+      }
+    }
+  };
+
+  const handleDeleteCategory = async (categoryId: string) => {
+    // Encontrar la categoría y contar las habilidades asociadas
+    const category = initialData.skillCategories.find(
+      (cat) => cat.id === categoryId
+    );
+    const skillsInCategory = initialData.skills.filter(
+      (skill) => skill.categoryId === categoryId
+    );
+
+    if (!category) return;
+
+    let confirmMessage = "";
+
+    if (skillsInCategory.length === 0) {
+      // Categoría vacía - mensaje simple
+      confirmMessage = `¿Estás seguro de que quieres eliminar la categoría "${category.name}"?`;
+    } else {
+      // Categoría con habilidades - mensaje detallado
+      const skillCount = skillsInCategory.length;
+      const skillNames = skillsInCategory.map((skill) => skill.name).join(", ");
+
+      confirmMessage = `⚠️ ATENCIÓN: La categoría "${
+        category.name
+      }" contiene ${skillCount} habilidad${skillCount > 1 ? "es" : ""}:
+
+${skillNames}
+
+¿Estás seguro de que quieres eliminar la categoría "${
+        category.name
+      }" y TODAS sus habilidades asociadas?
+
+Esta acción no se puede deshacer.`;
+    }
+
+    if (confirm(confirmMessage)) {
+      await handleUpdate(() => deleteSkillCategory(categoryId));
     }
   };
 
   const handleAddLanguage = async () => {
     if (newLanguage.name.trim()) {
-      try {
-        await addLanguage({
+      const success = await handleUpdate(() =>
+        addLanguage({
           name: newLanguage.name.trim(),
           level: newLanguage.level,
-        });
+        })
+      );
+      if (success) {
         setNewLanguage({ name: "", level: "A1" });
-        window.location.reload();
-      } catch (error) {
-        console.error("Error adding language:", error);
       }
     }
   };
 
   const handleAddExperience = async () => {
     if (newExperience.position.trim() && newExperience.company.trim()) {
-      try {
-        await addExperience({
+      const success = await handleUpdate(() =>
+        addExperience({
           ...newExperience,
           position: newExperience.position.trim(),
           company: newExperience.company.trim(),
@@ -215,7 +292,9 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
             .map((tech) => tech.trim())
             .filter((tech) => tech),
           selected: true,
-        });
+        })
+      );
+      if (success) {
         setNewExperience({
           position: "",
           company: "",
@@ -228,44 +307,37 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
           description: "",
           technologies: "",
         });
-        window.location.reload();
-      } catch (error) {
-        console.error("Error adding experience:", error);
       }
     }
   };
 
   const handleAddEducation = async () => {
     if (newEducation.title.trim() && newEducation.institution.trim()) {
-      try {
-        await addEducation({
+      const success = await handleUpdate(() =>
+        addEducation({
           ...newEducation,
           title: newEducation.title.trim(),
           institution: newEducation.institution.trim(),
           location: newEducation.location.trim(),
-          duration: newEducation.duration.trim() || undefined,
           selected: true,
-        });
+        })
+      );
+      if (success) {
         setNewEducation({
           title: "",
           institution: "",
           location: "",
           startYear: "",
           endYear: "",
-          type: "formal" as "formal" | "additional",
-          duration: "",
         });
-        window.location.reload();
-      } catch (error) {
-        console.error("Error adding education:", error);
       }
     }
   };
 
   const handleAddCertification = async () => {
     if (newCertification.name.trim() && newCertification.issuer.trim()) {
-      try {
-        await addCertification({
+      const success = await handleUpdate(() =>
+        addCertification({
           ...newCertification,
           name: newCertification.name.trim(),
           issuer: newCertification.issuer.trim(),
@@ -274,7 +346,9 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
           credentialId: newCertification.credentialId.trim() || undefined,
           url: newCertification.url.trim() || undefined,
           selected: true,
-        });
+        })
+      );
+      if (success) {
         setNewCertification({
           name: "",
           issuer: "",
@@ -283,17 +357,14 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
           credentialId: "",
           url: "",
         });
-        window.location.reload();
-      } catch (error) {
-        console.error("Error adding certification:", error);
       }
     }
   };
 
   const handleAddAchievement = async () => {
     if (newAchievement.title.trim() && newAchievement.description.trim()) {
-      try {
-        await addAchievement({
+      const success = await handleUpdate(() =>
+        addAchievement({
           ...newAchievement,
           title: newAchievement.title.trim(),
           description: newAchievement.description.trim(),
@@ -306,7 +377,9 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
           metrics: newAchievement.metrics.trim() || undefined,
           url: newAchievement.url.trim() || undefined,
           selected: true,
-        });
+        })
+      );
+      if (success) {
         setNewAchievement({
           title: "",
           type: "project" as "achievement" | "project",
@@ -317,32 +390,19 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
           metrics: "",
           url: "",
         });
-        window.location.reload();
-      } catch (error) {
-        console.error("Error adding achievement:", error);
       }
     }
   };
 
   const handleDeleteSkill = async (skillId: string) => {
     if (confirm("¿Estás seguro de que quieres eliminar esta habilidad?")) {
-      try {
-        await deleteSkill(skillId);
-        window.location.reload();
-      } catch (error) {
-        console.error("Error deleting skill:", error);
-      }
+      await handleUpdate(() => deleteSkill(skillId));
     }
   };
 
   const handleDeleteCompetence = async (competenceId: string) => {
     if (confirm("¿Estás seguro de que quieres eliminar esta competencia?")) {
-      try {
-        await deleteCompetence(competenceId);
-        window.location.reload();
-      } catch (error) {
-        console.error("Error deleting competence:", error);
-      }
+      await handleUpdate(() => deleteCompetence(competenceId));
     }
   };
 
@@ -350,137 +410,72 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
     if (
       confirm("¿Estás seguro de que quieres eliminar esta habilidad blanda?")
     ) {
-      try {
-        await deleteSoftSkill(softSkillId);
-        window.location.reload();
-      } catch (error) {
-        console.error("Error deleting soft skill:", error);
-      }
+      await handleUpdate(() => deleteSoftSkill(softSkillId));
     }
   };
 
   const handleDeleteLanguage = async (languageId: string) => {
     if (confirm("¿Estás seguro de que quieres eliminar este idioma?")) {
-      try {
-        await deleteLanguage(languageId);
-        window.location.reload();
-      } catch (error) {
-        console.error("Error deleting language:", error);
-      }
+      await handleUpdate(() => deleteLanguage(languageId));
     }
   };
 
   const handleDeleteExperience = async (experienceId: string) => {
     if (confirm("¿Estás seguro de que quieres eliminar esta experiencia?")) {
-      try {
-        await deleteExperience(experienceId);
-        window.location.reload();
-      } catch (error) {
-        console.error("Error deleting experience:", error);
-      }
+      await handleUpdate(() => deleteExperience(experienceId));
     }
   };
 
   const handleDeleteEducation = async (educationId: string) => {
     if (confirm("¿Estás seguro de que quieres eliminar esta formación?")) {
-      try {
-        await deleteEducation(educationId);
-        window.location.reload();
-      } catch (error) {
-        console.error("Error deleting education:", error);
-      }
+      await handleUpdate(() => deleteEducation(educationId));
     }
   };
 
   const handleDeleteCertification = async (certificationId: string) => {
     if (confirm("¿Estás seguro de que quieres eliminar esta certificación?")) {
-      try {
-        await deleteCertification(certificationId);
-        window.location.reload();
-      } catch (error) {
-        console.error("Error deleting certification:", error);
-      }
+      await handleUpdate(() => deleteCertification(certificationId));
     }
   };
 
   const handleDeleteAchievement = async (achievementId: string) => {
     if (confirm("¿Estás seguro de que quieres eliminar este logro/proyecto?")) {
-      try {
-        await deleteAchievement(achievementId);
-        window.location.reload();
-      } catch (error) {
-        console.error("Error deleting achievement:", error);
-      }
+      await handleUpdate(() => deleteAchievement(achievementId));
     }
   };
 
   const handleToggleSkill = async (skillId: string) => {
-    try {
-      await toggleSkill(skillId);
-      window.location.reload();
-    } catch (error) {
-      console.error("Error toggling skill:", error);
-    }
+    await handleUpdate(() => toggleSkill(skillId));
   };
 
   const handleToggleCompetence = async (competenceId: string) => {
-    try {
-      await toggleCompetence(competenceId);
-      window.location.reload();
-    } catch (error) {
-      console.error("Error toggling competence:", error);
-    }
+    await handleUpdate(() => toggleCompetence(competenceId));
   };
 
   const handleToggleSoftSkill = async (softSkillId: string) => {
-    try {
-      await toggleSoftSkill(softSkillId);
-      window.location.reload();
-    } catch (error) {
-      console.error("Error toggling soft skill:", error);
-    }
+    await handleUpdate(() => toggleSoftSkill(softSkillId));
   };
 
   const handleToggleExperience = async (experienceId: string) => {
-    try {
-      await toggleExperience(experienceId);
-      window.location.reload();
-    } catch (error) {
-      console.error("Error toggling experience:", error);
-    }
+    await handleUpdate(() => toggleExperience(experienceId));
   };
 
   const handleToggleEducation = async (educationId: string) => {
-    try {
-      await toggleEducation(educationId);
-      window.location.reload();
-    } catch (error) {
-      console.error("Error toggling education:", error);
-    }
+    await handleUpdate(() => toggleEducation(educationId));
   };
 
   const handleToggleCertification = async (certificationId: string) => {
-    try {
-      await toggleCertification(certificationId);
-      window.location.reload();
-    } catch (error) {
-      console.error("Error toggling certification:", error);
-    }
+    await handleUpdate(() => toggleCertification(certificationId));
   };
 
   const handleToggleAchievement = async (achievementId: string) => {
-    try {
-      await toggleAchievement(achievementId);
-      window.location.reload();
-    } catch (error) {
-      console.error("Error toggling achievement:", error);
-    }
+    await handleUpdate(() => toggleAchievement(achievementId));
   };
 
   const handleAddReference = async () => {
     if (newReference.name && newReference.position && newReference.company) {
-      try {
-        await addReference(newReference);
+      const success = await handleUpdate(() => addReference(newReference));
+      if (success) {
         setNewReference({
           name: "",
           position: "",
@@ -491,31 +486,18 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
           yearsWorking: "",
           selected: true,
         });
-        window.location.reload();
-      } catch (error) {
-        console.error("Error adding reference:", error);
       }
     }
   };
 
   const handleDeleteReference = async (referenceId: string) => {
     if (confirm("¿Estás seguro de que quieres eliminar esta referencia?")) {
-      try {
-        await deleteReference(referenceId);
-        window.location.reload();
-      } catch (error) {
-        console.error("Error deleting reference:", error);
-      }
+      await handleUpdate(() => deleteReference(referenceId));
     }
   };
 
   const handleToggleReference = async (referenceId: string) => {
-    try {
-      await toggleReference(referenceId);
-      window.location.reload();
-    } catch (error) {
-      console.error("Error toggling reference:", error);
-    }
+    await handleUpdate(() => toggleReference(referenceId));
   };
 
   const handleSaveCV = async () => {
@@ -531,34 +513,21 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
     }
   };
 
-  // Group skills by category
+  // Group skills by category using categoryId
   const skillsByCategory = initialData.skills.reduce((acc, skill) => {
-    if (!acc[skill.category]) {
-      acc[skill.category] = [];
+    const categoryId = skill.categoryId;
+    if (!acc[categoryId]) {
+      acc[categoryId] = [];
     }
-    acc[skill.category].push(skill);
+    acc[categoryId].push(skill);
     return acc;
   }, {} as Record<string, typeof initialData.skills>);
 
-  const categoryNames = {
-    language: "Lenguajes de Programación",
-    framework: "Frameworks",
-    database: "Bases de Datos",
-    tool: "Herramientas",
-    library: "Librerías",
-    orm: "ORM",
-    ai: "IA",
-  };
-
-  const skillCategories = [
-    { value: "language", label: "Lenguaje de Programación" },
-    { value: "framework", label: "Framework" },
-    { value: "database", label: "Base de Datos" },
-    { value: "tool", label: "Herramienta" },
-    { value: "library", label: "Librería" },
-    { value: "orm", label: "ORM" },
-    { value: "ai", label: "IA" },
-  ];
+  // Create category options for the select
+  const categoryOptions = initialData.skillCategories.map((cat) => ({
+    value: cat.id,
+    label: cat.name,
+  }));
 
   const languageLevels = [
     { value: "A1", label: "A1 - Básico" },
@@ -573,9 +542,17 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          Editor de CV
-        </h1>
+        <div className="flex items-center justify-center gap-4 mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Editor de CV
+          </h1>
+          {isUpdating && (
+            <div className="flex items-center text-blue-600 dark:text-blue-400">
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 mr-2"></div>
+              <span className="text-sm font-medium">Actualizando...</span>
+            </div>
+          )}
+        </div>
         {currentCVName && (
           <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-3 mb-3">
             <p className="text-blue-800 dark:text-blue-200">
@@ -689,10 +666,85 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         </div>
       </Card>
 
+      {/* Gestión de Categorías de Habilidades */}
+      <Card>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          🗂️ Categorías de Habilidades
+        </h3>
+
+        {/* Add new category */}
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 p-4 rounded-lg mb-4">
+          <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-3">
+            ➕ Crear nueva categoría
+          </h4>
+          <div className="flex space-x-2">
+            <Input
+              value={newCategoryName}
+              onChange={(e) => setNewCategoryName(e.target.value)}
+              placeholder="Ej: Machine Learning, DevOps, Diseño..."
+              className="flex-1"
+            />
+            <Button
+              onClick={handleAddCategory}
+              size="sm"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              ➕ Crear Categoría
+            </Button>
+          </div>
+        </div>
+
+        {/* Existing categories */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+          {initialData.skillCategories.map((category) => {
+            const skillCount = initialData.skills.filter(
+              (skill) => skill.categoryId === category.id
+            ).length;
+            return (
+              <div
+                key={category.id}
+                className="flex items-center justify-between border border-gray-200 dark:border-gray-600 rounded-lg p-3 bg-white dark:bg-gray-700"
+              >
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm font-medium text-gray-900 dark:text-white">
+                    📁 {category.name}
+                  </span>
+                  <span
+                    className={`text-xs px-2 py-1 rounded-full ${
+                      skillCount > 0
+                        ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                        : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400"
+                    }`}
+                  >
+                    {skillCount} skill{skillCount !== 1 ? "s" : ""}
+                  </span>
+                </div>
+                <Button
+                  onClick={() => handleDeleteCategory(category.id)}
+                  size="sm"
+                  variant="secondary"
+                  className="text-red-600 hover:text-red-700 p-1"
+                  disabled={isUpdating}
+                  title={
+                    skillCount > 0
+                      ? `Eliminar categoría y ${skillCount} habilidad${
+                          skillCount > 1 ? "es" : ""
+                        }`
+                      : "Eliminar categoría vacía"
+                  }
+                >
+                  🗑️
+                </Button>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+
       {/* Habilidades por Categoría */}
       <Card>
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Habilidades Técnicas
+          🛠️ Habilidades Técnicas
         </h3>
 
         {/* Add new skill */}
@@ -711,21 +763,14 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
             />
             <Select
               label="Categoría"
-              value={newSkill.category}
+              value={newSkill.categoryId}
               onChange={(e) =>
                 setNewSkill((prev) => ({
                   ...prev,
-                  category: e.target.value as
-                    | "language"
-                    | "framework"
-                    | "tool"
-                    | "database"
-                    | "orm"
-                    | "ai"
-                    | "library",
+                  categoryId: e.target.value,
                 }))
               }
-              options={skillCategories}
+              options={categoryOptions}
             />
             <div className="flex items-end">
               <Button onClick={handleAddSkill} size="sm" className="w-full">
@@ -736,11 +781,11 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         </div>
 
         {/* Habilidades existentes por categoría */}
-        {Object.entries(skillsByCategory).map(([category, skills]) => (
-          <div key={category} className="mb-6">
+        {Object.entries(skillsByCategory).map(([categoryId, skills]) => (
+          <div key={categoryId} className="mb-6">
             <h4 className="text-md font-semibold text-gray-800 dark:text-gray-200 mb-3">
-              {categoryNames[category as keyof typeof categoryNames] ||
-                category}
+              {initialData.skillCategories.find((cat) => cat.id === categoryId)
+                ?.name || categoryId}
             </h4>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
               {skills.map((skill) => (
@@ -755,12 +800,14 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
                     <Toggle
                       checked={skill.selected}
                       onChange={() => handleToggleSkill(skill.id)}
+                      disabled={isUpdating}
                     />
                     <Button
                       onClick={() => handleDeleteSkill(skill.id)}
                       size="sm"
                       variant="secondary"
                       className="text-red-600 hover:text-red-700 p-1"
+                      disabled={isUpdating}
                     >
                       🗑️
                     </Button>
@@ -810,12 +857,14 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
                 <Toggle
                   checked={competence.selected}
                   onChange={() => handleToggleCompetence(competence.id)}
+                  disabled={isUpdating}
                 />
                 <Button
                   onClick={() => handleDeleteCompetence(competence.id)}
                   size="sm"
                   variant="secondary"
                   className="text-red-600 hover:text-red-700 p-1"
+                  disabled={isUpdating}
                 >
                   🗑️
                 </Button>
@@ -863,12 +912,14 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
                 <Toggle
                   checked={softSkill.selected}
                   onChange={() => handleToggleSoftSkill(softSkill.id)}
+                  disabled={isUpdating}
                 />
                 <Button
                   onClick={() => handleDeleteSoftSkill(softSkill.id)}
                   size="sm"
                   variant="secondary"
                   className="text-red-600 hover:text-red-700 p-1"
+                  disabled={isUpdating}
                 >
                   🗑️
                 </Button>
@@ -1062,12 +1113,14 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
                 <Toggle
                   checked={experience.selected}
                   onChange={() => handleToggleExperience(experience.id)}
+                  disabled={isUpdating}
                 />
                 <Button
                   onClick={() => handleDeleteExperience(experience.id)}
                   size="sm"
                   variant="secondary"
                   className="text-red-600 hover:text-red-700"
+                  disabled={isUpdating}
                 >
                   🗑️
                 </Button>
@@ -1077,42 +1130,28 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         </div>
       </Card>
 
-      {/* Formación */}
+      {/* Formación Académica */}
       <Card>
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Formación
+          Formación Académica
         </h3>
 
         {/* Añadir nueva formación */}
         <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg mb-4">
           <h4 className="font-medium text-gray-900 dark:text-white mb-3">
-            Añadir nueva formación
+            Añadir nueva formación académica
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <Select
-              label="Tipo de formación"
-              value={newEducation.type}
-              onChange={(e) =>
-                setNewEducation((prev) => ({
-                  ...prev,
-                  type: e.target.value as "formal" | "additional",
-                }))
-              }
-              options={[
-                { value: "formal", label: "📚 Formación Oficial" },
-                { value: "additional", label: "🎓 Otra Formación" },
-              ]}
-            />
             <Input
-              label="Título"
+              label="Título del grado/master/doctorado"
               value={newEducation.title}
               onChange={(e) =>
                 setNewEducation((prev) => ({ ...prev, title: e.target.value }))
               }
-              placeholder="Ej: Grado en Ingeniería Informática"
+              placeholder="Ej: Técnico Superior en Desarrollo de Aplicaciones Multiplataforma"
             />
             <Input
-              label="Institución"
+              label="Universidad/Centro educativo"
               value={newEducation.institution}
               onChange={(e) =>
                 setNewEducation((prev) => ({
@@ -1120,7 +1159,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
                   institution: e.target.value,
                 }))
               }
-              placeholder="Ej: Universidad Politécnica"
+              placeholder="Ej: Universidad de Navarra"
             />
             <Input
               label="Ubicación"
@@ -1142,7 +1181,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
                   startYear: e.target.value,
                 }))
               }
-              placeholder="2018"
+              placeholder="2020"
             />
             <Input
               label="Año fin"
@@ -1153,22 +1192,11 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
                   endYear: e.target.value,
                 }))
               }
-              placeholder="2022"
-            />
-            <Input
-              label="Duración (opcional)"
-              value={newEducation.duration}
-              onChange={(e) =>
-                setNewEducation((prev) => ({
-                  ...prev,
-                  duration: e.target.value,
-                }))
-              }
-              placeholder="Ej: 4 años, 300 horas"
+              placeholder="2024"
             />
           </div>
           <Button onClick={handleAddEducation} size="sm" className="mt-3">
-            ➕ Añadir formación
+            ➕ Añadir formación académica
           </Button>
         </div>
 
@@ -1184,16 +1212,8 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
                   <h4 className="font-semibold text-gray-900 dark:text-white">
                     {education.title}
                   </h4>
-                  <span
-                    className={`text-xs px-2 py-1 rounded-full ${
-                      education.type === "formal"
-                        ? "bg-blue-100 text-blue-800"
-                        : "bg-green-100 text-green-800"
-                    }`}
-                  >
-                    {education.type === "formal"
-                      ? "📚 Oficial"
-                      : "🎓 Adicional"}
+                  <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-800">
+                    📚 Formación académica
                   </span>
                 </div>
                 <p className="text-gray-600 dark:text-gray-300">
@@ -1201,19 +1221,20 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   {education.startYear} - {education.endYear}
-                  {education.duration && ` (${education.duration})`}
                 </p>
               </div>
               <div className="flex items-center space-x-2 ml-4">
                 <Toggle
                   checked={education.selected}
                   onChange={() => handleToggleEducation(education.id)}
+                  disabled={isUpdating}
                 />
                 <Button
                   onClick={() => handleDeleteEducation(education.id)}
                   size="sm"
                   variant="secondary"
                   className="text-red-600 hover:text-red-700"
+                  disabled={isUpdating}
                 >
                   🗑️
                 </Button>
@@ -1350,12 +1371,14 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
                 <Toggle
                   checked={certification.selected}
                   onChange={() => handleToggleCertification(certification.id)}
+                  disabled={isUpdating}
                 />
                 <Button
                   onClick={() => handleDeleteCertification(certification.id)}
                   size="sm"
                   variant="secondary"
                   className="text-red-600 hover:text-red-700"
+                  disabled={isUpdating}
                 >
                   🗑️
                 </Button>
@@ -1538,12 +1561,14 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
                 <Toggle
                   checked={achievement.selected}
                   onChange={() => handleToggleAchievement(achievement.id)}
+                  disabled={isUpdating}
                 />
                 <Button
                   onClick={() => handleDeleteAchievement(achievement.id)}
                   size="sm"
                   variant="secondary"
                   className="text-red-600 hover:text-red-700"
+                  disabled={isUpdating}
                 >
                   🗑️
                 </Button>
@@ -1677,12 +1702,14 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
                 <Toggle
                   checked={reference.selected}
                   onChange={() => handleToggleReference(reference.id)}
+                  disabled={isUpdating}
                 />
                 <Button
                   onClick={() => handleDeleteReference(reference.id)}
                   size="sm"
                   variant="secondary"
                   className="text-red-600 hover:text-red-700"
+                  disabled={isUpdating}
                 >
                   🗑️
                 </Button>

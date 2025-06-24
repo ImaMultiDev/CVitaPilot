@@ -93,47 +93,6 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
     }, 300);
   };
 
-  // Función mejorada para impresión completa del CV
-  const handlePrintPDF = () => {
-    // Configurar título del documento
-    const originalTitle = document.title;
-    const fileName = `CV_${cvData.personalInfo.name.replace(/\s+/g, "_")}`;
-    document.title = fileName;
-
-    // Asegurar que todas las páginas estén visibles y correctamente formateadas
-    const page1 = document.getElementById("cv-page-1");
-    const page2 = document.getElementById("cv-page-2");
-
-    if (page1) {
-      page1.style.display = "block";
-      page1.style.visibility = "visible";
-    }
-    if (page2) {
-      page2.style.display = "block";
-      page2.style.visibility = "visible";
-    }
-
-    // Agregar clase temporal para mejorar estilos de impresión
-    document.body.classList.add("printing-cv");
-
-    // Mostrar instrucciones antes de abrir el diálogo
-    alert(
-      `🖨️ Se abrirá el diálogo de impresión para el CV completo.\n\n📋 Configuración recomendada:\n• Destino: "Guardar como PDF"\n• Tamaño: A4\n• Orientación: Vertical\n• Márgenes: Predeterminados\n• Desactivar: "Encabezados y pies de página"\n\n✅ El PDF mantendrá todos los colores y formatos exactamente como se ven en pantalla.`
-    );
-
-    // Pequeña pausa para que el usuario lea las instrucciones
-    setTimeout(() => {
-      // Abrir diálogo de impresión
-      window.print();
-
-      // Limpiar después de la impresión
-      setTimeout(() => {
-        document.body.classList.remove("printing-cv");
-        document.title = originalTitle;
-      }, 1000);
-    }, 500);
-  };
-
   // Filter selected items
   const selectedSkills = cvData.skills.filter((skill) => skill.selected);
   const selectedCompetences = cvData.competences.filter(
@@ -150,32 +109,30 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
     (achievement) => achievement.selected
   );
 
-  // Group skills by category
-  const skillsByCategory = selectedSkills.reduce((acc, skill) => {
-    if (!acc[skill.category]) {
-      acc[skill.category] = [];
+  // Group skills by category using dynamic categories
+  const skillsByCategory = cvData.skillCategories.reduce((acc, category) => {
+    const categorySkills = selectedSkills.filter(
+      (skill) => skill.categoryId === category.id
+    );
+    if (categorySkills.length > 0) {
+      acc[category.id] = categorySkills;
     }
-    acc[skill.category].push(skill);
     return acc;
   }, {} as Record<string, typeof selectedSkills>);
 
-  // Get formal education only
-  const formalEducation = selectedEducation.filter(
-    (edu) => edu.type === "formal"
-  );
+  // All education is now academic/formal education
+  const academicEducation = selectedEducation;
 
-  const categoryNames = {
-    language: "Lenguajes de Programación",
-    framework: "Frameworks",
-    database: "Bases de Datos",
-    tool: "Herramientas",
-    library: "Librerías",
-    orm: "ORM",
-    ai: "IA",
+  // Helper function to get category name by ID
+  const getCategoryName = (categoryId: string) => {
+    const category = cvData.skillCategories.find(
+      (cat) => cat.id === categoryId
+    );
+    return category?.name || categoryId;
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 dark:bg-">
+    <section className="flex flex-col gap-6 max-w-4xl mx-auto  dark:bg-">
       {/* Estilos CSS para impresión y exportación PDF */}
       <style jsx>{`
         /* Estilos para exportación PDF - Colores compatibles con html2canvas */
@@ -526,6 +483,14 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
             box-sizing: border-box !important;
           }
 
+          /* Forzar dos columnas para información de contacto ATS en impresión */
+          .ats-format .contact-info-grid {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 8px !important;
+            column-gap: 16px !important;
+          }
+
           #cv-page-1.ats-format > div,
           #cv-page-2.ats-format > div {
             padding: 0 !important;
@@ -563,8 +528,21 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
         }
       `}</style>
 
+      {/* CV Active Indicator */}
+      {currentCVName && (
+        <div className="max-w-140 mx-auto bg-blue-50 dark:bg-blue-900/80 border border-blue-200 dark:border-blue-800 rounded-lg p-4 shadow-sm no-print">
+          <div className="text-center">
+            <p className="text-blue-800 text-2xl dark:text-blue-200">
+              <span className="font-semibold text-lg">
+                📄 Previsualizando CV:
+              </span>{" "}
+              {currentCVName}
+            </p>
+          </div>
+        </div>
+      )}
       {/* Format Selector */}
-      <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 shadow-sm no-print">
+      <div className="mx-auto bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 shadow-sm no-print">
         <div className="text-center">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">
             🎨 Formato del CV
@@ -616,107 +594,23 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
         </div>
       </div>
 
-      {/* CV Active Indicator */}
-      {currentCVName && (
-        <div className="bg-blue-50 dark:bg-blue-900/80 border border-blue-200 dark:border-blue-800 rounded-lg p-4 shadow-sm no-print">
-          <div className="text-center">
-            <p className="text-blue-800 dark:text-blue-200">
-              <span className="font-semibold">📄 Previsualizando CV:</span>{" "}
-              {currentCVName}
-            </p>
-          </div>
-        </div>
-      )}
-
       {/* Print Control */}
       <div className="text-center mb-2 no-print">
         <div className="flex justify-center gap-3 mb-3">
-          <Button onClick={handlePrintPDF} variant="primary" size="lg">
-            🖨️ Imprimir CV Completo
-          </Button>
           <Button
             onClick={() => handlePrintPage("cv-page-1", "Página 1")}
             variant="secondary"
-            size="sm"
+            size="md"
           >
-            📄 Imprimir Solo Página 1
+            <p className="text-lg">📄 Imprimir Solo Página 1</p>
           </Button>
           <Button
             onClick={() => handlePrintPage("cv-page-2", "Página 2")}
             variant="secondary"
             size="sm"
           >
-            📄 Imprimir Solo Página 2
+            <p className="text-lg">📄 Imprimir Solo Página 2</p>
           </Button>
-        </div>
-        <div
-          className={`mt-3 text-xs text-gray-600 dark:text-gray-400 rounded-lg px-4 py-3 max-w-2xl mx-auto border ${
-            cvFormat === "ats"
-              ? "bg-green-50 dark:bg-green-900/80 border-green-200 dark:border-green-800"
-              : "bg-blue-50 dark:bg-blue-900/80 border-blue-200 dark:border-blue-800"
-          }`}
-        >
-          <p
-            className={`font-medium mb-2 ${
-              cvFormat === "ats"
-                ? "text-green-900 dark:text-green-100"
-                : "text-blue-900 dark:text-blue-100"
-            }`}
-          >
-            🖨️ Instrucciones de impresión - Formato{" "}
-            {cvFormat === "ats" ? "ATS" : "Visual"}:
-          </p>
-          <p
-            className={
-              cvFormat === "ats"
-                ? "text-green-800 dark:text-green-200"
-                : "text-blue-800 dark:text-blue-200"
-            }
-          >
-            <strong>1.</strong> Haz clic en &quot;Imprimir CV Completo&quot;
-            para imprimir ambas páginas
-          </p>
-          <p
-            className={
-              cvFormat === "ats"
-                ? "text-green-800 dark:text-green-200"
-                : "text-blue-800 dark:text-blue-200"
-            }
-          >
-            <strong>2.</strong> En el diálogo de impresión, selecciona
-            &quot;Guardar como PDF&quot; como destino
-          </p>
-          <p
-            className={
-              cvFormat === "ats"
-                ? "text-green-800 dark:text-green-200"
-                : "text-blue-800 dark:text-blue-200"
-            }
-          >
-            <strong>3.</strong> Desactiva &quot;Encabezados y pies de
-            página&quot; para un resultado más limpio
-          </p>
-          <p
-            className={
-              cvFormat === "ats"
-                ? "text-green-800 dark:text-green-200"
-                : "text-blue-800 dark:text-blue-200"
-            }
-          >
-            <strong>4.</strong> Asegúrate de que el tamaño sea A4 y la
-            orientación vertical
-          </p>
-          {cvFormat === "ats" ? (
-            <p className="text-xs text-green-600 dark:text-green-400 mt-2 font-medium">
-              🤖 Este formato ATS garantiza máxima compatibilidad con sistemas
-              automáticos de selección
-            </p>
-          ) : (
-            <p className="text-xs text-blue-600 dark:text-blue-400 mt-2 font-medium">
-              💡 Los colores y formatos se mantendrán exactamente como se ven en
-              pantalla
-            </p>
-          )}
         </div>
       </div>
 
@@ -764,14 +658,45 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                           </span>
                         </div>
                       )}
-                      {cvData.personalInfo.github && (
-                        <div className="flex items-center space-x-2">
-                          <span className="text-gray-300">💻</span>
-                          <span className="break-all text-xs">
-                            {cvData.personalInfo.github}
+                      {cvData.personalInfo.socialNetworks.map((sn) => (
+                        <div
+                          key={sn.id}
+                          className="flex items-center space-x-2"
+                        >
+                          <span className="text-gray-300">
+                            {sn.name === "GitHub"
+                              ? "💻"
+                              : sn.name === "Twitter"
+                              ? "🐦"
+                              : sn.name === "Instagram"
+                              ? "📷"
+                              : sn.name === "Facebook"
+                              ? "📘"
+                              : sn.name === "YouTube"
+                              ? "🎥"
+                              : sn.name === "TikTok"
+                              ? "🎵"
+                              : sn.name === "Behance"
+                              ? "🎨"
+                              : sn.name === "Dribbble"
+                              ? "🏀"
+                              : sn.name === "Dev.to"
+                              ? "👩‍💻"
+                              : sn.name === "Medium"
+                              ? "📝"
+                              : sn.name === "Stack Overflow"
+                              ? "📚"
+                              : sn.name === "Discord"
+                              ? "🎮"
+                              : sn.name === "Telegram"
+                              ? "📨"
+                              : sn.name === "WhatsApp"
+                              ? "💬"
+                              : "🌐"}
                           </span>
+                          <span className="break-all text-xs">{sn.url}</span>
                         </div>
-                      )}
+                      ))}
                       {cvData.personalInfo.website && (
                         <div className="flex items-center space-x-2">
                           <span className="text-gray-300">🌐</span>
@@ -812,7 +737,7 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                       </h3>
                       <div className="space-y-1 text-xs">
                         {cvData.languages.map((lang) => (
-                          <div key={lang.id} className="flex justify-between">
+                          <div key={lang.id} className="flex gap-4">
                             <span className="text-gray-200">{lang.name}:</span>
                             <span className="text-white font-medium">
                               {lang.level}
@@ -831,13 +756,10 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                       </h3>
                       <div className="space-y-2 text-xs">
                         {Object.entries(skillsByCategory).map(
-                          ([category, skills]) => (
-                            <div key={category}>
-                              <h4 className="text-gray-300 font-medium mb-1 text-xs">
-                                {categoryNames[
-                                  category as keyof typeof categoryNames
-                                ] || category}
-                                :
+                          ([categoryId, skills]) => (
+                            <div key={categoryId}>
+                              <h4 className="text-gray-300 font-large mb-1 text-sm">
+                                {getCategoryName(categoryId)}:
                               </h4>
                               <div className="text-gray-200 text-xs">
                                 {skills.map((skill, index) => (
@@ -914,7 +836,7 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                             key={exp.id}
                             className="border-l-4 border-gray-300 pl-4"
                           >
-                            <div className="flex justify-between items-start mb-1">
+                            <div className="flex gap-4 items-center mb-1">
                               <h4 className="font-bold text-gray-900 text-sm">
                                 {exp.position}
                               </h4>
@@ -946,20 +868,75 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                       </div>
                     </section>
                   )}
-
-                  {/* Formación Académica */}
-                  {formalEducation.length > 0 && (
+                  {/* Logros y Proyectos Destacados */}
+                  {selectedAchievements.length > 0 && (
                     <section className="mb-8">
                       <h3 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-200 pb-2">
-                        🎓 Formación Académica
+                        Logros y Proyectos Destacados
                       </h3>
                       <div className="space-y-4">
-                        {formalEducation.map((edu) => (
+                        {selectedAchievements.map((achievement) => (
+                          <div
+                            key={achievement.id}
+                            className="border-l-4 border-gray-300 pl-4"
+                          >
+                            <div className="flex gap-4 items-center mb-1">
+                              <h4 className="font-bold text-gray-900 text-sm flex items-center gap-2">
+                                {achievement.title}
+                              </h4>
+                              <span className="text-xs text-gray-500">
+                                {"("}
+                                {achievement.date}
+                                {")"}
+                              </span>
+                            </div>
+                            {achievement.company && (
+                              <p className="font-bold text-gray-700 text-sm">
+                                {achievement.company}
+                              </p>
+                            )}
+                            <p className="text-gray-700 text-xs mb-2 leading-relaxed">
+                              {achievement.description}
+                            </p>
+                            {achievement.technologies.length > 0 && (
+                              <p className="text-xs text-gray-600 mb-1">
+                                <span className="font-medium">
+                                  Tecnologías:
+                                </span>{" "}
+                                {achievement.technologies.join(", ")}
+                              </p>
+                            )}
+                            {achievement.metrics && (
+                              <p className="text-xs text-green-600 mb-1">
+                                <span className="font-medium">Impacto:</span>{" "}
+                                {achievement.metrics}
+                              </p>
+                            )}
+                            {achievement.url && (
+                              <p className="text-xs text-blue-600">
+                                <span className="font-medium">URL:</span>{" "}
+                                {achievement.url}
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  )}
+
+                  {/* Formación Académica */}
+                  {academicEducation.length > 0 && (
+                    <section className="mb-8">
+                      <h3 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-200 pb-2">
+                        Formación Académica
+                      </h3>
+                      <div className="space-y-4">
+                        {academicEducation.map((edu) => (
                           <div
                             key={edu.id}
                             className="border-l-4 border-gray-300 pl-4"
                           >
-                            <div className="flex justify-between items-start mb-1">
+                            <div className="flex gap-4 items-center mb-1">
                               <h4 className="font-bold text-gray-900 text-sm">
                                 {edu.title}
                               </h4>
@@ -967,12 +944,14 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                                 ({edu.startYear} - {edu.endYear})
                               </span>
                             </div>
-                            <p className="font-bold text-gray-700 text-sm">
-                              {edu.institution}
-                            </p>
-                            <p className="text-xs text-gray-600">
-                              {edu.location}
-                            </p>
+                            <div className="flex gap-4 items-center">
+                              <p className="font-bold text-gray-700 text-sm">
+                                {edu.institution}
+                              </p>
+                              <p className="text-xs text-gray-600">
+                                {edu.location}
+                              </p>
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -984,19 +963,12 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
 
             {/* PÁGINA 2 - Formación y Nuevas Secciones */}
             <div id="cv-page-2" className="page-2" data-page="2">
-              {/* Header similar a página 1 */}
-              <div className="text-center bg-gray-700 py-4 border-b-2 border-gray-600">
-                <h1 className="text-2xl font-bold text-white">
-                  {cvData.personalInfo.name} - Página 2
-                </h1>
-              </div>
-
               <div className="w-full p-8 bg-white min-h-screen">
                 {/* Certificaciones */}
                 {selectedCertifications.length > 0 && (
                   <section className="mb-8">
                     <h3 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-200 pb-2">
-                      🏆 Certificaciones
+                      Certificaciones
                     </h3>
                     <div className="space-y-4">
                       {selectedCertifications.map((cert) => (
@@ -1026,59 +998,6 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                             <p className="text-xs text-blue-600">
                               <span className="font-medium">Verificación:</span>{" "}
                               {cert.url}
-                            </p>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-                )}
-
-                {/* Logros y Proyectos Destacados */}
-                {selectedAchievements.length > 0 && (
-                  <section className="mb-8">
-                    <h3 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-200 pb-2">
-                      🏆 Logros y Proyectos Destacados
-                    </h3>
-                    <div className="space-y-4">
-                      {selectedAchievements.map((achievement) => (
-                        <div
-                          key={achievement.id}
-                          className="border-l-4 border-gray-300 pl-4"
-                        >
-                          <div className="flex justify-between items-start mb-1">
-                            <h4 className="font-bold text-gray-900 text-sm flex items-center gap-2">
-                              {achievement.type === "project" ? "🚀" : "🏆"}{" "}
-                              {achievement.title}
-                            </h4>
-                            <span className="text-xs text-gray-500">
-                              {achievement.date}
-                            </span>
-                          </div>
-                          {achievement.company && (
-                            <p className="font-bold text-gray-700 text-sm">
-                              {achievement.company}
-                            </p>
-                          )}
-                          <p className="text-gray-700 text-xs mb-2 leading-relaxed">
-                            {achievement.description}
-                          </p>
-                          {achievement.technologies.length > 0 && (
-                            <p className="text-xs text-gray-600 mb-1">
-                              <span className="font-medium">Tecnologías:</span>{" "}
-                              {achievement.technologies.join(", ")}
-                            </p>
-                          )}
-                          {achievement.metrics && (
-                            <p className="text-xs text-green-600 mb-1">
-                              <span className="font-medium">Impacto:</span>{" "}
-                              {achievement.metrics}
-                            </p>
-                          )}
-                          {achievement.url && (
-                            <p className="text-xs text-blue-600">
-                              <span className="font-medium">URL:</span>{" "}
-                              {achievement.url}
                             </p>
                           )}
                         </div>
@@ -1145,6 +1064,8 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                   </section>
                 )}
               </div>
+              {/* Footer*/}
+              <div className="text-center bg-gray-700 py-4 border-b-2 border-gray-600"></div>
             </div>
           </>
         ) : (
@@ -1163,11 +1084,11 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                 </div>
 
                 {/* Información de Contacto ATS */}
-                <div className="mb-6 text-center">
-                  <h3 className="text-lg font-bold text-black mb-3 uppercase border-b border-black pb-1">
+                <div className="mb-6 text-left">
+                  <h3 className="text-md font-bold text-black mb-3 uppercase border-b border-black pb-1">
                     INFORMACIÓN DE CONTACTO
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-black">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-black contact-info-grid">
                     <div>
                       <strong>Teléfono:</strong> {cvData.personalInfo.phone}
                     </div>
@@ -1183,11 +1104,11 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                         {cvData.personalInfo.linkedin}
                       </div>
                     )}
-                    {cvData.personalInfo.github && (
-                      <div>
-                        <strong>GitHub:</strong> {cvData.personalInfo.github}
+                    {cvData.personalInfo.socialNetworks.map((sn) => (
+                      <div key={sn.id}>
+                        <strong>{sn.name}:</strong> {sn.url}
                       </div>
-                    )}
+                    ))}
                     {cvData.personalInfo.website && (
                       <div>
                         <strong>Website:</strong> {cvData.personalInfo.website}
@@ -1208,54 +1129,6 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                   </div>
                 )}
 
-                {/* Habilidades Técnicas ATS */}
-                {selectedSkills.length > 0 && (
-                  <div className="mb-6">
-                    <h3 className="text-lg font-bold text-black mb-3 uppercase border-b border-black pb-1">
-                      HABILIDADES TÉCNICAS
-                    </h3>
-                    {Object.entries(skillsByCategory).map(
-                      ([category, skills]) => (
-                        <div key={category} className="mb-3">
-                          <h4 className="font-bold text-black text-sm mb-1">
-                            {categoryNames[
-                              category as keyof typeof categoryNames
-                            ] || category}
-                            :
-                          </h4>
-                          <p className="text-sm text-black">
-                            {skills.map((skill) => skill.name).join(", ")}
-                          </p>
-                        </div>
-                      )
-                    )}
-                  </div>
-                )}
-
-                {/* Competencias ATS */}
-                {selectedCompetences.length > 0 && (
-                  <div className="mb-6">
-                    <h3 className="text-lg font-bold text-black mb-3 uppercase border-b border-black pb-1">
-                      COMPETENCIAS PROFESIONALES
-                    </h3>
-                    <p className="text-sm text-black">
-                      {selectedCompetences.map((comp) => comp.name).join(", ")}
-                    </p>
-                  </div>
-                )}
-
-                {/* Habilidades Blandas ATS */}
-                {selectedSoftSkills.length > 0 && (
-                  <div className="mb-6">
-                    <h3 className="text-lg font-bold text-black mb-3 uppercase border-b border-black pb-1">
-                      HABILIDADES INTERPERSONALES
-                    </h3>
-                    <p className="text-sm text-black">
-                      {selectedSoftSkills.map((skill) => skill.name).join(", ")}
-                    </p>
-                  </div>
-                )}
-
                 {/* Experiencia Laboral ATS */}
                 {selectedExperiences.length > 0 && (
                   <div className="mb-6">
@@ -1265,17 +1138,20 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                     <div className="space-y-4">
                       {selectedExperiences.map((exp) => (
                         <div key={exp.id} className="mb-4">
-                          <div className="flex justify-between items-start mb-1">
+                          <div className="flex gap-4 items-start mb-1">
                             <h4 className="font-bold text-black">
                               {exp.position}
                             </h4>
-                            <span className="text-sm text-black">
+                            <p className="text-sm text-black">
+                              {"("}
                               {exp.startDate} - {exp.endDate || "Presente"}
-                            </span>
+                              {")"}
+                            </p>
                           </div>
-                          <p className="font-bold text-black mb-1">
-                            {exp.company} | {exp.location}
-                          </p>
+                          <div className="flex gap-4 text-black mb-1">
+                            <p className="font-bold">{exp.company}</p> |{" "}
+                            <p>{exp.location}</p>
+                          </div>
                           <p className="text-sm text-black mb-2">
                             Modalidad: {exp.contractType}, {exp.workSchedule},{" "}
                             {exp.workModality}
@@ -1294,81 +1170,37 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                     </div>
                   </div>
                 )}
-              </div>
-            </div>
-
-            {/* PÁGINA 2 ATS */}
-            <div id="cv-page-2" className="page-2 ats-format" data-page="2">
-              <div className="w-full max-w-4xl mx-auto bg-white p-8 px-12 font-serif">
-                {/* Header página 2 ATS */}
-                <div className="text-center border-b-2 border-black pb-4 mb-6">
-                  <h1 className="text-2xl font-bold text-black uppercase">
-                    {cvData.personalInfo.name} - PÁGINA 2
-                  </h1>
-                </div>
 
                 {/* Formación Académica ATS */}
-                {formalEducation.length > 0 && (
+                {academicEducation.length > 0 && (
                   <div className="mb-6">
                     <h3 className="text-lg font-bold text-black mb-3 uppercase border-b border-black pb-1">
                       FORMACIÓN ACADÉMICA
                     </h3>
                     <div className="space-y-3">
-                      {formalEducation.map((edu) => (
+                      {academicEducation.map((edu) => (
                         <div key={edu.id}>
-                          <div className="flex justify-between items-start mb-1">
+                          <div className="flex gap-4 items-start mb-1">
                             <h4 className="font-bold text-black">
                               {edu.title}
                             </h4>
                             <span className="text-sm text-black">
+                              {"("}
                               {edu.startYear} - {edu.endYear}
+                              {")"}
                             </span>
                           </div>
-                          <p className="font-bold text-black">
-                            {edu.institution}
-                          </p>
-                          <p className="text-sm text-black">{edu.location}</p>
+                          <div className="flex gap-4">
+                            <p className="font-bold text-black">
+                              {edu.institution}
+                            </p>
+                            <p className="text-sm text-black">{edu.location}</p>
+                          </div>
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
-
-                {/* Certificaciones ATS */}
-                {selectedCertifications.length > 0 && (
-                  <div className="mb-6">
-                    <h3 className="text-lg font-bold text-black mb-3 uppercase border-b border-black pb-1">
-                      CERTIFICACIONES
-                    </h3>
-                    <div className="space-y-3">
-                      {selectedCertifications.map((cert) => (
-                        <div key={cert.id}>
-                          <div className="flex justify-between items-start mb-1">
-                            <h4 className="font-bold text-black">
-                              {cert.name}
-                            </h4>
-                            <span className="text-sm text-black">
-                              {cert.date}
-                              {cert.expiryDate && ` - ${cert.expiryDate}`}
-                            </span>
-                          </div>
-                          <p className="font-bold text-black">{cert.issuer}</p>
-                          {cert.credentialId && (
-                            <p className="text-sm text-black">
-                              ID de Credencial: {cert.credentialId}
-                            </p>
-                          )}
-                          {cert.url && (
-                            <p className="text-sm text-black">
-                              Verificación: {cert.url}
-                            </p>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
                 {/* Logros y Proyectos ATS */}
                 {selectedAchievements.length > 0 && (
                   <div className="mb-6">
@@ -1378,12 +1210,14 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                     <div className="space-y-3">
                       {selectedAchievements.map((achievement) => (
                         <div key={achievement.id}>
-                          <div className="flex justify-between items-start mb-1">
+                          <div className="flex gap-4 items-start mb-1">
                             <h4 className="font-bold text-black">
                               {achievement.title}
                             </h4>
                             <span className="text-sm text-black">
+                              {"("}
                               {achievement.date}
+                              {")"}
                             </span>
                           </div>
                           {achievement.company && (
@@ -1415,6 +1249,50 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                     </div>
                   </div>
                 )}
+              </div>
+            </div>
+
+            {/* PÁGINA 2 ATS */}
+            <div id="cv-page-2" className="page-2 ats-format" data-page="2">
+              <div className="w-full max-w-4xl mx-auto bg-white p-8 px-12 font-serif">
+                {/* Certificaciones ATS */}
+                {selectedCertifications.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-bold text-black mb-3 uppercase border-b border-black pb-1">
+                      CERTIFICACIONES
+                    </h3>
+                    <div className="space-y-3">
+                      {selectedCertifications.map((cert) => (
+                        <div key={cert.id}>
+                          <div className="flex gap-4 items-start mb-1">
+                            <h4 className="font-bold text-black">
+                              {cert.name}
+                            </h4>
+                            <span className="text-sm text-black">
+                              {"("}
+                              {cert.date}
+                              {cert.expiryDate && ` - ${cert.expiryDate}`}
+                              {")"}
+                            </span>
+                            <p className="font-bold text-black">
+                              {cert.issuer}
+                            </p>
+                          </div>
+                          {cert.credentialId && (
+                            <p className="text-sm text-black">
+                              ID de Credencial: {cert.credentialId}
+                            </p>
+                          )}
+                          {cert.url && (
+                            <p className="text-sm text-black">
+                              Verificación: {cert.url}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Idiomas ATS */}
                 {cvData.languages.length > 0 && (
@@ -1424,14 +1302,62 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                     </h3>
                     <div className="space-y-1">
                       {cvData.languages.map((lang) => (
-                        <div key={lang.id} className="flex justify-between">
-                          <span className="text-black">{lang.name}</span>
-                          <span className="text-black font-medium">
+                        <div key={lang.id} className="flex gap-4">
+                          <span className="text-black">
+                            {lang.name}
+                            {":"}
+                          </span>
+                          <span className="text-black font-bold">
                             {lang.level}
                           </span>
                         </div>
                       ))}
                     </div>
+                  </div>
+                )}
+
+                {/* Habilidades Técnicas ATS */}
+                {selectedSkills.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-bold text-black mb-3 uppercase border-b border-black pb-1">
+                      HABILIDADES TÉCNICAS
+                    </h3>
+                    {Object.entries(skillsByCategory).map(
+                      ([categoryId, skills]) => (
+                        <div key={categoryId} className="mb-3">
+                          <h4 className="font-bold text-black text-sm mb-1">
+                            {getCategoryName(categoryId)}:
+                          </h4>
+                          <p className="text-sm text-black">
+                            {skills.map((skill) => skill.name).join(", ")}
+                          </p>
+                        </div>
+                      )
+                    )}
+                  </div>
+                )}
+
+                {/* Competencias ATS */}
+                {selectedCompetences.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-bold text-black mb-3 uppercase border-b border-black pb-1">
+                      COMPETENCIAS PROFESIONALES
+                    </h3>
+                    <p className="text-sm text-black">
+                      {selectedCompetences.map((comp) => comp.name).join(", ")}
+                    </p>
+                  </div>
+                )}
+
+                {/* Habilidades Blandas ATS */}
+                {selectedSoftSkills.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-bold text-black mb-3 uppercase border-b border-black pb-1">
+                      HABILIDADES INTERPERSONALES
+                    </h3>
+                    <p className="text-sm text-black">
+                      {selectedSoftSkills.map((skill) => skill.name).join(", ")}
+                    </p>
                   </div>
                 )}
 
@@ -1492,6 +1418,6 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
           </>
         )}
       </div>
-    </div>
+    </section>
   );
 };

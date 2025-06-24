@@ -1,5 +1,3 @@
-// src/components/settings/SettingsPage.tsx
-
 "use client";
 
 import { useState } from "react";

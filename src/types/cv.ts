@@ -6,9 +6,15 @@ export interface PersonalInfo {
   phone: string;
   email: string;
   linkedin: string;
-  github: string;
   website: string;
   location: string;
+  socialNetworks: SocialNetwork[];
+}
+
+export interface SocialNetwork {
+  id: string;
+  name: string;
+  url: string;
 }
 
 export interface Language {
@@ -17,17 +23,16 @@ export interface Language {
   level: "A1" | "A2" | "B1" | "B2" | "C1" | "C2" | "Nativo";
 }
 
+export interface SkillCategory {
+  id: string;
+  name: string;
+}
+
 export interface Skill {
   id: string;
   name: string;
-  category:
-    | "language"
-    | "framework"
-    | "tool"
-    | "database"
-    | "orm"
-    | "ai"
-    | "library";
+  categoryId: string;
+  categoryName?: string; // Para facilitar el renderizado
   selected: boolean;
 }
 
@@ -54,13 +59,11 @@ export interface Experience {
 
 export interface Education {
   id: string;
-  title: string;
-  institution: string;
-  location: string;
-  startYear: string;
-  endYear: string;
-  type: "formal" | "additional";
-  duration?: string;
+  title: string; // Título del grado/master/doctorado
+  institution: string; // Universidad/Centro educativo
+  location: string; // Ciudad, País
+  startYear: string; // Año de inicio
+  endYear: string; // Año de finalización
   selected: boolean;
 }
 
@@ -117,6 +120,7 @@ export interface CVData {
   aboutMe: string;
   languages: Language[];
   skills: Skill[];
+  skillCategories: SkillCategory[];
   competences: Competence[];
   interests: Interest[];
   softSkills: SoftSkill[];

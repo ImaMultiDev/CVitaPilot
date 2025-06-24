@@ -67,8 +67,14 @@ export const PersonalInfoForm: React.FC = () => {
           />
           <Input
             label="GitHub"
-            value={formData.github}
-            onChange={(e) => handleChange("github", e.target.value)}
+            value={
+              formData.socialNetworks.find((sn) => sn.name === "GitHub")?.url ||
+              ""
+            }
+            onChange={(e) => {
+              // TODO: Actualizar para usar socialNetworks
+              handleChange("github", e.target.value);
+            }}
           />
         </div>
 

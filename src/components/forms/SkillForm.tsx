@@ -24,7 +24,7 @@ export const SkillForm: React.FC<SkillFormProps> = ({
   const { dispatch, addSkill } = useCV();
   const [formData, setFormData] = useState<Omit<Skill, "id">>({
     name: skill?.name || "",
-    category: skill?.category || "language",
+    categoryId: skill?.categoryId || "language",
     selected: skill?.selected || true,
   });
 
@@ -71,11 +71,11 @@ export const SkillForm: React.FC<SkillFormProps> = ({
 
         <Select
           label="Categoría"
-          value={formData.category}
+          value={formData.categoryId}
           onChange={(e) =>
             setFormData((prev) => ({
               ...prev,
-              category: e.target.value as Skill["category"],
+              categoryId: e.target.value as Skill["categoryId"],
             }))
           }
           options={skillCategories}

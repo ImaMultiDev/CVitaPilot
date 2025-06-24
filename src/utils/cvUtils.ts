@@ -19,7 +19,7 @@ export const cvUtils = {
       hasContact: !!(cvData.personalInfo.email && cvData.personalInfo.phone),
       hasOnlinePresence: !!(
         cvData.personalInfo.linkedin ||
-        cvData.personalInfo.github ||
+        cvData.personalInfo.socialNetworks.length > 0 ||
         cvData.personalInfo.website
       ),
       completenessScore: calculateCompletenessScore(cvData),
@@ -59,8 +59,11 @@ export const cvUtils = {
     text += `Ubicación: ${cvData.personalInfo.location}\n`;
     if (cvData.personalInfo.linkedin)
       text += `LinkedIn: ${cvData.personalInfo.linkedin}\n`;
-    if (cvData.personalInfo.github)
-      text += `GitHub: ${cvData.personalInfo.github}\n`;
+    if (cvData.personalInfo.socialNetworks.length > 0) {
+      cvData.personalInfo.socialNetworks.forEach((social) => {
+        text += `${social.name}: ${social.url}\n`;
+      });
+    }
     if (cvData.personalInfo.website)
       text += `Website: ${cvData.personalInfo.website}\n`;
 
@@ -76,13 +79,14 @@ export const cvUtils = {
     if (selectedSkills.length > 0) {
       text += `\nHABILIDADES TÉCNICAS:\n`;
       const skillsByCategory = selectedSkills.reduce((acc, skill) => {
-        if (!acc[skill.category]) acc[skill.category] = [];
-        acc[skill.category].push(skill.name);
+        const categoryName = skill.categoryName || "Sin categoría";
+        if (!acc[categoryName]) acc[categoryName] = [];
+        acc[categoryName].push(skill.name);
         return acc;
       }, {} as Record<string, string[]>);
 
-      Object.entries(skillsByCategory).forEach(([category, skills]) => {
-        text += `${category.toUpperCase()}: ${skills.join(", ")}\n`;
+      Object.entries(skillsByCategory).forEach(([categoryName, skills]) => {
+        text += `${categoryName.toUpperCase()}: ${skills.join(", ")}\n`;
       });
     }
 
@@ -102,15 +106,9 @@ export const cvUtils = {
     }
 
     if (selectedEducation.length > 0) {
-      text += `FORMACIÓN:\n`;
+      text += `FORMACIÓN ACADÉMICA:\n`;
       selectedEducation.forEach((edu) => {
-        text += `${edu.title} - ${edu.institution}`;
-        if (edu.type === "formal") {
-          text += ` (${edu.startYear} - ${edu.endYear})`;
-        } else if (edu.duration) {
-          text += ` (${edu.duration})`;
-        }
-        text += "\n";
+        text += `${edu.title} - ${edu.institution} (${edu.startYear} - ${edu.endYear})\n`;
       });
     }
 
@@ -155,8 +153,8 @@ export const cvUtils = {
   },
 
   // Filter and search functions
-  filterSkillsByCategory: (skills: Skill[], category: string) => {
-    return skills.filter((skill) => skill.category === category);
+  filterSkillsByCategory: (skills: Skill[], categoryId: string) => {
+    return skills.filter((skill) => skill.categoryId === categoryId);
   },
 
   searchExperiences: (experiences: Experience[], query: string) => {
@@ -193,10 +191,16 @@ export const cvUtils = {
       suggestions.push("Añade tu perfil de LinkedIn para mayor credibilidad");
     }
 
-    if (
-      !cvData.personalInfo.github &&
-      selectedSkills.some((s) => s.category === "language")
-    ) {
+    const hasGitHub = cvData.personalInfo.socialNetworks.some(
+      (social) => social.name.toLowerCase() === "github"
+    );
+    const hasDevSkills = selectedSkills.some(
+      (s) =>
+        s.categoryName?.toLowerCase().includes("programación") ||
+        s.categoryName?.toLowerCase().includes("desarrollo")
+    );
+
+    if (!hasGitHub && hasDevSkills) {
       suggestions.push(
         "Considera añadir tu perfil de GitHub si eres desarrollador"
       );
@@ -225,7 +229,7 @@ function calculateCompletenessScore(cvData: CVData): number {
   if (cvData.personalInfo.position) score += 5;
   if (cvData.personalInfo.location) score += 3;
   if (cvData.personalInfo.linkedin) score += 2;
-  if (cvData.personalInfo.github) score += 2;
+  if (cvData.personalInfo.socialNetworks.length > 0) score += 2;
   if (cvData.personalInfo.website) score += 3;
 
   // About me (15 points)

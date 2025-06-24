@@ -4,6 +4,7 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
@@ -123,13 +124,26 @@ export default function LoginPage() {
             </Button>
           </form>
 
+          {/* Link al registro */}
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              ¿No tienes cuenta?{" "}
+              <Link
+                href="/auth/register"
+                className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500"
+              >
+                Regístrate aquí
+              </Link>
+            </p>
+          </div>
+
           {/* Información adicional */}
           <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
             <div className="text-center text-sm text-gray-500 dark:text-gray-400">
               <p className="mb-2">
-                <strong>Demo de CVitaPilot</strong>
+                <strong>CVitaPilot</strong>
               </p>
-              <p>Sistema de autenticación mejorado con Auth.js</p>
+              <p>Tu generador profesional de CVs</p>
             </div>
           </div>
         </div>

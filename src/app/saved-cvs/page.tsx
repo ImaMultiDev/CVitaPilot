@@ -1,12 +1,12 @@
 // src/app/saved-cvs/page.tsx - VERSIÓN SIMPLIFICADA CON PRISMA
 
 import { MainLayout } from "@/components/layout/MainLayout";
-import { SavedCVsPage } from "@/components/saved/SavedCVsPage";
+import { MyCVsPage } from "@/views/MyCVs";
 
-export default function SavedCVsPageRoute() {
+export default function MyCVsPageRoute() {
   return (
     <MainLayout>
-      <SavedCVsPage />
+      <MyCVsPage />
     </MainLayout>
   );
 }

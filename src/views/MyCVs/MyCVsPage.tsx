@@ -1,5 +1,3 @@
-// src/components/saved/SavedCVsPage.tsx
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -17,7 +15,7 @@ interface SavedCV {
   deliveryCount: number;
 }
 
-export const SavedCVsPage: React.FC = () => {
+export const MyCVsPage: React.FC = () => {
   const [savedCVs, setSavedCVs] = useState<SavedCV[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 

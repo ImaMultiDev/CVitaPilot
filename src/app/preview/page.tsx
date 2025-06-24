@@ -5,7 +5,7 @@ import {
   initializeDefaultCV,
   getCurrentCVName,
 } from "@/lib/actions/cv-actions";
-import { CVPreviewPrisma } from "@/components/cv/CVPreviewPrisma";
+import { CVPreviewPrisma } from "@/views/CVPreview/CVPreviewPrisma";
 import { MainLayout } from "@/components/layout/MainLayout";
 
 export default async function PreviewPage() {

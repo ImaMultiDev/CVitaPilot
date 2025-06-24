@@ -18,7 +18,7 @@ export default function DebugPage() {
   const testAddSkill = () => {
     addSkill({
       name: `Test Skill ${Date.now()}`,
-      category: "language",
+      categoryId: "language",
       selected: true,
     });
   };

@@ -5,7 +5,7 @@ import {
   initializeDefaultCV,
   getCurrentCVName,
 } from "@/lib/actions/cv-actions";
-import { CVEditorPrisma } from "@/components/editor/CVEditorPrisma";
+import { CVEditorPrisma } from "@/views/CVEditor/CVEditorPrisma";
 import { MainLayout } from "@/components/layout/MainLayout";
 
 export default async function HomePage() {

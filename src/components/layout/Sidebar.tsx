@@ -41,16 +41,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
     { id: "languages", name: "Idiomas", icon: "🌍" },
   ];
 
-  const skillCategories = [
-    { id: "language", name: "Lenguajes", icon: "💻" },
-    { id: "framework", name: "Frameworks", icon: "🏗️" },
-    { id: "database", name: "Bases de Datos", icon: "🗄️" },
-    { id: "tool", name: "Herramientas", icon: "🔧" },
-    { id: "library", name: "Librerías", icon: "📚" },
-    { id: "orm", name: "ORM", icon: "🔗" },
-    { id: "ai", name: "IA", icon: "🤖" },
-  ];
-
   // Función helper para manejar actualizaciones
   const handleUpdate = async (
     updateFn: () => Promise<{ success: boolean; error?: string }>
@@ -109,49 +99,54 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
   };
 
   const renderSkillsSection = () => {
+    // Agrupar skills por categoría usando las categorías dinámicas del CV
+    const skillsByCategory = cvData.skillCategories
+      .map((category) => {
+        const skills = cvData.skills.filter(
+          (skill) => skill.categoryId === category.id
+        );
+        return {
+          ...category,
+          skills,
+          selectedCount: skills.filter((skill) => skill.selected).length,
+        };
+      })
+      .filter((category) => category.skills.length > 0);
+
     return (
       <div className="space-y-4">
-        {skillCategories.map((category) => {
-          const skills = cvData.skills.filter(
-            (skill) => skill.category === category.id
-          );
-          const selectedCount = skills.filter((skill) => skill.selected).length;
+        {skillsByCategory.map((category) => (
+          <Card key={category.id} className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center space-x-2">
+                <span>🛠️</span>
+                <h4 className="font-medium text-gray-900 dark:text-white">
+                  {category.name}
+                </h4>
+              </div>
+              <Badge variant="info">
+                {category.selectedCount}/{category.skills.length}
+              </Badge>
+            </div>
 
-          if (skills.length === 0) return null;
-
-          return (
-            <Card key={category.id} className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center space-x-2">
-                  <span>{category.icon}</span>
-                  <h4 className="font-medium text-gray-900 dark:text-white">
-                    {category.name}
-                  </h4>
+            <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
+              {category.skills.map((skill) => (
+                <div
+                  key={skill.id}
+                  className="flex items-center justify-between"
+                >
+                  <span className="text-sm text-gray-700 dark:text-gray-300 mr-3">
+                    {skill.name}
+                  </span>
+                  <Toggle
+                    checked={skill.selected}
+                    onChange={() => handleToggleSkill(skill.id)}
+                  />
                 </div>
-                <Badge variant="info">
-                  {selectedCount}/{skills.length}
-                </Badge>
-              </div>
-
-              <div className="space-y-2 max-h-40 overflow-y-auto">
-                {skills.map((skill) => (
-                  <div
-                    key={skill.id}
-                    className="flex items-center justify-between"
-                  >
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
-                      {skill.name}
-                    </span>
-                    <Toggle
-                      checked={skill.selected}
-                      onChange={() => handleToggleSkill(skill.id)}
-                    />
-                  </div>
-                ))}
-              </div>
-            </Card>
-          );
-        })}
+              ))}
+            </div>
+          </Card>
+        ))}
       </div>
     );
   };
@@ -172,13 +167,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
           </Badge>
         </div>
 
-        <div className="space-y-2 max-h-60 overflow-y-auto">
+        <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
           {cvData.competences.map((competence) => (
             <div
               key={competence.id}
               className="flex items-center justify-between"
             >
-              <span className="text-sm text-gray-700 dark:text-gray-300">
+              <span className="text-sm text-gray-700 dark:text-gray-300 mr-3">
                 {competence.name}
               </span>
               <Toggle
@@ -208,19 +203,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
           </Badge>
         </div>
 
-        <div className="space-y-3 max-h-60 overflow-y-auto">
+        <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
           {cvData.experiences.map((experience) => (
             <div
               key={experience.id}
               className="border-l-4 border-gray-200 pl-3"
             >
               <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h5 className="text-sm font-medium text-gray-900">
+                <div className="flex-1 mr-3">
+                  <h5 className="text-sm font-medium text-gray-900 dark:text-white">
                     {experience.position}
                   </h5>
-                  <p className="text-xs text-gray-600">{experience.company}</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                    {experience.company}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-500">
                     {experience.startDate} - {experience.endDate || "Presente"}
                   </p>
                 </div>
@@ -250,19 +247,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
           </Badge>
         </div>
 
-        <div className="space-y-3 max-h-60 overflow-y-auto">
+        <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
           {cvData.education.map((edu) => (
             <div key={edu.id} className="border-l-4 border-gray-200 pl-3">
               <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h5 className="text-sm font-medium text-gray-900">
+                <div className="flex-1 mr-3">
+                  <h5 className="text-sm font-medium text-gray-900 dark:text-white">
                     {edu.title}
                   </h5>
-                  <p className="text-xs text-gray-600">{edu.institution}</p>
-                  <p className="text-xs text-gray-500">
-                    {edu.type === "additional"
-                      ? edu.duration
-                      : `${edu.startYear} - ${edu.endYear}`}
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                    {edu.institution}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-500">
+                    {`${edu.startYear} - ${edu.endYear}`}
                   </p>
                 </div>
                 <Toggle
@@ -293,13 +290,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
           </Badge>
         </div>
 
-        <div className="space-y-2 max-h-60 overflow-y-auto">
+        <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
           {cvData.softSkills.map((softSkill) => (
             <div
               key={softSkill.id}
               className="flex items-center justify-between"
             >
-              <span className="text-sm text-gray-700 dark:text-gray-300">
+              <span className="text-sm text-gray-700 dark:text-gray-300 mr-3">
                 {softSkill.name}
               </span>
               <Toggle
@@ -321,22 +318,28 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
     return (
       <Card className="p-4">
         <div className="flex items-center justify-between mb-3">
-          <h4 className="font-medium text-gray-900">Certificaciones</h4>
+          <h4 className="font-medium text-gray-900 dark:text-white">
+            Certificaciones
+          </h4>
           <Badge variant="info">
             {selectedCount}/{cvData.certifications.length}
           </Badge>
         </div>
 
-        <div className="space-y-3 max-h-60 overflow-y-auto">
+        <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
           {cvData.certifications.map((cert) => (
             <div key={cert.id} className="border-l-4 border-gray-200 pl-3">
               <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h5 className="text-sm font-medium text-gray-900">
+                <div className="flex-1 mr-3">
+                  <h5 className="text-sm font-medium text-gray-900 dark:text-white">
                     {cert.name}
                   </h5>
-                  <p className="text-xs text-gray-600">{cert.issuer}</p>
-                  <p className="text-xs text-gray-500">{cert.date}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                    {cert.issuer}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-500">
+                    {cert.date}
+                  </p>
                 </div>
                 <Toggle
                   checked={cert.selected}
@@ -358,30 +361,34 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
     return (
       <Card className="p-4">
         <div className="flex items-center justify-between mb-3">
-          <h4 className="font-medium text-gray-900">Logros y Proyectos</h4>
+          <h4 className="font-medium text-gray-900 dark:text-white">
+            Logros y Proyectos
+          </h4>
           <Badge variant="info">
             {selectedCount}/{cvData.achievements.length}
           </Badge>
         </div>
 
-        <div className="space-y-3 max-h-60 overflow-y-auto">
+        <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
           {cvData.achievements.map((achievement) => (
             <div
               key={achievement.id}
               className="border-l-4 border-gray-200 pl-3"
             >
               <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h5 className="text-sm font-medium text-gray-900 flex items-center gap-1">
+                <div className="flex-1 mr-3">
+                  <h5 className="text-sm font-medium text-gray-900 dark:text-white flex items-center gap-1">
                     {achievement.type === "project" ? "🚀" : "🏆"}{" "}
                     {achievement.title}
                   </h5>
                   {achievement.company && (
-                    <p className="text-xs text-gray-600">
+                    <p className="text-xs text-gray-600 dark:text-gray-400">
                       {achievement.company}
                     </p>
                   )}
-                  <p className="text-xs text-gray-500">{achievement.date}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-500">
+                    {achievement.date}
+                  </p>
                 </div>
                 <Toggle
                   checked={achievement.selected}
@@ -403,22 +410,28 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
     return (
       <Card className="p-4">
         <div className="flex items-center justify-between mb-3">
-          <h4 className="font-medium text-gray-900">Referencias</h4>
+          <h4 className="font-medium text-gray-900 dark:text-white">
+            Referencias
+          </h4>
           <Badge variant="info">
             {selectedCount}/{cvData.references.length}
           </Badge>
         </div>
 
-        <div className="space-y-3 max-h-60 overflow-y-auto">
+        <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
           {cvData.references.map((reference) => (
             <div key={reference.id} className="border-l-4 border-gray-200 pl-3">
               <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h5 className="text-sm font-medium text-gray-900">
+                <div className="flex-1 mr-3">
+                  <h5 className="text-sm font-medium text-gray-900 dark:text-white">
                     {reference.name}
                   </h5>
-                  <p className="text-xs text-gray-600">{reference.position}</p>
-                  <p className="text-xs text-gray-500">{reference.company}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                    {reference.position}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-500">
+                    {reference.company}
+                  </p>
                 </div>
                 <Toggle
                   checked={reference.selected}
@@ -439,13 +452,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
           <h4 className="font-medium text-gray-900 dark:text-white">Idiomas</h4>
           <Badge variant="info">{cvData.languages.length}</Badge>
         </div>
-        <div className="space-y-2 max-h-60 overflow-y-auto">
+        <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
           {cvData.languages.map((language) => (
             <div
               key={language.id}
               className="flex items-center justify-between border rounded-lg p-2"
             >
-              <span className="text-sm text-gray-700 dark:text-gray-300">
+              <span className="text-sm text-gray-700 dark:text-gray-300 mr-3">
                 {language.name}
               </span>
               <Badge variant="default">{language.level}</Badge>
