@@ -164,7 +164,9 @@ export async function registerUser(data: RegisterData) {
 }
 
 // Función para inicializar CV por defecto para un nuevo usuario
-async function initializeDefaultCVForUser(userId: string): Promise<string> {
+export async function initializeDefaultCVForUser(
+  userId: string
+): Promise<string> {
   try {
     // Datos iniciales para el nuevo usuario
     const defaultData = {

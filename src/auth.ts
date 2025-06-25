@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import { authConfig } from "./auth.config";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
@@ -17,6 +18,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
+    }),
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -69,6 +81,51 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
+  callbacks: {
+    ...authConfig.callbacks,
+    async signIn({ user, account, profile }) {
+      if (account?.provider === "google") {
+        try {
+          // Verificar si el usuario ya existe
+          const existingUser = await prisma.user.findUnique({
+            where: { email: user.email! },
+          });
+
+          if (!existingUser) {
+            // Crear CV inicial para usuario de Google
+            const { initializeDefaultCVForUser } = await import(
+              "@/lib/actions/auth-actions"
+            );
+
+            // El usuario se creará automáticamente por el adapter
+            // Pero necesitamos crear su CV inicial después
+            setTimeout(async () => {
+              try {
+                const newUser = await prisma.user.findUnique({
+                  where: { email: user.email! },
+                });
+                if (newUser) {
+                  await initializeDefaultCVForUser(newUser.id);
+                }
+              } catch (error) {
+                console.error(
+                  "Error creando CV inicial para usuario OAuth:",
+                  error
+                );
+              }
+            }, 1000);
+          }
+
+          return true;
+        } catch (error) {
+          console.error("Error en signIn callback:", error);
+          return false;
+        }
+      }
+
+      return true;
+    },
+  },
 });
 
 // Función helper para obtener la sesión del usuario

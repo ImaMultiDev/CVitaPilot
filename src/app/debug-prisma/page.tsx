@@ -1,8 +1,4 @@
-import {
-  getCurrentCV,
-  cleanupDuplicateCVs,
-  getSavedCVs,
-} from "@/lib/actions/cv-actions";
+import { getCurrentCV, getSavedCVs } from "@/lib/actions/cv-actions";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { DebugPrismaClient } from "@/components/debug/DebugPrismaClient";
 
