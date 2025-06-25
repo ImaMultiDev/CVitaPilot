@@ -92,13 +92,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           });
 
           if (!existingUser) {
-            // Crear CV inicial para usuario de Google
+            // Crear CV inicial para usuario de Google (vacío)
             const { initializeDefaultCVForUser } = await import(
               "@/lib/actions/auth-actions"
             );
 
             // El usuario se creará automáticamente por el adapter
-            // Pero necesitamos crear su CV inicial después
+            // Esperamos a que se cree y luego inicializamos su CV vacío
             setTimeout(async () => {
               try {
                 const newUser = await prisma.user.findUnique({
@@ -106,6 +106,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 });
                 if (newUser) {
                   await initializeDefaultCVForUser(newUser.id);
+                  console.log(
+                    `CV inicial creado para usuario OAuth: ${newUser.email}`
+                  );
                 }
               } catch (error) {
                 console.error(
