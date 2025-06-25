@@ -83,7 +83,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     ...authConfig.callbacks,
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account, profile: _profile }) {
       if (account?.provider === "google") {
         try {
           // Verificar si el usuario ya existe
