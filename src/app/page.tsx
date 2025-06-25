@@ -1,12 +1,10 @@
 // src/app/page.tsx
 
-import {
-  getCurrentCV,
-  initializeDefaultCV,
-  getCurrentCVName,
-} from "@/lib/actions/cv-actions";
+import { getCurrentCV, getCurrentCVName } from "@/lib/actions/cv-actions";
+import { initializeDefaultCVForUser } from "@/lib/actions/auth-actions";
 import { CVEditorPrisma } from "@/views/CVEditor/CVEditorPrisma";
 import { MainLayout } from "@/components/layout/MainLayout";
+import { getCurrentUser } from "@/auth";
 
 // Forzar renderizado dinámico porque usa autenticación
 export const dynamic = "force-dynamic";
@@ -15,14 +13,17 @@ export default async function HomePage() {
   // Intentar obtener el CV actual
   let currentCV = await getCurrentCV();
 
-  // Si no hay CV, inicializar con datos por defecto
+  // Si no hay CV, inicializar con datos vacíos para el usuario actual
   if (!currentCV) {
-    console.log("No CV found, initializing default CV...");
+    console.log("No CV found, initializing default CV for user...");
     try {
-      await initializeDefaultCV();
-      currentCV = await getCurrentCV();
+      const user = await getCurrentUser();
+      if (user?.id) {
+        await initializeDefaultCVForUser(user.id);
+        currentCV = await getCurrentCV();
+      }
     } catch (error) {
-      console.error("Error initializing CV:", error);
+      console.error("Error initializing CV for user:", error);
     }
   }
 
