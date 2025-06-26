@@ -30,10 +30,10 @@ export const Card: React.FC<CardProps> = ({
   const [isHovered, setIsHovered] = useState(false);
 
   const paddingClasses = {
-    sm: "p-3",
-    md: "p-6",
-    lg: "p-8",
-    xl: "p-12",
+    sm: "p-3 md:p-3",
+    md: "p-4 md:p-6",
+    lg: "p-6 md:p-8",
+    xl: "p-8 md:p-12",
   };
 
   const getPaddingClass = () => {

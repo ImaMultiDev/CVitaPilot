@@ -111,16 +111,16 @@ export const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
 
   return (
     <Card>
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+      <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-4 md:mb-6">
         Experiencia Laboral
       </h3>
 
       {/* Añadir nueva experiencia */}
-      <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg mb-4">
-        <h4 className="font-medium text-gray-900 dark:text-white mb-3">
+      <div className="bg-gray-50 dark:bg-gray-800 p-4 md:p-6 rounded-lg mb-4 md:mb-6">
+        <h4 className="font-medium text-gray-900 dark:text-white mb-3 md:mb-4 text-sm md:text-base">
           Añadir nueva experiencia
         </h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-3 md:mb-4">
           <Input
             label="Puesto"
             value={newExperience.position}
@@ -132,6 +132,7 @@ export const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
             }
             placeholder="Ej: Desarrollador Frontend"
             disabled={isUpdating}
+            className="h-12 md:h-10 text-base md:text-sm"
           />
           <Input
             label="Empresa"
@@ -144,6 +145,7 @@ export const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
             }
             placeholder="Ej: Tech Company S.L."
             disabled={isUpdating}
+            className="h-12 md:h-10 text-base md:text-sm"
           />
           <Input
             label="Ubicación"
@@ -156,6 +158,7 @@ export const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
             }
             placeholder="Ej: Madrid, España"
             disabled={isUpdating}
+            className="h-12 md:h-10 text-base md:text-sm"
           />
           <Input
             label="Fecha inicio"
@@ -168,6 +171,7 @@ export const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
               }))
             }
             disabled={isUpdating}
+            className="h-12 md:h-10 text-base md:text-sm"
           />
           <Input
             label="Fecha fin (opcional)"
@@ -180,6 +184,7 @@ export const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
               }))
             }
             disabled={isUpdating}
+            className="h-12 md:h-10 text-base md:text-sm"
           />
           <Select
             label="Tipo de contrato"
@@ -200,6 +205,7 @@ export const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
               { value: "Freelance", label: "Freelance" },
               { value: "Autónomo", label: "Autónomo" },
             ]}
+            className="h-12 md:h-10 text-base md:text-sm"
           />
           <Select
             label="Tipo de jornada"
@@ -216,6 +222,7 @@ export const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
               { value: "Media jornada", label: "Media jornada" },
               { value: "Jornada flexible", label: "Jornada flexible" },
             ]}
+            className="h-12 md:h-10 text-base md:text-sm"
           />
           <Select
             label="Modalidad de trabajo"
@@ -232,6 +239,7 @@ export const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
               { value: "Híbrido", label: "Híbrido" },
               { value: "Teletrabajo", label: "Teletrabajo" },
             ]}
+            className="h-12 md:h-10 text-base md:text-sm"
           />
           <Input
             label="Tecnologías"
@@ -244,6 +252,7 @@ export const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
             }
             placeholder="Ej: React, Node.js, PostgreSQL"
             disabled={isUpdating}
+            className="h-12 md:h-10 text-base md:text-sm"
           />
         </div>
         <Textarea
@@ -257,11 +266,12 @@ export const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
           }
           placeholder="Describe tus responsabilidades y logros..."
           rows={3}
+          className="text-base md:text-sm"
         />
         <Button
           onClick={handleAddExperience}
           size="sm"
-          className="mt-3"
+          className="mt-3 md:mt-4 h-12 md:h-10 text-base md:text-sm font-medium"
           disabled={isUpdating}
         >
           ➕ Añadir experiencia
@@ -269,49 +279,51 @@ export const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
       </div>
 
       {/* Experiencias existentes */}
-      <div className="space-y-3">
+      <div className="space-y-3 md:space-y-4">
         {experiences.map((experience) => (
           <div
             key={experience.id}
-            className="border rounded-lg p-4 flex items-start justify-between"
+            className="border rounded-lg p-4 md:p-5 flex flex-col md:flex-row md:items-start md:justify-between gap-4 md:gap-0"
           >
-            <div className="flex-1">
-              <h4 className="font-semibold text-gray-900 dark:text-white">
+            <div className="flex-1 min-w-0">
+              <h4 className="font-semibold text-gray-900 dark:text-white text-base md:text-lg">
                 {experience.position}
               </h4>
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-gray-600 dark:text-gray-300 text-base md:text-sm">
                 {experience.company} - {experience.location}
               </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm md:text-xs text-gray-500 dark:text-gray-400">
                 {experience.startDate} - {experience.endDate || "Presente"}
               </p>
-              <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
+              <p className="text-xs md:text-xs text-gray-600 dark:text-gray-400 mb-2">
                 {experience.contractType} • {experience.workSchedule} •{" "}
                 {experience.workModality}
               </p>
               {experience.description && (
-                <p className="text-sm text-gray-700 dark:text-gray-300 mt-2">
+                <p className="text-sm md:text-sm text-gray-700 dark:text-gray-300 mt-2">
                   {experience.description}
                 </p>
               )}
               {experience.technologies &&
                 experience.technologies.length > 0 && (
-                  <p className="text-sm text-blue-600 dark:text-blue-400 mt-1">
+                  <p className="text-sm md:text-sm text-blue-600 dark:text-blue-400 mt-1">
                     🔧 {experience.technologies.join(", ")}
                   </p>
                 )}
             </div>
-            <div className="flex items-center space-x-2 ml-4">
-              <Toggle
-                checked={experience.selected}
-                onChange={() => handleToggleExperience(experience.id)}
-                disabled={isUpdating}
-              />
+            <div className="flex items-center justify-end md:justify-center space-x-3 md:space-x-2 md:ml-4 flex-shrink-0">
+              <div className="scale-125 md:scale-100">
+                <Toggle
+                  checked={experience.selected}
+                  onChange={() => handleToggleExperience(experience.id)}
+                  disabled={isUpdating}
+                />
+              </div>
               <Button
                 onClick={() => handleDeleteExperience(experience.id)}
                 size="sm"
                 variant="secondary"
-                className="text-red-600 hover:text-red-700"
+                className="text-red-600 hover:text-red-700 p-2 md:p-1 min-w-[44px] min-h-[44px] md:min-w-[auto] md:min-h-[auto]"
                 disabled={isUpdating}
               >
                 🗑️
