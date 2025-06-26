@@ -18,6 +18,7 @@ import {
 export const Navbar: React.FC = () => {
   const { theme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { data: session, status } = useSession();
 
   const toggleMobileMenu = () => {
@@ -32,6 +33,17 @@ export const Navbar: React.FC = () => {
   const getLogoSrc = (size: string = "64x64") => {
     return theme === "dark" ? `/logo_dark_${size}.png` : `/logo_${size}.png`;
   };
+
+  // Detectar scroll para efectos visuales
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      setIsScrolled(scrollTop > 10);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Precargar logos para transiciones más suaves
   useEffect(() => {
@@ -61,14 +73,20 @@ export const Navbar: React.FC = () => {
   return (
     <>
       <nav
-        className="sticky top-0 z-[100] transition-all duration-500"
+        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${
+          isScrolled
+            ? "transform translate-y-0 shadow-2xl"
+            : "transform translate-y-0"
+        }`}
         style={{
-          background:
-            "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
-          backdropFilter: "blur(20px)",
+          background: isScrolled
+            ? "linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 50%, rgba(240, 147, 251, 0.95) 100%)"
+            : "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
+          backdropFilter: isScrolled ? "blur(25px)" : "blur(20px)",
           borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-          boxShadow:
-            "0 8px 32px rgba(102, 126, 234, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05) inset",
+          boxShadow: isScrolled
+            ? "0 10px 40px rgba(102, 126, 234, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1) inset"
+            : "0 8px 32px rgba(102, 126, 234, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05) inset",
         }}
       >
         {/* Animated background pattern */}
@@ -84,7 +102,7 @@ export const Navbar: React.FC = () => {
 
         {/* Contenido principal del navbar */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="flex justify-between items-center h-20">
+          <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className="flex items-center">
               <Link

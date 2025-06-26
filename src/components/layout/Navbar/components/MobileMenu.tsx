@@ -125,13 +125,13 @@ export const MobileMenu: React.FC<MobileMenuProps> = React.memo(
           <>
             {/* Overlay - Solo desde donde termina el navbar */}
             <div
-              className="md:hidden fixed left-0 right-0 top-20 bottom-0 bg-black/50 z-[500]"
+              className="md:hidden fixed left-0 right-0 top-16 bottom-0 bg-black/50 z-[500]"
               onClick={onClose}
             />
 
             {/* Panel del menú */}
             <div
-              className="md:hidden fixed left-4 right-4 top-24 h-[70vh] backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl z-[1000] overflow-hidden"
+              className="md:hidden fixed left-4 right-4 top-20 h-[70vh] backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl z-[1000] overflow-hidden"
               style={{
                 background:
                   "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",

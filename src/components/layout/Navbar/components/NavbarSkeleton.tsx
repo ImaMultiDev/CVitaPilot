@@ -17,7 +17,7 @@ export const NavbarSkeleton: React.FC = React.memo(() => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-16">
           {/* Logo skeleton */}
           <div className="flex items-center">
             <div className="w-40 h-10 bg-white/10 rounded-2xl animate-pulse backdrop-blur-sm shadow-lg"></div>

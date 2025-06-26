@@ -62,7 +62,7 @@ export default async function HomePage() {
   const currentCVName = await getCurrentCVName();
 
   return (
-    <MainLayout showSidebar={true} cvData={currentCV}>
+    <MainLayout showSidebar={false}>
       <CVEditorPrisma initialData={currentCV} currentCVName={currentCVName} />
     </MainLayout>
   );
