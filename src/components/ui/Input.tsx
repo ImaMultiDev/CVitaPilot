@@ -19,9 +19,6 @@ export const Input: React.FC<InputProps> = ({
   ...props
 }) => {
   const [isFocused, setIsFocused] = useState(false);
-  const [_hasValue, setHasValue] = useState(
-    !!props.value || !!props.defaultValue
-  );
 
   const inputId = id || label?.toLowerCase().replace(/\s+/g, "-");
 
@@ -29,7 +26,7 @@ export const Input: React.FC<InputProps> = ({
     default: {
       container: "relative",
       input: `
-        w-full px-4 py-3 rounded-xl border-2 transition-all duration-300 
+        w-full px-4 py-3 rounded-xl border-2 transition-colors duration-200 
         bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
         placeholder-gray-400 dark:placeholder-gray-500
         focus:outline-none focus:ring-0
@@ -37,46 +34,46 @@ export const Input: React.FC<InputProps> = ({
       label: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block",
       border: isFocused
         ? error
-          ? "border-red-400 shadow-lg shadow-red-500/25"
-          : "border-blue-400 shadow-lg shadow-blue-500/25"
+          ? "border-red-500"
+          : "border-blue-500"
         : error
         ? "border-red-300 dark:border-red-600"
-        : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500",
+        : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500",
     },
     modern: {
-      container: "relative group",
+      container: "relative",
       input: `
-        w-full px-4 py-3 rounded-xl border-2 transition-all duration-300 
-        bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900
+        w-full px-4 py-3 rounded-xl border-2 transition-colors duration-200 
+        bg-white dark:bg-gray-800
         text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500
-        focus:outline-none focus:ring-0 transform-gpu
+        focus:outline-none focus:ring-0
       `,
       label:
         "text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 block",
       border: isFocused
         ? error
-          ? "border-red-400 shadow-xl shadow-red-500/30"
-          : "border-blue-400 shadow-xl shadow-blue-500/30"
+          ? "border-red-500"
+          : "border-blue-500"
         : error
-        ? "border-red-300 dark:border-red-600 shadow-md shadow-red-500/20"
-        : "border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/10",
+        ? "border-red-300 dark:border-red-600"
+        : "border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500",
     },
     glass: {
-      container: "relative group",
+      container: "relative",
       input: `
-        w-full px-4 py-3 rounded-xl border transition-all duration-300 
-        bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl
+        w-full px-4 py-3 rounded-xl border transition-colors duration-200 
+        bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm
         text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500
         focus:outline-none focus:ring-0
       `,
       label: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block",
       border: isFocused
         ? error
-          ? "border-red-400/60 shadow-2xl shadow-red-500/20"
-          : "border-blue-400/60 shadow-2xl shadow-blue-500/20"
+          ? "border-red-500"
+          : "border-blue-500"
         : error
-        ? "border-red-300/40 dark:border-red-600/40"
-        : "border-white/20 dark:border-gray-600/20 hover:border-blue-300/40 dark:hover:border-blue-500/40",
+        ? "border-red-300 dark:border-red-600"
+        : "border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500",
     },
   };
 
@@ -93,7 +90,6 @@ export const Input: React.FC<InputProps> = ({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHasValue(!!e.target.value);
     props.onChange?.(e);
   };
 
@@ -109,13 +105,7 @@ export const Input: React.FC<InputProps> = ({
       <div className={currentVariant.container}>
         {/* Icon */}
         {icon && (
-          <div
-            className={`
-            absolute left-3 top-1/2 transform -translate-y-1/2 
-            text-gray-400 dark:text-gray-500 z-10 transition-colors duration-300
-            ${isFocused ? "text-blue-500" : ""}
-          `}
-          >
+          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 z-10">
             {icon}
           </div>
         )}
@@ -148,30 +138,6 @@ export const Input: React.FC<InputProps> = ({
             </svg>
           </div>
         )}
-
-        {/* Focus Ring */}
-        {isFocused && variant === "modern" && (
-          <div
-            className={`
-            absolute inset-0 rounded-xl border-2 pointer-events-none
-            ${error ? "border-red-400" : "border-blue-400"}
-            animate-pulse opacity-50
-          `}
-          />
-        )}
-
-        {/* Shine Effect */}
-        {isFocused && variant !== "glass" && (
-          <div
-            className="absolute inset-0 rounded-xl pointer-events-none overflow-hidden"
-            style={{
-              background: `linear-gradient(90deg, transparent, ${
-                error ? "rgba(239, 68, 68, 0.1)" : "rgba(59, 130, 246, 0.1)"
-              }, transparent)`,
-              animation: "shimmer 2s infinite",
-            }}
-          />
-        )}
       </div>
 
       {/* Error Message */}
@@ -195,17 +161,6 @@ export const Input: React.FC<InputProps> = ({
           </p>
         </div>
       )}
-
-      <style jsx>{`
-        @keyframes shimmer {
-          0% {
-            transform: translateX(-100%);
-          }
-          100% {
-            transform: translateX(100%);
-          }
-        }
-      `}</style>
     </div>
   );
 };
