@@ -71,10 +71,10 @@ export const LanguageForm: React.FC<LanguageFormProps> = ({
         <Select
           label="Nivel"
           value={formData.level}
-          onChange={(e) =>
+          onChange={(value) =>
             setFormData((prev) => ({
               ...prev,
-              level: e.target.value as Language["level"],
+              level: value as Language["level"],
             }))
           }
           options={languageLevels}

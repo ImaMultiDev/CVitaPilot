@@ -72,10 +72,10 @@ export const SkillForm: React.FC<SkillFormProps> = ({
         <Select
           label="Categoría"
           value={formData.categoryId}
-          onChange={(e) =>
+          onChange={(value) =>
             setFormData((prev) => ({
               ...prev,
-              categoryId: e.target.value as Skill["categoryId"],
+              categoryId: value as Skill["categoryId"],
             }))
           }
           options={skillCategories}
