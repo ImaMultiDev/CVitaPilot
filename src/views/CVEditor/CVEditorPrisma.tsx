@@ -615,10 +615,10 @@ Esta acción no se puede deshacer.`;
             <Select
               label="Nivel"
               value={newLanguage.level}
-              onChange={(e) =>
+              onChange={(value) =>
                 setNewLanguage((prev) => ({
                   ...prev,
-                  level: e.target.value as
+                  level: value as
                     | "A1"
                     | "A2"
                     | "B1"
@@ -764,10 +764,10 @@ Esta acción no se puede deshacer.`;
             <Select
               label="Categoría"
               value={newSkill.categoryId}
-              onChange={(e) =>
+              onChange={(value) =>
                 setNewSkill((prev) => ({
                   ...prev,
-                  categoryId: e.target.value,
+                  categoryId: value,
                 }))
               }
               options={categoryOptions}
@@ -999,10 +999,10 @@ Esta acción no se puede deshacer.`;
             <Select
               label="Tipo de contrato"
               value={newExperience.contractType}
-              onChange={(e) =>
+              onChange={(value) =>
                 setNewExperience((prev) => ({
                   ...prev,
-                  contractType: e.target.value,
+                  contractType: value,
                 }))
               }
               options={[
@@ -1019,10 +1019,10 @@ Esta acción no se puede deshacer.`;
             <Select
               label="Tipo de jornada"
               value={newExperience.workSchedule}
-              onChange={(e) =>
+              onChange={(value) =>
                 setNewExperience((prev) => ({
                   ...prev,
-                  workSchedule: e.target.value,
+                  workSchedule: value,
                 }))
               }
               options={[
@@ -1035,10 +1035,10 @@ Esta acción no se puede deshacer.`;
             <Select
               label="Modalidad de trabajo"
               value={newExperience.workModality}
-              onChange={(e) =>
+              onChange={(value) =>
                 setNewExperience((prev) => ({
                   ...prev,
-                  workModality: e.target.value,
+                  workModality: value,
                 }))
               }
               options={[
@@ -1403,10 +1403,10 @@ Esta acción no se puede deshacer.`;
             <Select
               label="Tipo"
               value={newAchievement.type}
-              onChange={(e) =>
+              onChange={(value) =>
                 setNewAchievement((prev) => ({
                   ...prev,
-                  type: e.target.value as "achievement" | "project",
+                  type: value as "achievement" | "project",
                 }))
               }
               options={[
