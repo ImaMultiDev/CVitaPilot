@@ -71,10 +71,10 @@ export const SkillFormPrisma: React.FC<SkillFormPrismaProps> = ({
         <Select
           label="Categoría"
           value={formData.categoryId}
-          onChange={(e) =>
+          onChange={(value) =>
             setFormData((prev) => ({
               ...prev,
-              categoryId: e.target.value,
+              categoryId: value,
             }))
           }
           options={categoryOptions}

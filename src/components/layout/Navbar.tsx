@@ -74,7 +74,7 @@ const mobileNavigation = [
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
-  const { theme } = useTheme();
+  const { theme: _theme } = useTheme();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);

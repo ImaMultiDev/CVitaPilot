@@ -147,8 +147,8 @@ export const ExperienceFormPrisma: React.FC<ExperienceFormPrismaProps> = ({
           <Select
             label="Tipo de contrato"
             value={formData.contractType}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, contractType: e.target.value }))
+            onChange={(value) =>
+              setFormData((prev) => ({ ...prev, contractType: value }))
             }
             options={contractTypes}
             required
@@ -156,8 +156,8 @@ export const ExperienceFormPrisma: React.FC<ExperienceFormPrismaProps> = ({
           <Select
             label="Tipo de jornada"
             value={formData.workSchedule}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, workSchedule: e.target.value }))
+            onChange={(value) =>
+              setFormData((prev) => ({ ...prev, workSchedule: value }))
             }
             options={workSchedules}
             required
@@ -165,8 +165,8 @@ export const ExperienceFormPrisma: React.FC<ExperienceFormPrismaProps> = ({
           <Select
             label="Modalidad de trabajo"
             value={formData.workModality}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, workModality: e.target.value }))
+            onChange={(value) =>
+              setFormData((prev) => ({ ...prev, workModality: value }))
             }
             options={workModalities}
             required

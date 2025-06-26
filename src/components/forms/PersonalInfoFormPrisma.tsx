@@ -366,10 +366,10 @@ export const PersonalInfoFormPrisma: React.FC<PersonalInfoFormPrismaProps> = ({
                     <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-2">
                       <Select
                         value={editData.name}
-                        onChange={(e) =>
+                        onChange={(value) =>
                           setEditData((prev) => ({
                             ...prev,
-                            name: e.target.value,
+                            name: value,
                           }))
                         }
                         options={[
@@ -451,10 +451,10 @@ export const PersonalInfoFormPrisma: React.FC<PersonalInfoFormPrismaProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <Select
                 value={newSocialNetwork.name}
-                onChange={(e) =>
+                onChange={(value) =>
                   setNewSocialNetwork((prev) => ({
                     ...prev,
-                    name: e.target.value,
+                    name: value,
                   }))
                 }
                 options={[

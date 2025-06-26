@@ -73,10 +73,10 @@ export const LanguageFormPrisma: React.FC<LanguageFormPrismaProps> = ({
         <Select
           label="Nivel"
           value={formData.level}
-          onChange={(e) =>
+          onChange={(value) =>
             setFormData((prev) => ({
               ...prev,
-              level: e.target.value as Language["level"],
+              level: value as Language["level"],
             }))
           }
           options={languageLevels}
