@@ -68,14 +68,17 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
         html.classList.add("dark");
         html.classList.remove("light");
       } else {
-        html.classList.add("light");
         html.classList.remove("dark");
+        html.classList.add("light");
       }
 
       localStorage.setItem("theme", theme);
 
       // Debug: log para verificar que se aplica
-      console.log(`🎨 Tema aplicado: ${theme}`, html.classList.toString());
+      console.log(`🎨 Tema aplicado: ${theme}`, {
+        classList: html.classList.toString(),
+        computedStyle: window.getComputedStyle(document.body).backgroundColor,
+      });
     }
   }, [theme, mounted]);
 

@@ -1,7 +1,84 @@
+/* ===== TIPOGRAFÍAS PREMIUM ===== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+
 @import "tailwindcss";
 
-/* Configuración de tema oscuro para Tailwind v4 */
-@variant dark (html.dark &);
+@theme {
+  --color-*: initial;
+  --color-background: #ffffff;
+  --color-foreground: #171717;
+}
+
+@theme dark {
+  --color-background: #0f172a;
+  --color-foreground: #f8fafc;
+}
+
+/* ===== VARIABLES CSS SISTEMA DE COLORES CVitaPilot ===== */
+:root {
+  /* Colores Principales */
+  --color-primary: #6366f1;
+  /* Púrpura moderno */
+  --color-primary-light: #818cf8;
+  --color-primary-dark: #4f46e5;
+
+  --color-secondary: #06b6d4;
+  /* Cyan vibrante */
+  --color-secondary-light: #22d3ee;
+  --color-secondary-dark: #0891b2;
+
+  --color-accent: #f59e0b;
+  /* Ámbar */
+  --color-accent-light: #fbbf24;
+  --color-accent-dark: #d97706;
+
+  /* Estados */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+
+  /* Tema Claro */
+  --background: #ffffff;
+  --foreground: #171717;
+  --card: #ffffff;
+  --card-foreground: #171717;
+  --border: #e2e8f0;
+  --input: #ffffff;
+  --primary: #6366f1;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+
+  /* Gradientes Premium */
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-secondary: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+  --gradient-accent: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+  --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --gradient-dark: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+
+  /* Sombras Modernas */
+  --shadow-colored: 0 10px 15px -3px rgb(99 102 241 / 0.2), 0 4px 6px -4px rgb(99 102 241 / 0.1);
+
+  /* Transiciones */
+  --transition-fast: 150ms ease-in-out;
+  --transition-normal: 250ms ease-in-out;
+  --transition-slow: 350ms ease-in-out;
+}
+
+/* ===== VARIABLES TEMA OSCURO ===== */
+.dark {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --card: #1e293b;
+  --card-foreground: #f8fafc;
+  --border: #334155;
+  --input: #1e293b;
+  --primary: #6366f1;
+  --primary-foreground: #ffffff;
+  --secondary: #1e293b;
+  --secondary-foreground: #f8fafc;
+}
 
 /* Estilos de transición para cambios suaves */
 * {
@@ -10,283 +87,196 @@
   transition-duration: 150ms;
 }
 
-/* Base styles que se aplicarán automáticamente */
-body {
-  @apply bg-white text-gray-900;
-}
-
-/* Tema oscuro usando la nueva sintaxis */
-html.dark body {
-  @apply bg-gray-900 text-gray-100;
-}
-
+/* Base styles */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ===== CLASES UTILITY PERSONALIZADAS ===== */
+.font-display {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.gradient-primary {
+  background: var(--gradient-primary);
+}
+
+.gradient-secondary {
+  background: var(--gradient-secondary);
+}
+
+.gradient-accent {
+  background: var(--gradient-accent);
+}
+
+.text-gradient-primary {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.shadow-colored {
+  box-shadow: var(--shadow-colored);
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ===== ANIMACIONES SUAVES ===== */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== SCROLLBAR PERSONALIZADO ===== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
 }
 
 /* Print styles for PDF export */
 @media print {
-
-  /* Remove browser headers and footers */
-  @page {
-    margin: 0.5in;
-    size: A4;
-  }
-
-  * {
-    -webkit-print-color-adjust: exact !important;
-    color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-
-  body {
-    margin: 0 !important;
-    padding: 0 !important;
-    background: white !important;
-    font-size: 12px !important;
-  }
-
-  /* Hide elements that shouldn't print */
-  .no-print,
-  nav,
-  header,
-  footer,
-  .navbar {
+  .no-print {
     display: none !important;
   }
 
-  /* Show only the CV content */
-  .print-content {
-    display: block !important;
-    visibility: visible !important;
-    position: relative !important;
-    width: 100% !important;
-    max-width: none !important;
-    box-shadow: none !important;
-    border: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
+  body {
     background: white !important;
+    color: black !important;
+  }
+}
+
+/* ===== NAVBAR ANIMATIONS ===== */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
   }
 
-  /* Two column layout adjustments for print */
-  .print-content .flex {
-    height: auto !important;
-    min-height: auto !important;
+  33% {
+    transform: translateY(-10px) rotate(1deg);
   }
 
-  /* Header adjustments */
-  .print-content .py-6 {
-    padding-top: 15px !important;
-    padding-bottom: 15px !important;
+  66% {
+    transform: translateY(5px) rotate(-1deg);
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
   }
 
-  .print-content .text-4xl {
-    font-size: 24px !important;
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
   }
 
-  .print-content .text-xl {
-    font-size: 16px !important;
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
+}
 
-  /* Ensure sidebar and header stay gray in print */
-  .print-content .bg-gray-700 {
-    background-color: #374151 !important;
-    color: white !important;
-  }
+/* Navbar animation utilities */
+.navbar-float {
+  animation: float 6s ease-in-out infinite;
+}
 
-  .print-content .bg-cyan-500 {
-    background-color: #06b6d4 !important;
-    color: white !important;
-  }
+.navbar-slide-top {
+  animation: slideInFromTop 0.6s ease-out forwards;
+}
 
-  .print-content .text-white {
-    color: white !important;
-  }
+.navbar-slide-left {
+  animation: slideInFromLeft 0.6s ease-out forwards;
+}
 
-  .print-content .text-gray-300 {
-    color: #d1d5db !important;
-  }
+/* ===== MOBILE MENU SCROLLBAR ===== */
+.mobile-menu-scroll::-webkit-scrollbar {
+  width: 4px;
+}
 
-  .print-content .text-gray-200 {
-    color: #e5e7eb !important;
-  }
+.mobile-menu-scroll::-webkit-scrollbar-track {
+  background: rgba(226, 232, 240, 0.3);
+  border-radius: 2px;
+}
 
-  /* Ensure header borders show correctly */
-  .print-content .border-gray-600 {
-    border-color: #4b5563 !important;
-  }
+.mobile-menu-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 2px;
+}
 
-  /* Complete solution to eliminate browser headers/footers */
-  @page {
-    margin: 0mm !important;
-    size: A4;
+.mobile-menu-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}
 
-    /* Try to remove headers and footers */
-    @top-left {
-      content: "";
-    }
-
-    @top-center {
-      content: "";
-    }
-
-    @top-right {
-      content: "";
-    }
-
-    @bottom-left {
-      content: "";
-    }
-
-    @bottom-center {
-      content: "";
-    }
-
-    @bottom-right {
-      content: "";
-    }
-  }
-
-  @media print {
-
-    /* Hide everything except our CV */
-    * {
-      visibility: hidden !important;
-    }
-
-    /* Make our CV content visible */
-    .print-content,
-    .print-content * {
-      visibility: visible !important;
-    }
-
-    /* Full page positioning to override browser margins */
-    html,
-    body {
-      margin: 0 !important;
-      padding: 0 !important;
-      width: 210mm !important;
-      height: 297mm !important;
-      overflow: hidden !important;
-    }
-
-    .print-content {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      width: 210mm !important;
-      height: 297mm !important;
-      margin: 0 !important;
-      padding: 12mm !important;
-      box-sizing: border-box !important;
-      background: white !important;
-      z-index: 9999 !important;
-    }
-
-    /* Hide navigation and other UI elements */
-    nav,
-    .navbar,
-    button,
-    .no-print {
-      display: none !important;
-      visibility: hidden !important;
-    }
-  }
-
-  .print-content .text-gray-900 {
-    color: #111827 !important;
-  }
-
-  .print-content .text-gray-700 {
-    color: #374151 !important;
-  }
-
-  .print-content .text-gray-600 {
-    color: #4b5563 !important;
-  }
-
-  .print-content .text-gray-500 {
-    color: #6b7280 !important;
-  }
-
-  /* Compact spacing for print */
-  .print-content .mb-8 {
-    margin-bottom: 12px !important;
-  }
-
-  .print-content .mb-6 {
-    margin-bottom: 8px !important;
-  }
-
-  .print-content .mb-4 {
-    margin-bottom: 6px !important;
-  }
-
-  .print-content .mb-3 {
-    margin-bottom: 4px !important;
-  }
-
-  .print-content .mb-2 {
-    margin-bottom: 3px !important;
-  }
-
-  .print-content .mb-1 {
-    margin-bottom: 2px !important;
-  }
-
-  .print-content .p-6 {
-    padding: 12px !important;
-  }
-
-  .print-content .p-8 {
-    padding: 12px !important;
-  }
-
-  .print-content .space-y-4>*+* {
-    margin-top: 8px !important;
-  }
-
-  .print-content .space-y-3>*+* {
-    margin-top: 6px !important;
-  }
-
-  .print-content .space-y-2>*+* {
-    margin-top: 4px !important;
-  }
-
-  .print-content .space-y-1>*+* {
-    margin-top: 2px !important;
-  }
-
-  /* Ensure page breaks work well */
-  h1,
-  h2,
-  h3 {
-    page-break-after: avoid;
-  }
-
-  section {
-    page-break-inside: avoid;
-  }
-
-  /* Ensure borders show up */
-  .print-content .border-b-2 {
-    border-bottom: 2px solid #e5e7eb !important;
-  }
-
-  .print-content .border-l-4 {
-    border-left: 4px solid #d1d5db !important;
-  }
-
-  .print-content .border-gray-200 {
-    border-color: #e5e7eb !important;
-  }
-
-  .print-content .border-gray-300 {
-    border-color: #d1d5db !important;
-  }
+/* ===== ESTILOS LEGACY (mantener compatibilidad) ===== */
+.cv-preview-container {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  margin: 1rem auto;
+  max-width: 210mm;
 }

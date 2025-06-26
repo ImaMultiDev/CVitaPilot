@@ -13,7 +13,7 @@
   "categories": ["productivity", "business", "utilities"],
   "screenshots": [
     {
-      "src": "/logo_512.png",
+      "src": "/logo_512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "form_factor": "wide"
@@ -21,25 +21,25 @@
   ],
   "icons": [
     {
-      "src": "/logo_64.png",
+      "src": "/logo_64x64.png",
       "sizes": "64x64",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/logo_128.png",
+      "src": "/logo_128x128.png",
       "sizes": "128x128",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/logo_192.png",
+      "src": "/logo_192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/logo_512.png",
+      "src": "/logo_512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
@@ -53,7 +53,7 @@
       "url": "/",
       "icons": [
         {
-          "src": "/logo_192.png",
+          "src": "/logo_192x192.png",
           "sizes": "192x192"
         }
       ]
@@ -65,7 +65,7 @@
       "url": "/preview",
       "icons": [
         {
-          "src": "/logo_192.png",
+          "src": "/logo_192x192.png",
           "sizes": "192x192"
         }
       ]
@@ -77,7 +77,7 @@
       "url": "/saved-cvs",
       "icons": [
         {
-          "src": "/logo_192.png",
+          "src": "/logo_192x192.png",
           "sizes": "192x192"
         }
       ]

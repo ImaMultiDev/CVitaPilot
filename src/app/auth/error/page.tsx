@@ -35,7 +35,7 @@ function AuthErrorContent() {
             <div className="flex justify-center mb-4">
               <div className="border-3 border-gray-900 dark:border-gray-100 rounded-xl p-2 dark:bg-blue-200">
                 <Image
-                  src="/logo_192X64.png"
+                  src="/logo_128x128.png"
                   alt="CVitaPilot"
                   width={120}
                   height={40}

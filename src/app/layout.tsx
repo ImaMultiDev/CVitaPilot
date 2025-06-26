@@ -122,7 +122,7 @@ export default async function RootLayout({
     <html lang="es">
       <head>
         <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="192x192" href="/logo_192.png" />
+        <link rel="apple-touch-icon" sizes="192x192" href="/logo_128x128.png" />
         <meta name="theme-color" content="#0f172a" />
         <meta name="application-name" content="CVitaPilot" />
       </head>
