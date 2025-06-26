@@ -43,5 +43,8 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@next/bundle-analyzer": "^15.3.4"
   }
 }

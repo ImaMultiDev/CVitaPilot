@@ -95,7 +95,16 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+  /* Prevenir scroll horizontal */
 }
+
+/* Asegurar que el html también evite scroll horizontal */
+html {
+  overflow-x: hidden;
+}
+
+/* Reglas específicas para prevenir scroll horizontal sin afectar dropdowns */
 
 /* ===== CLASES UTILITY PERSONALIZADAS ===== */
 .font-display {
