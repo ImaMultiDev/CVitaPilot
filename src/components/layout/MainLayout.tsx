@@ -1,7 +1,7 @@
 // src/components/layout/MainLayout.tsx
 
 import { Navbar } from "./Navbar";
-import { Sidebar } from "./Sidebar";
+import { Sidebar } from "./Sidebar/Sidebar";
 import { CVData } from "@/types/cv";
 
 interface MainLayoutProps {

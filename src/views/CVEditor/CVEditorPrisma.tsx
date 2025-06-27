@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { PersonalInfoFormPrisma } from "@/components/forms/PersonalInfoFormPrisma";
-import { Sidebar } from "@/components/layout/Sidebar";
+import { Sidebar } from "@/components/layout/Sidebar/Sidebar";
 import { saveCurrentCVAs, forceRevalidation } from "@/lib/actions/cv-actions";
 import {
   LanguagesSection,
