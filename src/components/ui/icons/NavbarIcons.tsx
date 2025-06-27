@@ -5,6 +5,45 @@ interface IconProps {
   size?: number;
 }
 
+export const HomeIcon: React.FC<IconProps> = ({
+  className = "",
+  size = 20,
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    className={className}
+  >
+    <path
+      d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"
+      fill="currentColor"
+      fillOpacity="0.1"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M9 22V12h6v10"
+      fill="currentColor"
+      fillOpacity="0.2"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <circle cx="12" cy="8" r="1" fill="currentColor" fillOpacity="0.6" />
+    <path
+      d="M7 15h2M15 15h2M7 18h2M15 18h2"
+      stroke="currentColor"
+      strokeWidth="1"
+      strokeLinecap="round"
+    />
+    <circle cx="20" cy="7" r="1.5" fill="currentColor" fillOpacity="0.8" />
+  </svg>
+);
+
 export const EditorIcon: React.FC<IconProps> = ({
   className = "",
   size = 20,
@@ -395,6 +434,7 @@ export const SystemModeIcon: React.FC<IconProps> = ({
 
 // Objeto con todos los iconos para fácil acceso
 export const NavbarIcons = {
+  Home: HomeIcon,
   Editor: EditorIcon,
   Files: FilesIcon,
   Preview: PreviewIcon,

@@ -20,3 +20,5 @@ export { ThemeToggle } from "./ThemeToggle";
 // Icons
 export { NavbarIcons } from "./icons/NavbarIcons";
 export type { NavbarIconType } from "./icons/NavbarIcons";
+export { HomeIcons } from "./icons/HomeIcons";
+export type { HomeIconType } from "./icons/HomeIcons";
