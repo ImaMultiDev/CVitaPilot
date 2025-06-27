@@ -8,8 +8,14 @@ import { NavbarIcons } from "@/components/ui";
 
 const mobileNavigation = [
   {
-    name: "Editor",
+    name: "Home",
     href: "/",
+    icon: "Home",
+    color: "from-indigo-400 to-indigo-600",
+  },
+  {
+    name: "Editor",
+    href: "/editor",
     icon: "Editor",
     color: "from-blue-400 to-blue-600",
   },
@@ -48,6 +54,8 @@ interface MobileMenuProps {
 // Helper function para obtener clases de estado activo súper visible
 const getActiveClasses = (color: string) => {
   const colorMap: { [key: string]: string } = {
+    "from-indigo-400 to-indigo-600":
+      "border-3 border-indigo-500 shadow-xl shadow-indigo-500/70 bg-indigo-50/90 dark:bg-indigo-950/50 ring-2 ring-indigo-300/50 dark:ring-indigo-400/30",
     "from-blue-400 to-blue-600":
       "border-3 border-blue-500 shadow-xl shadow-blue-500/70 bg-blue-50/90 dark:bg-blue-950/50 ring-2 ring-blue-300/50 dark:ring-blue-400/30",
     "from-green-400 to-green-600":
