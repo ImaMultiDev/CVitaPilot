@@ -57,7 +57,7 @@ export const Select: React.FC<SelectProps> = ({
 
   const variants = {
     default: {
-      container: "relative",
+      container: `relative ${isOpen ? "z-[99999]" : ""}`,
       button: `
         w-full px-4 py-3 rounded-xl border-2 transition-all duration-300 
         bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
@@ -65,8 +65,9 @@ export const Select: React.FC<SelectProps> = ({
         flex items-center justify-between
       `,
       dropdown: `
-        absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 
-        border-2 border-gray-200 dark:border-gray-600 rounded-xl shadow-xl z-50
+        absolute top-full left-0 right-0 mt-2 
+        bg-white dark:bg-gray-800 
+        border-2 border-gray-200 dark:border-gray-600 rounded-xl shadow-xl z-[99999]
         max-h-60 overflow-y-auto
       `,
       option:
@@ -82,7 +83,7 @@ export const Select: React.FC<SelectProps> = ({
           : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500",
     },
     modern: {
-      container: "relative group",
+      container: `relative group ${isOpen ? "z-[99999]" : ""}`,
       button: `
         w-full px-4 py-3 rounded-xl border-2 transition-all duration-300 
         bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900
@@ -93,7 +94,7 @@ export const Select: React.FC<SelectProps> = ({
         absolute top-full left-0 right-0 mt-2 
         bg-white dark:bg-gray-800
         border-2 border-blue-200 dark:border-blue-800 rounded-xl 
-        shadow-2xl shadow-blue-500/20 z-[60] max-h-60 overflow-y-auto
+        shadow-2xl shadow-blue-500/20 z-[99999] max-h-60 overflow-y-auto
       `,
       option: `
         px-4 py-3 cursor-pointer transition-all duration-200 flex items-center space-x-2
@@ -112,7 +113,7 @@ export const Select: React.FC<SelectProps> = ({
           : "border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/10",
     },
     glass: {
-      container: "relative group",
+      container: `relative group ${isOpen ? "z-[99999]" : ""}`,
       button: `
         w-full px-4 py-3 rounded-xl border transition-all duration-300 
         bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl
@@ -123,7 +124,7 @@ export const Select: React.FC<SelectProps> = ({
         absolute top-full left-0 right-0 mt-2 
         bg-white/10 dark:bg-gray-800/10 backdrop-blur-2xl
         border border-white/20 dark:border-gray-600/20 rounded-xl 
-        shadow-2xl z-50 max-h-60 overflow-y-auto
+        shadow-2xl z-[99999] max-h-60 overflow-y-auto
       `,
       option:
         "px-4 py-3 hover:bg-white/20 dark:hover:bg-gray-700/20 cursor-pointer transition-colors duration-200 flex items-center space-x-2",
@@ -226,35 +227,26 @@ export const Select: React.FC<SelectProps> = ({
         {/* Dropdown Menu */}
         {isOpen && (
           <div
-            className={`${currentVariant.dropdown} dropdown-solid`}
+            className={currentVariant.dropdown}
             style={{
-              position: "absolute",
-              top: "100%",
-              left: 0,
-              right: 0,
-              marginTop: "8px",
-              backgroundColor: "white",
-              border: "2px solid rgb(147, 197, 253)",
-              borderRadius: "12px",
-              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-              zIndex: 9999,
-              maxHeight: "240px",
-              overflowY: "auto",
+              backgroundColor: document.documentElement.classList.contains(
+                "dark"
+              )
+                ? "rgb(31, 41, 55)"
+                : "white",
+              opacity: 1,
+              backdropFilter: "none",
+              WebkitBackdropFilter: "none",
             }}
           >
             {options.map((option) => (
               <div
                 key={option.value}
-                className="px-4 py-3 cursor-pointer hover:bg-blue-50 border-b border-gray-100 last:border-b-0"
+                className={currentVariant.option}
                 onClick={() => handleSelect(option)}
-                style={{
-                  color: "rgb(17, 24, 39)",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                }}
               >
                 {option.icon && (
-                  <span className="text-gray-500 mr-2">{option.icon}</span>
+                  <span className="text-gray-500">{option.icon}</span>
                 )}
                 <span>{option.label}</span>
                 {selectedOption?.value === option.value && (
@@ -331,36 +323,6 @@ export const Select: React.FC<SelectProps> = ({
           100% {
             transform: translateX(100%);
           }
-        }
-
-        /* Asegurar fondo sólido para dropdown */
-        .dropdown-solid {
-          background-color: white !important;
-          border: 2px solid rgb(147, 197, 253) !important;
-        }
-
-        .dark .dropdown-solid {
-          background-color: rgb(31, 41, 55) !important;
-          border: 2px solid rgb(59, 130, 246) !important;
-        }
-
-        /* Asegurar visibilidad de opciones */
-        .dropdown-solid > div {
-          color: rgb(17, 24, 39) !important;
-        }
-
-        .dark .dropdown-solid > div {
-          color: rgb(243, 244, 246) !important;
-        }
-
-        .dropdown-solid > div:hover {
-          background-color: rgb(239, 246, 255) !important;
-          color: rgb(17, 24, 39) !important;
-        }
-
-        .dark .dropdown-solid > div:hover {
-          background-color: rgba(59, 130, 246, 0.3) !important;
-          color: rgb(243, 244, 246) !important;
         }
       `}</style>
     </div>

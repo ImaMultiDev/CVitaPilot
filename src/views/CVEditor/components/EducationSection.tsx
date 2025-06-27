@@ -10,6 +10,7 @@ import {
   deleteEducation,
   toggleEducation,
 } from "@/lib/actions/cv-actions";
+import { CVEditorIcons } from "@/components/ui/icons/CVEditorIcons";
 
 interface Education {
   id: string;
@@ -151,7 +152,10 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
           className="mt-3"
           disabled={isUpdating}
         >
-          ➕ Añadir formación académica
+          <span className="inline-flex items-center gap-2">
+            <CVEditorIcons.Add size={16} />
+            Añadir formación académica
+          </span>
         </Button>
       </div>
 
@@ -167,8 +171,9 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
                 <h4 className="font-semibold text-gray-900 dark:text-white">
                   {edu.title}
                 </h4>
-                <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-800">
-                  📚 Formación académica
+                <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-800 flex items-center gap-1">
+                  <CVEditorIcons.Book size={12} />
+                  Formación académica
                 </span>
               </div>
               <p className="text-gray-600 dark:text-gray-300">
@@ -191,7 +196,7 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
                 className="text-red-600 hover:text-red-700"
                 disabled={isUpdating}
               >
-                🗑️
+                <CVEditorIcons.Delete size={16} />
               </Button>
             </div>
           </div>

@@ -204,10 +204,10 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
             onClick={handleSaveCV}
             className="bg-green-600 hover:bg-green-700 text-white text-sm lg:text-base px-4 lg:px-6"
           >
-            <span className="hidden sm:inline">
-              💾 Guardar CV como nueva versión
+            <span className="inline-flex items-center gap-2">
+              <span className="text-lg">💾</span>
+              Guardar CV
             </span>
-            <span className="sm:hidden">💾 Guardar CV</span>
           </Button>
         </div>
 
@@ -300,10 +300,10 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
               onClick={handleSaveCV}
               className="bg-green-600 hover:bg-green-700 text-white text-sm lg:text-base px-4 lg:px-6"
             >
-              <span className="hidden sm:inline">
-                💾 Guardar CV como nueva versión
+              <span className="inline-flex items-center gap-2">
+                <span className="text-lg">💾</span>
+                Guardar CV
               </span>
-              <span className="sm:hidden">💾 Guardar CV</span>
             </Button>
           </div>
         </Card>

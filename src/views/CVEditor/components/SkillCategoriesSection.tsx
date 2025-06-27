@@ -8,6 +8,7 @@ import {
   addSkillCategory,
   deleteSkillCategory,
 } from "@/lib/actions/cv-actions";
+import { CVEditorIcons } from "@/components/ui/icons/CVEditorIcons";
 
 interface SkillCategory {
   id: string;
@@ -90,14 +91,16 @@ Esta acción no se puede deshacer.`;
 
   return (
     <Card>
-      <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-4 md:mb-6">
-        🗂️ Categorías de Habilidades
+      <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-4 md:mb-6 flex items-center gap-2">
+        <CVEditorIcons.Skills size={24} />
+        Categorías de Habilidades
       </h3>
 
       {/* Add new category */}
       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 p-4 md:p-6 rounded-lg mb-4 md:mb-6">
-        <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-3 md:mb-4 text-sm md:text-base">
-          ➕ Crear nueva categoría
+        <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-3 md:mb-4 text-sm md:text-base flex items-center gap-2">
+          <CVEditorIcons.Add size={18} />
+          Crear nueva categoría
         </h4>
         <div className="flex flex-col space-y-3 md:flex-row md:space-y-0 md:space-x-2">
           <Input
@@ -113,7 +116,10 @@ Esta acción no se puede deshacer.`;
             className="bg-blue-600 hover:bg-blue-700 text-white h-12 md:h-10 px-4 md:px-3 text-base md:text-sm font-medium whitespace-nowrap"
             disabled={isUpdating}
           >
-            ➕ Crear Categoría
+            <span className="inline-flex items-center gap-2">
+              <CVEditorIcons.Add size={16} />
+              Crear Categoría
+            </span>
           </Button>
         </div>
       </div>
@@ -130,8 +136,9 @@ Esta acción no se puede deshacer.`;
               className="flex items-center justify-between border border-gray-200 dark:border-gray-600 rounded-lg p-4 md:p-3 bg-white dark:bg-gray-700 min-h-[60px] md:min-h-[auto]"
             >
               <div className="flex items-center space-x-2 flex-1 min-w-0">
-                <span className="text-base md:text-sm font-medium text-gray-900 dark:text-white truncate">
-                  📁 {category.name}
+                <span className="text-base md:text-sm font-medium text-gray-900 dark:text-white truncate flex items-center gap-1">
+                  <CVEditorIcons.Skills size={16} />
+                  {category.name}
                 </span>
                 <span
                   className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${
@@ -157,7 +164,7 @@ Esta acción no se puede deshacer.`;
                     : "Eliminar categoría vacía"
                 }
               >
-                🗑️
+                <CVEditorIcons.Delete size={16} />
               </Button>
             </div>
           );

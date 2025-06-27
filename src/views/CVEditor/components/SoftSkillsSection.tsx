@@ -10,6 +10,7 @@ import {
   deleteSoftSkill,
   toggleSoftSkill,
 } from "@/lib/actions/cv-actions";
+import { CVEditorIcons } from "@/components/ui/icons/CVEditorIcons";
 
 interface SoftSkill {
   id: string;
@@ -83,7 +84,10 @@ export const SoftSkillsSection: React.FC<SoftSkillsSectionProps> = ({
             disabled={isUpdating}
             className="h-12 md:h-10 px-4 md:px-3 text-base md:text-sm font-medium whitespace-nowrap"
           >
-            ➕ Añadir
+            <span className="inline-flex items-center gap-2">
+              <CVEditorIcons.Add size={16} />
+              Añadir
+            </span>
           </Button>
         </div>
       </div>
@@ -113,7 +117,7 @@ export const SoftSkillsSection: React.FC<SoftSkillsSectionProps> = ({
                 className="text-red-600 hover:text-red-700 p-2 md:p-1 min-w-[44px] min-h-[44px] md:min-w-[auto] md:min-h-[auto]"
                 disabled={isUpdating}
               >
-                🗑️
+                <CVEditorIcons.Delete size={16} />
               </Button>
             </div>
           </div>

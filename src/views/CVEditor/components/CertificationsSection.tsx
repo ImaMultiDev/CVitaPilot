@@ -10,6 +10,7 @@ import {
   deleteCertification,
   toggleCertification,
 } from "@/lib/actions/cv-actions";
+import { CVEditorIcons } from "@/components/ui/icons/CVEditorIcons";
 
 interface Certification {
   id: string;
@@ -172,7 +173,10 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({
           className="mt-3"
           disabled={isUpdating}
         >
-          🏆 Añadir certificación
+          <span className="inline-flex items-center gap-2">
+            <CVEditorIcons.Add size={16} />
+            Añadir certificación
+          </span>
         </Button>
       </div>
 
@@ -185,25 +189,28 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({
           >
             <div className="flex-1">
               <h4 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                🏆 {certification.name}
+                <CVEditorIcons.Badge size={18} />
+                {certification.name}
               </h4>
               <p className="text-gray-600 dark:text-gray-300">
                 {certification.issuer}
               </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                📅 Obtenida: {certification.date}
+              <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                <CVEditorIcons.Calendar size={14} />
+                Obtenida: {certification.date}
                 {certification.expiryDate && (
                   <span> • Expira: {certification.expiryDate}</span>
                 )}
               </p>
               {certification.credentialId && (
-                <p className="text-xs text-gray-600 dark:text-gray-400">
-                  🆔 ID: {certification.credentialId}
+                <p className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
+                  <CVEditorIcons.Id size={12} />
+                  ID: {certification.credentialId}
                 </p>
               )}
               {certification.url && (
-                <p className="text-xs text-blue-600 dark:text-blue-400">
-                  🔗{" "}
+                <p className="text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                  <CVEditorIcons.Link size={12} />
                   <a
                     href={certification.url}
                     target="_blank"
@@ -228,7 +235,7 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({
                 className="text-red-600 hover:text-red-700"
                 disabled={isUpdating}
               >
-                🗑️
+                <CVEditorIcons.Delete size={16} />
               </Button>
             </div>
           </div>

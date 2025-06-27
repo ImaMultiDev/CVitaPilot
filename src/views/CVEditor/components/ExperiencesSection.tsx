@@ -12,6 +12,7 @@ import {
   deleteExperience,
   toggleExperience,
 } from "@/lib/actions/cv-actions";
+import { CVEditorIcons } from "@/components/ui/icons/CVEditorIcons";
 
 interface Experience {
   id: string;
@@ -274,7 +275,10 @@ export const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
           className="mt-3 md:mt-4 h-12 md:h-10 text-base md:text-sm font-medium"
           disabled={isUpdating}
         >
-          ➕ Añadir experiencia
+          <span className="inline-flex items-center gap-2">
+            <CVEditorIcons.Add size={16} />
+            Añadir experiencia
+          </span>
         </Button>
       </div>
 
@@ -306,8 +310,9 @@ export const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
               )}
               {experience.technologies &&
                 experience.technologies.length > 0 && (
-                  <p className="text-sm md:text-sm text-blue-600 dark:text-blue-400 mt-1">
-                    🔧 {experience.technologies.join(", ")}
+                  <p className="text-sm md:text-sm text-blue-600 dark:text-blue-400 mt-1 flex items-center gap-1">
+                    <CVEditorIcons.Tech size={14} />
+                    {experience.technologies.join(", ")}
                   </p>
                 )}
             </div>
@@ -326,7 +331,7 @@ export const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
                 className="text-red-600 hover:text-red-700 p-2 md:p-1 min-w-[44px] min-h-[44px] md:min-w-[auto] md:min-h-[auto]"
                 disabled={isUpdating}
               >
-                🗑️
+                <CVEditorIcons.Delete size={16} />
               </Button>
             </div>
           </div>

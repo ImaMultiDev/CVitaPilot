@@ -12,6 +12,7 @@ import {
   deleteAchievement,
   toggleAchievement,
 } from "@/lib/actions/cv-actions";
+import { CVEditorIcons } from "@/components/ui/icons/CVEditorIcons";
 
 interface Achievement {
   id: string;
@@ -95,8 +96,9 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
 
   return (
     <Card>
-      <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-4 md:mb-6">
-        🏆 Logros y Proyectos Destacados
+      <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-4 md:mb-6 flex items-center gap-2">
+        <CVEditorIcons.Trophy size={24} />
+        Logros y Proyectos Destacados
       </h3>
 
       {/* Añadir nuevo logro/proyecto */}
@@ -115,8 +117,8 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
               }))
             }
             options={[
-              { value: "project", label: "🚀 Proyecto" },
-              { value: "achievement", label: "🏆 Logro/Reconocimiento" },
+              { value: "project", label: "Proyecto" },
+              { value: "achievement", label: "Logro/Reconocimiento" },
             ]}
             className="h-12 md:h-10 text-base md:text-sm"
           />
@@ -221,7 +223,10 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
             className="h-12 md:h-10 text-base md:text-sm font-medium"
             disabled={isUpdating}
           >
-            🏆 Añadir logro/proyecto
+            <span className="inline-flex items-center gap-2">
+              <CVEditorIcons.Add size={16} />
+              Añadir logro/proyecto
+            </span>
           </Button>
         </div>
       </div>
@@ -236,7 +241,11 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
             <div className="flex-1 min-w-0">
               <div className="flex flex-col md:flex-row md:items-center gap-2 mb-2">
                 <h4 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2 text-base md:text-lg">
-                  {achievement.type === "project" ? "🚀" : "🏆"}{" "}
+                  {achievement.type === "project" ? (
+                    <CVEditorIcons.Project size={20} />
+                  ) : (
+                    <CVEditorIcons.Trophy size={20} />
+                  )}
                   {achievement.title}
                 </h4>
                 <span
@@ -254,25 +263,28 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
                   {achievement.company}
                 </p>
               )}
-              <p className="text-sm md:text-xs text-gray-500 dark:text-gray-400 mb-2">
-                📅 {achievement.date}
+              <p className="text-sm md:text-xs text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-1">
+                <CVEditorIcons.Calendar size={14} />
+                {achievement.date}
               </p>
               <p className="text-sm md:text-sm text-gray-700 dark:text-gray-300 mb-2 leading-relaxed">
                 {achievement.description}
               </p>
               {achievement.technologies.length > 0 && (
-                <p className="text-xs md:text-xs text-blue-600 dark:text-blue-400 mb-1">
-                  🔧 {achievement.technologies.join(", ")}
+                <p className="text-xs md:text-xs text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1">
+                  <CVEditorIcons.Tech size={12} />
+                  {achievement.technologies.join(", ")}
                 </p>
               )}
               {achievement.metrics && (
-                <p className="text-xs md:text-xs text-green-600 dark:text-green-400 mb-1">
-                  📊 {achievement.metrics}
+                <p className="text-xs md:text-xs text-green-600 dark:text-green-400 mb-1 flex items-center gap-1">
+                  <CVEditorIcons.Metrics size={12} />
+                  {achievement.metrics}
                 </p>
               )}
               {achievement.url && (
-                <p className="text-xs md:text-xs text-purple-600 dark:text-purple-400">
-                  🔗{" "}
+                <p className="text-xs md:text-xs text-purple-600 dark:text-purple-400 flex items-center gap-1">
+                  <CVEditorIcons.Link size={12} />
                   <a
                     href={achievement.url}
                     target="_blank"
@@ -299,7 +311,7 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
                 className="text-red-600 hover:text-red-700 p-2 md:p-1 min-w-[44px] min-h-[44px] md:min-w-[auto] md:min-h-[auto]"
                 disabled={isUpdating}
               >
-                🗑️
+                <CVEditorIcons.Delete size={16} />
               </Button>
             </div>
           </div>

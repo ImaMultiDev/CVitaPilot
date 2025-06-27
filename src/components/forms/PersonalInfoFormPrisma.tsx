@@ -14,6 +14,7 @@ import {
   forceRevalidation,
 } from "@/lib/actions/cv-actions";
 import { PersonalInfo, SocialNetwork } from "@/types/cv";
+import { CVEditorIcons } from "@/components/ui/icons/CVEditorIcons";
 
 interface PersonalInfoFormPrismaProps {
   initialData: PersonalInfo;
@@ -39,22 +40,47 @@ export const PersonalInfoFormPrisma: React.FC<PersonalInfoFormPrismaProps> = ({
 
   // Opciones predefinidas para redes sociales
   const socialNetworkOptions = [
-    { value: "GitHub", label: "🐙 GitHub" },
-    { value: "Twitter", label: "🐦 Twitter / X" },
-    { value: "Instagram", label: "📷 Instagram" },
-    { value: "Facebook", label: "📘 Facebook" },
-    { value: "YouTube", label: "🎥 YouTube" },
-    { value: "TikTok", label: "🎵 TikTok" },
-    { value: "Behance", label: "🎨 Behance" },
-    { value: "Dribbble", label: "🏀 Dribbble" },
-    { value: "Dev.to", label: "👩‍💻 Dev.to" },
-    { value: "Medium", label: "📝 Medium" },
-    { value: "Stack Overflow", label: "📚 Stack Overflow" },
-    { value: "Discord", label: "🎮 Discord" },
-    { value: "Telegram", label: "📨 Telegram" },
-    { value: "WhatsApp", label: "💬 WhatsApp" },
-    { value: "Otro", label: "🌐 Otro" },
+    { value: "GitHub", label: "GitHub" },
+    { value: "Twitter", label: "Twitter / X" },
+    { value: "Instagram", label: "Instagram" },
+    { value: "Facebook", label: "Facebook" },
+    { value: "YouTube", label: "YouTube" },
+    { value: "TikTok", label: "TikTok" },
+    { value: "Behance", label: "Behance" },
+    { value: "Dribbble", label: "Dribbble" },
+    { value: "Dev.to", label: "Dev.to" },
+    { value: "Medium", label: "Medium" },
+    { value: "Stack Overflow", label: "Stack Overflow" },
+    { value: "Discord", label: "Discord" },
+    { value: "Telegram", label: "Telegram" },
+    { value: "WhatsApp", label: "WhatsApp" },
+    { value: "Otro", label: "Otro" },
   ];
+
+  // Función helper para obtener el icono correspondiente a la red social
+  const getSocialIcon = (networkName: string) => {
+    const iconMap: Record<
+      string,
+      React.ComponentType<{ size?: number; className?: string }>
+    > = {
+      GitHub: CVEditorIcons.GitHub,
+      Twitter: CVEditorIcons.Twitter,
+      Instagram: CVEditorIcons.Instagram,
+      Facebook: CVEditorIcons.Facebook,
+      YouTube: CVEditorIcons.YouTube,
+      TikTok: CVEditorIcons.TikTok,
+      Behance: CVEditorIcons.Behance,
+      Dribbble: CVEditorIcons.Dribbble,
+      "Dev.to": CVEditorIcons.DevTo,
+      Medium: CVEditorIcons.Medium,
+      "Stack Overflow": CVEditorIcons.StackOverflow,
+      Discord: CVEditorIcons.Discord,
+      Telegram: CVEditorIcons.Telegram,
+      WhatsApp: CVEditorIcons.WhatsApp,
+    };
+
+    return iconMap[networkName] || CVEditorIcons.Web;
+  };
 
   // Función helper para manejar actualizaciones suaves (patrón del Sidebar)
   const handleUpdate = async (
@@ -349,8 +375,8 @@ export const PersonalInfoFormPrisma: React.FC<PersonalInfoFormPrismaProps> = ({
 
       {/* Sección de Redes Sociales */}
       <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-600">
-        <h4 className="text-md font-semibold text-gray-900 dark:text-white mb-4">
-          🌐 Redes Sociales ({formData.socialNetworks.length}/5)
+        <h4 className="text-md font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+          Redes Sociales ({formData.socialNetworks.length}/5)
         </h4>
 
         {/* Lista de redes sociales existentes */}
@@ -395,25 +421,33 @@ export const PersonalInfoFormPrisma: React.FC<PersonalInfoFormPrismaProps> = ({
                       disabled={isUpdating}
                       variant="secondary"
                       size="sm"
+                      className="flex items-center gap-1"
                     >
-                      ✅ Guardar
+                      <CVEditorIcons.Save size={14} />
+                      Guardar
                     </Button>
                     <Button
                       onClick={() => setEditingSocialNetwork(null)}
                       variant="secondary"
                       size="sm"
                       disabled={isUpdating}
+                      className="flex items-center gap-1"
                     >
-                      ❌ Cancelar
+                      <CVEditorIcons.Delete size={14} />
+                      Cancelar
                     </Button>
                   </>
                 ) : (
                   <>
                     <div className="flex-1">
-                      <div className="font-medium text-gray-900 dark:text-white">
+                      <div className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
+                        {(() => {
+                          const IconComponent = getSocialIcon(sn.name);
+                          return <IconComponent size={16} />;
+                        })()}
                         {socialNetworkOptions.find(
                           (opt) => opt.value === sn.name
-                        )?.label || `🌐 ${sn.name}`}
+                        )?.label || sn.name}
                       </div>
                       <div className="text-sm text-gray-600 dark:text-gray-300 break-all">
                         {sn.url}
@@ -424,16 +458,20 @@ export const PersonalInfoFormPrisma: React.FC<PersonalInfoFormPrismaProps> = ({
                       disabled={isUpdating}
                       variant="secondary"
                       size="sm"
+                      className="flex items-center gap-1"
                     >
-                      ✏️ Editar
+                      <CVEditorIcons.Write size={14} />
+                      Editar
                     </Button>
                     <Button
                       onClick={() => handleDeleteSocialNetwork(sn.id)}
                       disabled={isUpdating}
                       variant="secondary"
                       size="sm"
+                      className="flex items-center gap-1"
                     >
-                      🗑️ Eliminar
+                      <CVEditorIcons.Delete size={14} />
+                      Eliminar
                     </Button>
                   </>
                 )}
@@ -445,8 +483,9 @@ export const PersonalInfoFormPrisma: React.FC<PersonalInfoFormPrismaProps> = ({
         {/* Formulario para añadir nueva red social */}
         {formData.socialNetworks.length < 5 && (
           <div className="space-y-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-            <h5 className="font-medium text-gray-900 dark:text-white">
-              ➕ Añadir Red Social
+            <h5 className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
+              <CVEditorIcons.Add size={16} />
+              Añadir Red Social
             </h5>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <Select
@@ -500,8 +539,16 @@ export const PersonalInfoFormPrisma: React.FC<PersonalInfoFormPrismaProps> = ({
               }
               variant="secondary"
               size="sm"
+              className="flex items-center gap-2"
             >
-              {isUpdating ? "Añadiendo..." : "➕ Añadir Red Social"}
+              {isUpdating ? (
+                "Añadiendo..."
+              ) : (
+                <>
+                  <CVEditorIcons.Add size={14} />
+                  Añadir Red Social
+                </>
+              )}
             </Button>
           </div>
         )}

@@ -10,6 +10,7 @@ import {
   deleteReference,
   toggleReference,
 } from "@/lib/actions/cv-actions";
+import { CVEditorIcons } from "@/components/ui/icons/CVEditorIcons";
 
 interface Reference {
   id: string;
@@ -178,7 +179,10 @@ export const ReferencesSection: React.FC<ReferencesSectionProps> = ({
           className="mt-3"
           disabled={isUpdating}
         >
-          📋 Añadir referencia
+          <span className="inline-flex items-center gap-2">
+            <CVEditorIcons.Add size={16} />
+            Añadir referencia
+          </span>
         </Button>
       </div>
 
@@ -220,7 +224,7 @@ export const ReferencesSection: React.FC<ReferencesSectionProps> = ({
                 className="text-red-600 hover:text-red-700"
                 disabled={isUpdating}
               >
-                🗑️
+                <CVEditorIcons.Delete size={16} />
               </Button>
             </div>
           </div>

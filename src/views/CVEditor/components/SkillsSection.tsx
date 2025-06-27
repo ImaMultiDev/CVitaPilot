@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Toggle } from "@/components/ui/Toggle";
 import { addSkill, deleteSkill, toggleSkill } from "@/lib/actions/cv-actions";
+import { CVEditorIcons } from "@/components/ui/icons/CVEditorIcons";
 
 interface SkillCategory {
   id: string;
@@ -86,8 +87,9 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({
 
   return (
     <Card>
-      <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-4 md:mb-6">
-        🛠️ Habilidades Técnicas
+      <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-4 md:mb-6 flex items-center gap-2">
+        <CVEditorIcons.Skills size={24} />
+        Habilidades Técnicas
       </h3>
 
       {/* Add new skill */}
@@ -125,7 +127,10 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({
               className="w-full h-12 md:h-10 text-base md:text-sm font-medium"
               disabled={isUpdating}
             >
-              ➕ Añadir habilidad
+              <span className="inline-flex items-center gap-2">
+                <CVEditorIcons.Add size={16} />
+                Añadir habilidad
+              </span>
             </Button>
           </div>
         </div>
@@ -162,7 +167,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({
                     className="text-red-600 hover:text-red-700 p-2 md:p-1 min-w-[44px] min-h-[44px] md:min-w-[auto] md:min-h-[auto]"
                     disabled={isUpdating}
                   >
-                    🗑️
+                    <CVEditorIcons.Delete size={16} />
                   </Button>
                 </div>
               </div>

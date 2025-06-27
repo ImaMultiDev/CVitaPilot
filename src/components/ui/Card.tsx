@@ -104,7 +104,7 @@ export const Card: React.FC<CardProps> = ({
         bg-gradient-to-br from-white via-gray-50 to-white
         dark:from-gray-800 dark:via-gray-900 dark:to-gray-800
         border border-transparent rounded-xl transition-all duration-300
-        shadow-xl relative overflow-hidden
+        shadow-xl relative overflow-visible
       `,
       hover: hover ? "hover:shadow-2xl" : "",
       interactive:
@@ -117,7 +117,7 @@ export const Card: React.FC<CardProps> = ({
         border border-gray-200/50 dark:border-gray-700/50
         rounded-2xl transition-all duration-300 backdrop-blur-sm
         shadow-lg shadow-gray-900/5 dark:shadow-black/20
-        relative overflow-hidden
+        relative overflow-visible
       `,
       hover: hover
         ? `hover:shadow-2xl hover:shadow-gray-900/10 dark:hover:shadow-black/40 
@@ -172,11 +172,12 @@ export const Card: React.FC<CardProps> = ({
       {/* Shine effect on hover for interactive cards */}
       {(interactive || onClick) && isHovered && variant !== "glass" && (
         <div
-          className="absolute inset-0 rounded-2xl pointer-events-none overflow-hidden"
+          className="absolute inset-0 rounded-2xl pointer-events-none"
           style={{
             background:
               "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)",
             animation: "shimmer 1s ease-out",
+            overflow: "hidden",
           }}
         />
       )}
