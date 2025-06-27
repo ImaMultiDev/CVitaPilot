@@ -114,12 +114,12 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         <>
           {/* Overlay */}
           <div
-            className="xl:hidden fixed inset-0 bg-black/50 z-[60] transition-opacity duration-300"
+            className="xl:hidden fixed inset-0 bg-black/50 z-[1100] transition-opacity duration-300"
             onClick={closeSidebar}
           />
 
           {/* Sidebar Panel */}
-          <div className="xl:hidden fixed left-0 top-0 h-full w-72 md:w-80 z-[70] transform transition-transform duration-300 ease-out animate-in slide-in-from-left">
+          <div className="xl:hidden fixed left-0 top-0 h-full w-72 md:w-80 z-[1200] transform transition-transform duration-300 ease-out animate-in slide-in-from-left">
             <div className="h-full pt-16">
               <Sidebar cvData={initialData} />
             </div>
@@ -130,7 +130,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
       {/* Botón flotante para abrir sidebar en mobile/tablet */}
       <button
         onClick={toggleSidebar}
-        className={`xl:hidden fixed top-20 left-4 z-50 p-2 md:p-3 text-white rounded-full border-2 transition-all duration-300 hover:scale-110 active:scale-95 backdrop-blur-sm ${
+        className={`xl:hidden fixed top-20 left-4 z-[1050] p-2 md:p-3 text-white rounded-full border-2 transition-all duration-300 hover:scale-110 active:scale-95 backdrop-blur-sm ${
           isSidebarOpen
             ? "border-green-300/50 dark:border-green-400/40 shadow-2xl ring-4 ring-green-500/30 hover:ring-green-500/50"
             : "border-white/30 dark:border-white/20 shadow-xl hover:shadow-2xl hover:border-white/50 dark:hover:border-white/40 ring-4 ring-indigo-500/20 hover:ring-indigo-500/40 animate-pulse hover:animate-none"

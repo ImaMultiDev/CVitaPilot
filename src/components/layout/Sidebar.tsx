@@ -781,7 +781,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
   return (
     <div className="w-80 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 border-r border-gray-200/50 dark:border-gray-700/50 h-screen overflow-hidden flex flex-col shadow-xl">
       {/* Header */}
-      <div className="p-4 border-b border-gray-200/50 dark:border-gray-700/50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm relative z-50">
+      <div className="p-4 border-b border-gray-200/50 dark:border-gray-700/50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm relative z-[1250]">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
             <div className="p-2 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg"></div>
@@ -803,11 +803,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
         </div>
 
         {/* Section Selector */}
-        <div className="space-y-2 relative z-[70]">
+        <div className="space-y-2 relative z-[1300]">
           <label className="text-xs font-medium text-gray-700 dark:text-gray-300">
             Sección:
           </label>
-          <div className="relative z-[70]">
+          <div className="relative z-[1300]">
             <Select
               options={sectionOptions}
               value={activeSection}
@@ -820,7 +820,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ cvData }) => {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar p-4 relative z-10">
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-4 relative z-[1210]">
         {renderSection()}
       </div>
 
