@@ -1,3 +1,5 @@
+"use client";
+
 // src/components/ui/Select.tsx
 
 import React, { useState, useEffect, useRef } from "react";
@@ -89,9 +91,10 @@ export const Select: React.FC<SelectProps> = ({
       `,
       dropdown: `
         absolute top-full left-0 right-0 mt-1 
-        bg-gray-50 dark:bg-gray-900 
-        border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg z-50
-        max-h-60 overflow-y-auto
+        bg-gray-50 dark:bg-gray-900
+        border border-gray-200 dark:border-gray-600 rounded-lg 
+        shadow-2xl z-[9999] max-h-60 overflow-y-auto
+        isolation-isolate
       `,
       option:
         "px-3 py-2 md:px-4 md:py-3 hover:bg-white dark:hover:bg-gray-800 cursor-pointer transition-colors duration-200 flex items-center space-x-2",
@@ -118,7 +121,7 @@ export const Select: React.FC<SelectProps> = ({
         absolute top-full left-0 right-0 mt-1 
         bg-gray-50 dark:bg-gray-900
         border border-gray-200 dark:border-gray-600 rounded-lg 
-        shadow-2xl z-50 max-h-60 overflow-y-auto
+        shadow-2xl z-[9999] max-h-60 overflow-y-auto
         isolation-isolate
       `,
       option: `
@@ -149,7 +152,7 @@ export const Select: React.FC<SelectProps> = ({
         absolute top-full left-0 right-0 mt-1 
         bg-gray-50 dark:bg-gray-900
         border border-gray-200 dark:border-gray-600 rounded-lg 
-        shadow-2xl z-50 max-h-60 overflow-y-auto
+        shadow-2xl z-[9999] max-h-60 overflow-y-auto
         isolation-isolate
       `,
       option:

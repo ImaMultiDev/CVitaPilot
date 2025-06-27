@@ -1,3 +1,5 @@
+"use client";
+
 // src/components/ui/Card.tsx
 
 import React, { useState } from "react";

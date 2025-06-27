@@ -81,38 +81,38 @@ export const TableOfContents: React.FC = () => {
   };
 
   return (
-    <Card className="mb-8 p-6 bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 border-gray-200 dark:border-gray-600">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+    <Card className="mb-6 sm:mb-8 p-4 sm:p-6 bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 border-gray-200 dark:border-gray-600">
+      <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+        <div className="p-1.5 sm:p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
           <TableOfContentsIcon
-            size={24}
-            className="text-blue-600 dark:text-blue-400"
+            size={20}
+            className="text-blue-600 dark:text-blue-400 sm:w-6 sm:h-6"
           />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
           Tabla de Contenidos
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {sections.map((section) => (
-          <div key={section.id} className="space-y-3">
-            <div className="flex items-center gap-3 pb-2 border-b border-gray-200 dark:border-gray-600">
+          <div key={section.id} className="space-y-2 sm:space-y-3">
+            <div className="flex items-center gap-2 sm:gap-3 pb-2 border-b border-gray-200 dark:border-gray-600">
               {section.icon}
-              <h3 className="font-semibold text-gray-800 dark:text-gray-200">
+              <h3 className="font-semibold text-gray-800 dark:text-gray-200 text-sm sm:text-base">
                 {section.title}
               </h3>
             </div>
 
-            <ul className="space-y-2 ml-8">
+            <ul className="space-y-1.5 sm:space-y-2 ml-6 sm:ml-8">
               {section.items.map((item) => (
                 <li key={item.id}>
                   <button
                     onClick={() => handleScrollTo(item.id)}
-                    className="text-left text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 group"
+                    className="text-left text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 group w-full"
                   >
-                    <div className="w-1.5 h-1.5 bg-current rounded-full opacity-60 group-hover:opacity-100 transition-opacity"></div>
-                    <span className="text-sm group-hover:underline">
+                    <div className="w-1.5 h-1.5 bg-current rounded-full opacity-60 group-hover:opacity-100 transition-opacity flex-shrink-0"></div>
+                    <span className="text-xs sm:text-sm group-hover:underline">
                       {item.title}
                     </span>
                   </button>

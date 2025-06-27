@@ -126,45 +126,45 @@ export const FinalChecklistSection: React.FC = () => {
   };
 
   return (
-    <section className="mb-12">
-      <Card className="p-8 bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-900/20 dark:to-green-900/20 border-blue-200 dark:border-blue-600">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="p-3 bg-gradient-to-br from-blue-100 to-green-100 dark:from-blue-900/30 dark:to-green-900/30 rounded-xl">
+    <section className="mb-8 sm:mb-12">
+      <Card className="p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-900/20 dark:to-green-900/20 border-blue-200 dark:border-blue-600">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <div className="p-2 sm:p-2.5 lg:p-3 bg-gradient-to-br from-blue-100 to-green-100 dark:from-blue-900/30 dark:to-green-900/30 rounded-lg sm:rounded-xl">
             <ChecklistIcon
-              size={32}
-              className="text-blue-600 dark:text-blue-400"
+              size={24}
+              className="text-blue-600 dark:text-blue-400 sm:w-7 sm:h-7 lg:w-8 lg:h-8"
             />
           </div>
-          <div className="flex-1">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <div className="flex-1 w-full">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-2 sm:mb-3">
               Checklist Final: CV Perfecto
             </h2>
-            <div className="flex items-center gap-4">
-              <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 sm:h-3">
                 <div
-                  className="bg-gradient-to-r from-blue-500 to-green-500 h-3 rounded-full transition-all duration-300 ease-out"
+                  className="bg-gradient-to-r from-blue-500 to-green-500 h-2 sm:h-3 rounded-full transition-all duration-300 ease-out"
                   style={{ width: `${cvProgress}%` }}
                 ></div>
               </div>
-              <span className="text-sm font-semibold text-gray-600 dark:text-gray-400">
+              <span className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400 whitespace-nowrap">
                 {checkedItems.size}/{cvChecklist.length + cartaChecklist.length}
               </span>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 sm:gap-8 mb-6 sm:mb-8">
           {/* Checklist CV */}
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-600">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+          <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-600">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 dark:text-gray-200">
                 Antes de Enviar tu CV
               </h3>
               <div className="flex items-center gap-2">
-                <span className="text-sm text-blue-600 dark:text-blue-400 font-medium">
+                <span className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 font-medium">
                   {cvItemsChecked}/{cvChecklist.length}
                 </span>
-                <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
                   <span className="text-blue-600 dark:text-blue-400 text-xs font-bold">
                     {Math.round((cvItemsChecked / cvChecklist.length) * 100)}%
                   </span>
@@ -172,20 +172,20 @@ export const FinalChecklistSection: React.FC = () => {
               </div>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               {cvChecklist.map((item) => (
                 <label
                   key={item.id}
-                  className="flex items-start gap-3 cursor-pointer group hover:bg-blue-50 dark:hover:bg-blue-900/20 p-2 rounded-lg transition-colors"
+                  className="flex items-start gap-2 sm:gap-3 cursor-pointer group hover:bg-blue-50 dark:hover:bg-blue-900/20 p-2 rounded-lg transition-colors"
                 >
                   <input
                     type="checkbox"
                     checked={checkedItems.has(item.id)}
                     onChange={() => handleItemCheck(item.id)}
-                    className="mt-1 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 dark:bg-gray-700 cursor-pointer"
+                    className="mt-0.5 sm:mt-1 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 dark:bg-gray-700 cursor-pointer flex-shrink-0"
                   />
                   <span
-                    className={`text-sm leading-relaxed transition-colors ${
+                    className={`text-xs sm:text-sm leading-relaxed transition-colors ${
                       checkedItems.has(item.id)
                         ? "text-blue-700 dark:text-blue-400 line-through"
                         : "text-gray-700 dark:text-gray-300"
@@ -199,16 +199,16 @@ export const FinalChecklistSection: React.FC = () => {
           </div>
 
           {/* Checklist Carta */}
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-600">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+          <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-600">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 dark:text-gray-200">
                 Carta de Presentación
               </h3>
               <div className="flex items-center gap-2">
-                <span className="text-sm text-green-600 dark:text-green-400 font-medium">
+                <span className="text-xs sm:text-sm text-green-600 dark:text-green-400 font-medium">
                   {cartaItemsChecked}/{cartaChecklist.length}
                 </span>
-                <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
                   <span className="text-green-600 dark:text-green-400 text-xs font-bold">
                     {Math.round(
                       (cartaItemsChecked / cartaChecklist.length) * 100
@@ -219,20 +219,20 @@ export const FinalChecklistSection: React.FC = () => {
               </div>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               {cartaChecklist.map((item) => (
                 <label
                   key={item.id}
-                  className="flex items-start gap-3 cursor-pointer group hover:bg-green-50 dark:hover:bg-green-900/20 p-2 rounded-lg transition-colors"
+                  className="flex items-start gap-2 sm:gap-3 cursor-pointer group hover:bg-green-50 dark:hover:bg-green-900/20 p-2 rounded-lg transition-colors"
                 >
                   <input
                     type="checkbox"
                     checked={checkedItems.has(item.id)}
                     onChange={() => handleItemCheck(item.id)}
-                    className="mt-1 rounded border-gray-300 dark:border-gray-600 text-green-600 focus:ring-green-500 dark:bg-gray-700 cursor-pointer"
+                    className="mt-0.5 sm:mt-1 rounded border-gray-300 dark:border-gray-600 text-green-600 focus:ring-green-500 dark:bg-gray-700 cursor-pointer flex-shrink-0"
                   />
                   <span
-                    className={`text-sm leading-relaxed transition-colors ${
+                    className={`text-xs sm:text-sm leading-relaxed transition-colors ${
                       checkedItems.has(item.id)
                         ? "text-green-700 dark:text-green-400 line-through"
                         : "text-gray-700 dark:text-gray-300"
@@ -247,45 +247,51 @@ export const FinalChecklistSection: React.FC = () => {
         </div>
 
         {/* Estadísticas de éxito */}
-        <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-200 dark:border-gray-600">
-          <div className="flex items-center gap-3 mb-6">
-            <StatsIcon size={24} className="text-gray-600 dark:text-gray-400" />
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-4 sm:p-6 lg:p-8 rounded-xl border border-indigo-200 dark:border-indigo-600">
+          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+            <StatsIcon
+              size={20}
+              className="text-indigo-600 dark:text-indigo-400 sm:w-6 sm:h-6"
+            />
+            <h3 className="text-base sm:text-lg font-semibold text-indigo-800 dark:text-indigo-300">
               Estadísticas de Éxito
             </h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {successStats.map((stat, index) => (
               <div
                 key={index}
-                className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg"
+                className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm text-center border border-gray-200 dark:border-gray-600"
               >
                 <div
-                  className={`text-3xl font-bold ${getStatColor(
+                  className={`text-2xl sm:text-3xl font-bold mb-1 sm:mb-2 ${getStatColor(
                     stat.color
-                  )} mb-2`}
+                  )}`}
                 >
                   {stat.value}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                   {stat.label}
                 </div>
               </div>
             ))}
           </div>
-        </div>
 
-        {/* Footer motivacional */}
-        <div className="text-center mt-8 text-gray-500 dark:text-gray-400">
-          <p className="text-lg mb-2">
-            💼 ¿Te ha sido útil esta guía? Aplica estos consejos usando nuestro
-            editor de CV.
-          </p>
-          <p className="text-sm">
-            Basado en investigación actualizada y mejores prácticas de
-            reclutadores profesionales • 2024-2025
-          </p>
+          {/* Mensaje final */}
+          <div className="mt-6 sm:mt-8 text-center">
+            <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
+              <h4 className="text-base sm:text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2 sm:mb-3">
+                🎯 ¡Estás listo para destacar!
+              </h4>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                Al completar este checklist, tu CV tendrá las mejores
+                probabilidades de superar los filtros ATS y captar la atención
+                de los reclutadores. Recuerda: la personalización es clave para
+                cada oferta.
+              </p>
+            </div>
+          </div>
         </div>
       </Card>
     </section>

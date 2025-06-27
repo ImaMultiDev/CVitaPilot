@@ -1,3 +1,5 @@
+"use client";
+
 // src/components/ui/Button.tsx
 
 import React, { useState } from "react";

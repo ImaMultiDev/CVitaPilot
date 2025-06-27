@@ -1,8 +1,17 @@
 "use client";
 
-import { Button } from "@/components/ui/Button";
-import { CVData } from "@/types/cv";
-import { useState } from "react";
+import React, { useState } from "react";
+import { CVData } from "../../types/cv";
+import {
+  ActiveCVIndicator,
+  FormatSelector,
+  PrintControls,
+  PhoneIcon,
+  EmailIcon,
+  LinkedInIcon,
+  GitHubIcon,
+  WebsiteIcon,
+} from "./components";
 
 interface CVPreviewPrismaProps {
   cvData: CVData;
@@ -132,10 +141,221 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
   };
 
   return (
-    <section className="flex flex-col gap-6 max-w-4xl mx-auto  dark:bg-">
+    <section className="flex flex-col gap-8 max-w-7xl mx-auto px-4 py-6">
       {/* Estilos CSS para impresión y exportación PDF */}
       <style jsx>{`
-        /* Estilos para exportación PDF - Colores compatibles con html2canvas */
+        /* ===== AISLAMIENTO COMPLETO DEL CV DEL SISTEMA DE TEMAS ===== */
+        /* Estos estilos garantizan que el CV mantenga colores fijos independientemente del tema */
+
+        .cv-container {
+          /* Aislamiento completo del tema */
+          color-scheme: light !important;
+        }
+
+        .cv-container,
+        .cv-container * {
+          /* Forzar colores específicos para elementos del CV */
+          color: inherit !important;
+          background-color: inherit !important;
+          border-color: inherit !important;
+        }
+
+        /* ===== FORMATO VISUAL - COLORES FIJOS ===== */
+        .cv-visual {
+          background: #ffffff !important;
+          color: #000000 !important;
+        }
+
+        /* Header del CV */
+        .cv-visual .cv-header {
+          background-color: #374151 !important; /* bg-gray-700 */
+          color: #ffffff !important;
+          border-color: #4b5563 !important; /* border-gray-600 */
+        }
+
+        .cv-visual .cv-header h1 {
+          color: #ffffff !important;
+        }
+
+        .cv-visual .cv-header h2 {
+          color: #d1d5db !important; /* text-gray-300 */
+        }
+
+        /* Sidebar del CV */
+        .cv-visual .cv-sidebar {
+          background-color: #374151 !important; /* bg-gray-700 */
+          color: #ffffff !important;
+        }
+
+        .cv-visual .cv-sidebar h3 {
+          background-color: #06b6d4 !important; /* bg-cyan-500 */
+          color: #ffffff !important;
+        }
+
+        .cv-visual .cv-sidebar .text-gray-300 {
+          color: #d1d5db !important;
+        }
+
+        .cv-visual .cv-sidebar .text-gray-200 {
+          color: #e5e7eb !important;
+        }
+
+        .cv-visual .cv-sidebar .text-white {
+          color: #ffffff !important;
+        }
+
+        /* Contenido principal del CV */
+        .cv-visual .cv-main {
+          background-color: #ffffff !important;
+          color: #000000 !important;
+        }
+
+        .cv-visual .cv-main h3 {
+          color: #111827 !important; /* text-gray-900 */
+          border-color: #e5e7eb !important; /* border-gray-200 */
+        }
+
+        .cv-visual .cv-main .text-gray-900 {
+          color: #111827 !important;
+        }
+
+        .cv-visual .cv-main .text-gray-700 {
+          color: #374151 !important;
+        }
+
+        .cv-visual .cv-main .text-gray-600 {
+          color: #4b5563 !important;
+        }
+
+        .cv-visual .cv-main .text-gray-500 {
+          color: #6b7280 !important;
+        }
+
+        .cv-visual .cv-main .border-gray-300 {
+          border-color: #d1d5db !important;
+        }
+
+        .cv-visual .cv-main .border-gray-200 {
+          border-color: #e5e7eb !important;
+        }
+
+        .cv-visual .cv-main .bg-gray-50 {
+          background-color: #f9fafb !important;
+        }
+
+        .cv-visual .cv-main .text-blue-600 {
+          color: #2563eb !important;
+        }
+
+        .cv-visual .cv-main .text-green-600 {
+          color: #16a34a !important;
+        }
+
+        /* ===== FORMATO ATS - COLORES FIJOS ===== */
+        .cv-ats {
+          font-family: Arial, sans-serif !important;
+          color: #000000 !important;
+          background: #ffffff !important;
+          line-height: 1.4 !important;
+        }
+
+        .cv-ats,
+        .cv-ats *,
+        .cv-ats div,
+        .cv-ats section,
+        .cv-ats p,
+        .cv-ats span,
+        .cv-ats h1,
+        .cv-ats h2,
+        .cv-ats h3,
+        .cv-ats h4,
+        .cv-ats strong {
+          font-family: Arial, sans-serif !important;
+          color: #000000 !important;
+          background-color: #ffffff !important;
+        }
+
+        /* Forzar fondo blanco en contenedores específicos del ATS */
+        .cv-ats .w-full,
+        .cv-ats .max-w-4xl,
+        .cv-ats .mx-auto,
+        .cv-ats .bg-white,
+        .cv-ats .p-8,
+        .cv-ats .px-12,
+        .cv-ats .font-serif {
+          background-color: #ffffff !important;
+        }
+
+        /* Asegurar que todos los elementos de texto sean negros */
+        .cv-ats h1,
+        .cv-ats h2,
+        .cv-ats h3,
+        .cv-ats h4 {
+          color: #000000 !important;
+          font-weight: bold !important;
+          background-color: #ffffff !important;
+        }
+
+        .cv-ats .border-black {
+          border-color: #000000 !important;
+          background-color: #ffffff !important;
+        }
+
+        .cv-ats .text-black {
+          color: #000000 !important;
+          background-color: #ffffff !important;
+        }
+
+        /* Forzar colores específicos para elementos comunes */
+        .cv-ats .text-center {
+          background-color: #ffffff !important;
+        }
+
+        .cv-ats .mb-6,
+        .cv-ats .mb-4,
+        .cv-ats .mb-3,
+        .cv-ats .mb-2,
+        .cv-ats .mb-1 {
+          background-color: #ffffff !important;
+        }
+
+        .cv-ats .space-y-4 > *,
+        .cv-ats .space-y-3 > *,
+        .cv-ats .space-y-2 > *,
+        .cv-ats .space-y-1 > * {
+          background-color: #ffffff !important;
+        }
+
+        /* Reglas ultra específicas para el formato ATS */
+        .cv-container.cv-ats {
+          background-color: #ffffff !important;
+        }
+
+        .cv-container.cv-ats,
+        .cv-container.cv-ats * {
+          background-color: #ffffff !important;
+          color: #000000 !important;
+        }
+
+        /* Anular cualquier herencia del tema para ATS */
+        .cv-ats .page-1,
+        .cv-ats .page-2 {
+          background-color: #ffffff !important;
+        }
+
+        /* Forzar fondo blanco en elementos específicos del ATS */
+        .cv-ats #cv-page-1,
+        .cv-ats #cv-page-2 {
+          background-color: #ffffff !important;
+        }
+
+        .cv-ats .grid,
+        .cv-ats .flex,
+        .cv-ats .contact-info-grid {
+          background-color: #ffffff !important;
+        }
+
+        /* ===== ESTILOS PARA EXPORTACIÓN PDF ===== */
         .pdf-export {
           background: #ffffff !important;
           width: 210mm !important; /* A4 width */
@@ -411,106 +631,6 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
         }
 
         /* Estilos para vista previa en pantalla (solo cuando NO se está imprimiendo) */
-        /* Estilos específicos para formato ATS */
-        .ats-format {
-          font-family: Arial, sans-serif !important;
-          color: #000000 !important;
-          background: #ffffff !important;
-          line-height: 1.4 !important;
-        }
-
-        .ats-format * {
-          font-family: Arial, sans-serif !important;
-          color: #000000 !important;
-        }
-
-        .ats-format h1,
-        .ats-format h2,
-        .ats-format h3,
-        .ats-format h4 {
-          color: #000000 !important;
-          font-weight: bold !important;
-        }
-
-        .ats-format .border-black {
-          border-color: #000000 !important;
-        }
-
-        .ats-format .text-black {
-          color: #000000 !important;
-        }
-
-        /* Configuración para impresión ATS */
-        @media print {
-          /* Configuración de página específica para ATS */
-          @page :first {
-            margin: 0mm !important;
-            padding: 0mm !important;
-          }
-
-          .ats-format {
-            font-family: Arial, sans-serif !important;
-            color: #000000 !important;
-            background: #ffffff !important;
-          }
-
-          .ats-format * {
-            font-family: Arial, sans-serif !important;
-            color: #000000 !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-          }
-
-          .ats-format .border-black {
-            border-color: #000000 !important;
-          }
-
-          .ats-format h1,
-          .ats-format h2,
-          .ats-format h3,
-          .ats-format h4 {
-            color: #000000 !important;
-            font-weight: bold !important;
-          }
-
-          /* Márgenes específicos para formato ATS en impresión */
-          #cv-page-1.ats-format,
-          #cv-page-2.ats-format {
-            padding: 15mm 20mm !important;
-            margin: 0 !important;
-            width: 100% !important;
-            min-height: 297mm !important;
-            box-sizing: border-box !important;
-          }
-
-          /* Forzar dos columnas para información de contacto ATS en impresión */
-          .ats-format .contact-info-grid {
-            display: grid !important;
-            grid-template-columns: 1fr 1fr !important;
-            gap: 8px !important;
-            column-gap: 16px !important;
-          }
-
-          #cv-page-1.ats-format > div,
-          #cv-page-2.ats-format > div {
-            padding: 0 !important;
-            margin: 0 !important;
-            max-width: none !important;
-            width: 100% !important;
-          }
-
-          /* Asegurar márgenes para todos los estados de impresión */
-          body.printing-cv #cv-page-1.ats-format,
-          body.printing-cv #cv-page-2.ats-format,
-          body.print-only-cv-page-1 #cv-page-1.ats-format,
-          body.print-only-cv-page-2 #cv-page-2.ats-format {
-            padding: 15mm 20mm !important;
-            margin: 0 !important;
-            width: 100% !important;
-            box-sizing: border-box !important;
-          }
-        }
-
         @media screen {
           .page-1 {
             min-height: 100vh;
@@ -522,106 +642,369 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
           }
 
           /* Ajuste específico para formato ATS en pantalla */
-          .ats-format.page-2 {
+          .cv-ats.page-2 {
             border-top: 2px solid #000000;
+          }
+        }
+
+        /* Configuración para impresión ATS */
+        @media print {
+          /* Configuración de página específica para ATS */
+          @page :first {
+            margin: 0mm !important;
+            padding: 0mm !important;
+          }
+
+          .cv-ats {
+            font-family: Arial, sans-serif !important;
+            color: #000000 !important;
+            background: #ffffff !important;
+          }
+
+          .cv-ats * {
+            font-family: Arial, sans-serif !important;
+            color: #000000 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+
+          .cv-ats .border-black {
+            border-color: #000000 !important;
+          }
+
+          .cv-ats h1,
+          .cv-ats h2,
+          .cv-ats h3,
+          .cv-ats h4 {
+            color: #000000 !important;
+            font-weight: bold !important;
+          }
+
+          /* Márgenes específicos para formato ATS en impresión */
+          #cv-page-1.cv-ats,
+          #cv-page-2.cv-ats {
+            padding: 15mm 20mm !important;
+            margin: 0 !important;
+            width: 100% !important;
+            min-height: 297mm !important;
+            box-sizing: border-box !important;
+          }
+
+          /* Forzar dos columnas para información de contacto ATS en impresión */
+          .cv-ats .contact-info-grid {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 8px !important;
+            column-gap: 16px !important;
+          }
+
+          #cv-page-1.cv-ats > div,
+          #cv-page-2.cv-ats > div {
+            padding: 0 !important;
+            margin: 0 !important;
+            max-width: none !important;
+            width: 100% !important;
+          }
+
+          /* Asegurar márgenes para todos los estados de impresión */
+          body.printing-cv #cv-page-1.cv-ats,
+          body.printing-cv #cv-page-2.cv-ats,
+          body.print-only-cv-page-1 #cv-page-1.cv-ats,
+          body.print-only-cv-page-2 #cv-page-2.cv-ats {
+            padding: 15mm 20mm !important;
+            margin: 0 !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+          }
+        }
+
+        /* ===== ESTRUCTURA VISUAL Y DIFERENCIACIÓN DEL FONDO ===== */
+
+        /* Contenedor principal del CV con estructura visual */
+        .cv-container {
+          /* Sombra sutil para diferenciar del fondo */
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+            0 2px 4px -1px rgba(0, 0, 0, 0.06);
+          border-radius: 8px;
+          overflow: hidden;
+          margin: 1rem auto;
+          max-width: 210mm; /* Ancho A4 */
+        }
+
+        /* Estructura específica para formato visual */
+        .cv-visual {
+          border: 1px solid #e5e7eb;
+          background-color: #ffffff !important;
+          /* Asegurar proporciones A4 correctas */
+          width: 100%;
+          max-width: 210mm;
+          min-height: 297mm;
+        }
+
+        /* Optimización de espaciado para formato visual */
+        .cv-visual .page-1,
+        .cv-visual .page-2 {
+          width: 100% !important;
+          max-width: 100% !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          min-height: 297mm;
+        }
+
+        /* Contenido principal visual más compacto */
+        .cv-visual .cv-main {
+          padding: 1.5rem !important; /* Reducir padding de 2rem a 1.5rem */
+        }
+
+        /* Sidebar visual más compacto */
+        .cv-visual .cv-sidebar {
+          padding: 1.5rem !important; /* Reducir padding de 1.5rem a 1.25rem */
+        }
+
+        /* Espaciado vertical reducido en formato visual */
+        .cv-visual .space-y-6 > * + * {
+          margin-top: 1.25rem !important;
+        }
+
+        .cv-visual .space-y-4 > * + * {
+          margin-top: 1rem !important;
+        }
+
+        .cv-visual .space-y-3 > * + * {
+          margin-top: 0.75rem !important;
+        }
+
+        .cv-visual .mb-8 {
+          margin-bottom: 1.5rem !important;
+        }
+
+        .cv-visual .mb-6 {
+          margin-bottom: 1.25rem !important;
+        }
+
+        .cv-visual .mb-4 {
+          margin-bottom: 1rem !important;
+        }
+
+        /* Títulos del sidebar más compactos */
+        .cv-visual .cv-sidebar h3 {
+          padding: 0.5rem 1rem !important; /* Reducir padding vertical */
+          margin-bottom: 0.75rem !important;
+        }
+
+        /* Pie de página visual - asegurar que termine correctamente */
+        .cv-visual .cv-footer {
+          background-color: #374151 !important;
+          min-height: 2rem !important;
+          width: 100% !important;
+          margin: 0 !important;
+        }
+
+        /* Estructura flex para páginas visuales */
+        .cv-visual .page-1 .flex.min-h-screen {
+          min-height: 297mm !important;
+        }
+
+        .cv-visual .page-2 .flex.flex-col.min-h-full {
+          min-height: 297mm !important;
+          display: flex !important;
+          flex-direction: column !important;
+        }
+
+        .cv-visual .page-2 .cv-main.flex-1 {
+          flex: 1 !important;
+        }
+
+        /* Asegurar que el sidebar tenga altura completa en página 1 */
+        .cv-visual .cv-sidebar.min-h-full {
+          min-height: 100% !important;
+          display: flex !important;
+          flex-direction: column !important;
+        }
+
+        /* Estructura específica para formato ATS */
+        .cv-ats {
+          border: 2px solid #d1d5db;
+          background-color: #ffffff !important;
+          /* Asegurar proporciones A4 correctas */
+          width: 100%;
+          max-width: 210mm;
+          min-height: 297mm;
+        }
+
+        /* Contenedor interno ATS con dimensiones A4 exactas */
+        .cv-ats .w-full.max-w-4xl {
+          max-width: 100% !important;
+          width: 100% !important;
+          margin: 0 !important;
+          padding: 12mm 15mm !important; /* Márgenes más compactos, similares a impresión */
+          box-sizing: border-box !important;
+        }
+
+        /* Ajustes adicionales para hacer el ATS más compacto */
+        .cv-ats .space-y-6 > * + * {
+          margin-top: 1rem !important; /* Reducir espaciado vertical */
+        }
+
+        .cv-ats .space-y-4 > * + * {
+          margin-top: 0.75rem !important;
+        }
+
+        .cv-ats .space-y-3 > * + * {
+          margin-top: 0.5rem !important;
+        }
+
+        .cv-ats .mb-6 {
+          margin-bottom: 1rem !important;
+        }
+
+        .cv-ats .mb-4 {
+          margin-bottom: 0.75rem !important;
+        }
+
+        .cv-ats .mb-3 {
+          margin-bottom: 0.5rem !important;
+        }
+
+        /* Hacer los títulos más compactos */
+        .cv-ats h1 {
+          margin-bottom: 0.5rem !important;
+          font-size: 1.75rem !important;
+        }
+
+        .cv-ats h2 {
+          margin-bottom: 0.5rem !important;
+          font-size: 1.25rem !important;
+        }
+
+        .cv-ats h3 {
+          margin-bottom: 0.25rem !important;
+          font-size: 1.1rem !important;
+        }
+
+        /* Reducir espaciado en listas */
+        .cv-ats ul,
+        .cv-ats ol {
+          margin-bottom: 0.5rem !important;
+        }
+
+        .cv-ats li {
+          margin-bottom: 0.25rem !important;
+        }
+
+        /* Páginas del CV con estructura mejorada */
+        .cv-container .page-1,
+        .cv-container .page-2 {
+          position: relative;
+          min-height: 297mm; /* Altura A4 */
+          width: 100%;
+        }
+
+        /* Separador visual entre páginas */
+        .cv-container .page-2 {
+          border-top: 3px dashed #9ca3af;
+          margin-top: 2rem;
+          padding-top: 2rem;
+        }
+
+        /* Para formato ATS, separador más sutil */
+        .cv-ats .page-2 {
+          border-top: 2px solid #d1d5db;
+        }
+
+        /* Mejoras de estructura responsive */
+        @media screen and (max-width: 768px) {
+          .cv-container {
+            margin: 0.5rem;
+            border-radius: 4px;
+          }
+
+          .cv-container .page-1,
+          .cv-container .page-2 {
+            min-height: auto;
+          }
+        }
+
+        /* Hover effect sutil para mejor UX */
+        .cv-container:hover {
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+            0 4px 6px -2px rgba(0, 0, 0, 0.05);
+          transition: box-shadow 0.3s ease-in-out;
+        }
+
+        /* Indicador visual de formato ATS */
+        .cv-ats::before {
+          content: "FORMATO ATS";
+          position: absolute;
+          top: -2px;
+          right: -2px;
+          background: #10b981;
+          color: white;
+          padding: 4px 8px;
+          font-size: 10px;
+          font-weight: bold;
+          border-radius: 0 6px 0 6px;
+          z-index: 10;
+        }
+
+        /* Indicador visual de formato Visual */
+        .cv-visual::before {
+          content: "FORMATO VISUAL";
+          position: absolute;
+          top: -2px;
+          right: -2px;
+          background: #3b82f6;
+          color: white;
+          padding: 4px 8px;
+          font-size: 10px;
+          font-weight: bold;
+          border-radius: 0 6px 0 6px;
+          z-index: 10;
+        }
+
+        /* Ocultar indicadores en impresión */
+        @media print {
+          .cv-ats::before,
+          .cv-visual::before {
+            display: none !important;
+          }
+
+          .cv-container {
+            box-shadow: none !important;
+            border: none !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+          }
+
+          .cv-container .page-2 {
+            border-top: none !important;
+            margin-top: 0 !important;
+            padding-top: 0 !important;
           }
         }
       `}</style>
 
       {/* CV Active Indicator */}
-      {currentCVName && (
-        <div className="max-w-140 mx-auto bg-blue-50 dark:bg-blue-900/80 border border-blue-200 dark:border-blue-800 rounded-lg p-4 shadow-sm no-print">
-          <div className="text-center">
-            <p className="text-blue-800 text-2xl dark:text-blue-200">
-              <span className="font-semibold text-lg">
-                📄 Previsualizando CV:
-              </span>{" "}
-              {currentCVName}
-            </p>
-          </div>
-        </div>
-      )}
+      <ActiveCVIndicator currentCVName={currentCVName} />
+
       {/* Format Selector */}
-      <div className="mx-auto bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 shadow-sm no-print">
-        <div className="text-center">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">
-            🎨 Formato del CV
-          </h3>
-          <div className="flex justify-center gap-4">
-            <button
-              onClick={() => setCvFormat("visual")}
-              className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                cvFormat === "visual"
-                  ? "bg-blue-600 text-white shadow-lg"
-                  : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
-              }`}
-            >
-              🎨 Formato Visual
-              <div className="text-xs mt-1 opacity-80">
-                Diseño atractivo con colores
-              </div>
-            </button>
-            <button
-              onClick={() => setCvFormat("ats")}
-              className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                cvFormat === "ats"
-                  ? "bg-green-600 text-white shadow-lg"
-                  : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
-              }`}
-            >
-              🤖 Formato ATS
-              <div className="text-xs mt-1 opacity-80">
-                Optimizado para sistemas automáticos
-              </div>
-            </button>
-          </div>
-          <div className="mt-3 text-xs text-gray-600 dark:text-gray-400">
-            {cvFormat === "visual" ? (
-              <p>
-                <span className="inline-block">🎨</span>{" "}
-                <strong>Formato Visual:</strong> Diseño moderno con colores y
-                estilos atractivos para impresionar a reclutadores humanos
-              </p>
-            ) : (
-              <p>
-                <span className="inline-block">🤖</span>{" "}
-                <strong>Formato ATS:</strong> Diseño simple y estructurado que
-                garantiza que los sistemas automáticos lean correctamente toda
-                tu información
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
+      <FormatSelector cvFormat={cvFormat} setCvFormat={setCvFormat} />
 
       {/* Print Control */}
-      <div className="text-center mb-2 no-print">
-        <div className="flex justify-center gap-3 mb-3">
-          <Button
-            onClick={() => handlePrintPage("cv-page-1", "Página 1")}
-            variant="secondary"
-            size="md"
-          >
-            <p className="text-lg">📄 Imprimir Solo Página 1</p>
-          </Button>
-          <Button
-            onClick={() => handlePrintPage("cv-page-2", "Página 2")}
-            variant="secondary"
-            size="sm"
-          >
-            <p className="text-lg">📄 Imprimir Solo Página 2</p>
-          </Button>
-        </div>
-      </div>
+      <PrintControls handlePrintPage={handlePrintPage} />
 
       {/* CV Content */}
-      <div className="bg-white print-content">
+      <div
+        className={`cv-container print-content ${
+          cvFormat === "visual" ? "cv-visual" : "cv-ats"
+        }`}
+      >
         {cvFormat === "visual" ? (
           <>
             {/* FORMATO VISUAL - PÁGINA 1 */}
-            <div id="cv-page-1" className="page-1" data-page="1">
+            <div id="cv-page-1" className="page-1 cv-visual" data-page="1">
               {/* Header */}
-              <div className="text-center bg-gray-700 py-6 border-b-2 border-gray-600">
+              <div className="cv-header text-center bg-gray-700 py-6 border-b-2 border-gray-600">
                 <h1 className="text-4xl font-bold text-white mb-2">
                   {cvData.personalInfo.name}
                 </h1>
@@ -633,7 +1016,7 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
               {/* Two Column Layout */}
               <div className="flex min-h-screen">
                 {/* Left Sidebar */}
-                <div className="w-1/3 bg-gray-700 text-white p-6 min-h-full flex flex-col">
+                <div className="cv-sidebar w-1/3 bg-gray-700 text-white p-6 min-h-full flex flex-col">
                   {/* Datos Personales */}
                   <div className="mb-8">
                     <h3 className="text-base font-semibold mb-3 bg-cyan-500 text-center py-1 px-2 text-white">
@@ -641,18 +1024,18 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                     </h3>
                     <div className="space-y-2 text-sm">
                       <div className="flex items-center space-x-2">
-                        <span className="text-gray-300">📱</span>
+                        <PhoneIcon size={16} className="text-gray-300" />
                         <span>{cvData.personalInfo.phone}</span>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <span className="text-gray-300">📧</span>
+                        <EmailIcon size={16} className="text-gray-300" />
                         <span className="break-all">
                           {cvData.personalInfo.email}
                         </span>
                       </div>
                       {cvData.personalInfo.linkedin && (
                         <div className="flex items-center space-x-2">
-                          <span className="text-gray-300">🔗</span>
+                          <LinkedInIcon size={16} className="text-gray-300" />
                           <span className="break-all text-xs">
                             {cvData.personalInfo.linkedin}
                           </span>
@@ -663,43 +1046,17 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                           key={sn.id}
                           className="flex items-center space-x-2"
                         >
-                          <span className="text-gray-300">
-                            {sn.name === "GitHub"
-                              ? "💻"
-                              : sn.name === "Twitter"
-                              ? "🐦"
-                              : sn.name === "Instagram"
-                              ? "📷"
-                              : sn.name === "Facebook"
-                              ? "📘"
-                              : sn.name === "YouTube"
-                              ? "🎥"
-                              : sn.name === "TikTok"
-                              ? "🎵"
-                              : sn.name === "Behance"
-                              ? "🎨"
-                              : sn.name === "Dribbble"
-                              ? "🏀"
-                              : sn.name === "Dev.to"
-                              ? "👩‍💻"
-                              : sn.name === "Medium"
-                              ? "📝"
-                              : sn.name === "Stack Overflow"
-                              ? "📚"
-                              : sn.name === "Discord"
-                              ? "🎮"
-                              : sn.name === "Telegram"
-                              ? "📨"
-                              : sn.name === "WhatsApp"
-                              ? "💬"
-                              : "🌐"}
-                          </span>
+                          {sn.name === "GitHub" ? (
+                            <GitHubIcon size={16} className="text-gray-300" />
+                          ) : (
+                            <WebsiteIcon size={16} className="text-gray-300" />
+                          )}
                           <span className="break-all text-xs">{sn.url}</span>
                         </div>
                       ))}
                       {cvData.personalInfo.website && (
                         <div className="flex items-center space-x-2">
-                          <span className="text-gray-300">🌐</span>
+                          <WebsiteIcon size={16} className="text-gray-300" />
                           <span className="break-all text-xs">
                             {cvData.personalInfo.website}
                           </span>
@@ -811,7 +1168,7 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                 </div>
 
                 {/* Right Main Content - Página 1 */}
-                <div className="w-2/3 p-8">
+                <div className="cv-main w-2/3 p-8">
                   {/* Perfil Profesional */}
                   {cvData.aboutMe && (
                     <section className="mb-8">
@@ -962,116 +1319,121 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
             </div>
 
             {/* PÁGINA 2 - Formación y Nuevas Secciones */}
-            <div id="cv-page-2" className="page-2" data-page="2">
-              <div className="w-full p-8 bg-white min-h-screen">
-                {/* Certificaciones */}
-                {selectedCertifications.length > 0 && (
-                  <section className="mb-8">
-                    <h3 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-200 pb-2">
-                      Certificaciones
-                    </h3>
-                    <div className="space-y-4">
-                      {selectedCertifications.map((cert) => (
-                        <div
-                          key={cert.id}
-                          className="border-l-4 border-gray-300 pl-4"
-                        >
-                          <div className="flex justify-between items-start mb-1">
-                            <h4 className="font-bold text-gray-900 text-sm">
-                              {cert.name}
-                            </h4>
-                            <span className="text-xs text-gray-500">
-                              {cert.date}
-                              {cert.expiryDate && ` - ${cert.expiryDate}`}
-                            </span>
-                          </div>
-                          <p className="font-bold text-gray-700 text-sm">
-                            {cert.issuer}
-                          </p>
-                          {cert.credentialId && (
-                            <p className="text-xs text-gray-600 mb-1">
-                              <span className="font-medium">ID:</span>{" "}
-                              {cert.credentialId}
-                            </p>
-                          )}
-                          {cert.url && (
-                            <p className="text-xs text-blue-600">
-                              <span className="font-medium">Verificación:</span>{" "}
-                              {cert.url}
-                            </p>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-                )}
-
-                {/* Referencias Profesionales */}
-                {cvData.references.filter((ref) => ref.selected).length > 0 && (
-                  <section className="mb-8">
-                    <h3 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-200 pb-2">
-                      📋 Referencias Profesionales
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {cvData.references
-                        .filter((ref) => ref.selected)
-                        .map((reference) => (
+            <div id="cv-page-2" className="page-2 cv-visual" data-page="2">
+              <div className="flex flex-col min-h-full">
+                <div className="cv-main w-full p-8 bg-white flex-1">
+                  {/* Certificaciones */}
+                  {selectedCertifications.length > 0 && (
+                    <section className="mb-8">
+                      <h3 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-200 pb-2">
+                        Certificaciones
+                      </h3>
+                      <div className="space-y-4">
+                        {selectedCertifications.map((cert) => (
                           <div
-                            key={reference.id}
-                            className="border border-gray-200 rounded-lg p-3 bg-gray-50 h-fit"
+                            key={cert.id}
+                            className="border-l-4 border-gray-300 pl-4"
                           >
-                            <h4 className="font-bold text-gray-900 text-sm mb-1 leading-tight">
-                              {reference.name}
-                            </h4>
-                            <p className="text-gray-700 text-xs font-medium leading-tight">
-                              {reference.position}
-                            </p>
-                            <p className="text-gray-600 text-xs mb-2 leading-tight">
-                              {reference.company}
-                            </p>
-                            <p className="text-xs text-gray-500 mb-2 italic leading-tight">
-                              {reference.relationship}
-                            </p>
-                            <div className="space-y-1 text-xs text-gray-600">
-                              {reference.phone && (
-                                <p className="flex items-center gap-1 leading-tight">
-                                  <span>📞</span>
-                                  <span className="break-all">
-                                    {reference.phone}
-                                  </span>
-                                </p>
-                              )}
-                              {reference.email && (
-                                <p className="flex items-center gap-1 leading-tight">
-                                  <span>✉️</span>
-                                  <span className="break-all text-xs">
-                                    {reference.email}
-                                  </span>
-                                </p>
-                              )}
-                              {reference.yearsWorking && (
-                                <p className="flex items-center gap-1 leading-tight">
-                                  <span>⏱️</span>
-                                  <span className="text-xs">
-                                    Colaboración: {reference.yearsWorking}
-                                  </span>
-                                </p>
-                              )}
+                            <div className="flex justify-between items-start mb-1">
+                              <h4 className="font-bold text-gray-900 text-sm">
+                                {cert.name}
+                              </h4>
+                              <span className="text-xs text-gray-500">
+                                {cert.date}
+                                {cert.expiryDate && ` - ${cert.expiryDate}`}
+                              </span>
                             </div>
+                            <p className="font-bold text-gray-700 text-sm">
+                              {cert.issuer}
+                            </p>
+                            {cert.credentialId && (
+                              <p className="text-xs text-gray-600 mb-1">
+                                <span className="font-medium">ID:</span>{" "}
+                                {cert.credentialId}
+                              </p>
+                            )}
+                            {cert.url && (
+                              <p className="text-xs text-blue-600">
+                                <span className="font-medium">
+                                  Verificación:
+                                </span>{" "}
+                                {cert.url}
+                              </p>
+                            )}
                           </div>
                         ))}
-                    </div>
-                  </section>
-                )}
+                      </div>
+                    </section>
+                  )}
+
+                  {/* Referencias Profesionales */}
+                  {cvData.references.filter((ref) => ref.selected).length >
+                    0 && (
+                    <section className="mb-8">
+                      <h3 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-200 pb-2">
+                        📋 Referencias Profesionales
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {cvData.references
+                          .filter((ref) => ref.selected)
+                          .map((reference) => (
+                            <div
+                              key={reference.id}
+                              className="border border-gray-200 rounded-lg p-3 bg-gray-50 h-fit"
+                            >
+                              <h4 className="font-bold text-gray-900 text-sm mb-1 leading-tight">
+                                {reference.name}
+                              </h4>
+                              <p className="text-gray-700 text-xs font-medium leading-tight">
+                                {reference.position}
+                              </p>
+                              <p className="text-gray-600 text-xs mb-2 leading-tight">
+                                {reference.company}
+                              </p>
+                              <p className="text-xs text-gray-500 mb-2 italic leading-tight">
+                                {reference.relationship}
+                              </p>
+                              <div className="space-y-1 text-xs text-gray-600">
+                                {reference.phone && (
+                                  <p className="flex items-center gap-1 leading-tight">
+                                    <span>📞</span>
+                                    <span className="break-all">
+                                      {reference.phone}
+                                    </span>
+                                  </p>
+                                )}
+                                {reference.email && (
+                                  <p className="flex items-center gap-1 leading-tight">
+                                    <span>✉️</span>
+                                    <span className="break-all text-xs">
+                                      {reference.email}
+                                    </span>
+                                  </p>
+                                )}
+                                {reference.yearsWorking && (
+                                  <p className="flex items-center gap-1 leading-tight">
+                                    <span>⏱️</span>
+                                    <span className="text-xs">
+                                      Colaboración: {reference.yearsWorking}
+                                    </span>
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    </section>
+                  )}
+                </div>
+                {/* Footer*/}
+                <div className="cv-footer text-center bg-gray-700 py-4 border-t-2 border-gray-600"></div>
               </div>
-              {/* Footer*/}
-              <div className="text-center bg-gray-700 py-4 border-b-2 border-gray-600"></div>
             </div>
           </>
         ) : (
           <>
             {/* FORMATO ATS - Optimizado para sistemas automáticos */}
-            <div id="cv-page-1" className="page-1 ats-format" data-page="1">
+            <div id="cv-page-1" className="page-1 cv-ats" data-page="1">
               <div className="w-full max-w-4xl mx-auto bg-white p-8 px-12 font-serif">
                 {/* Header ATS - Simple y claro */}
                 <div className="text-center border-b-2 border-black pb-4 mb-6">
@@ -1253,7 +1615,7 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
             </div>
 
             {/* PÁGINA 2 ATS */}
-            <div id="cv-page-2" className="page-2 ats-format" data-page="2">
+            <div id="cv-page-2" className="page-2 cv-ats" data-page="2">
               <div className="w-full max-w-4xl mx-auto bg-white p-8 px-12 font-serif">
                 {/* Certificaciones ATS */}
                 {selectedCertifications.length > 0 && (
@@ -1274,10 +1636,8 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                               {cert.expiryDate && ` - ${cert.expiryDate}`}
                               {")"}
                             </span>
-                            <p className="font-bold text-black">
-                              {cert.issuer}
-                            </p>
                           </div>
+                          <p className="font-bold text-black">{cert.issuer}</p>
                           {cert.credentialId && (
                             <p className="text-sm text-black">
                               ID de Credencial: {cert.credentialId}

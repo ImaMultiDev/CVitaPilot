@@ -67,33 +67,33 @@ export const CoverLetterSection: React.FC = () => {
   ];
 
   return (
-    <section id="modelo-eva-porto" className="mb-12">
-      <Card className="p-8">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="p-3 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-xl">
+    <section id="modelo-eva-porto" className="mb-8 sm:mb-12">
+      <Card className="p-4 sm:p-6 lg:p-8">
+        <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 mb-6 sm:mb-8">
+          <div className="p-2 sm:p-2.5 lg:p-3 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-lg sm:rounded-xl">
             <LetterIcon
-              size={32}
-              className="text-purple-600 dark:text-purple-400"
+              size={24}
+              className="text-purple-600 dark:text-purple-400 sm:w-7 sm:h-7 lg:w-8 lg:h-8"
             />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
             Carta de Presentación: Método Eva Porto
           </h2>
         </div>
 
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8">
           {/* Sobre Eva Porto */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 rounded-xl border-l-4 border-blue-500 dark:border-blue-400">
-            <div className="flex items-start gap-4">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-4 sm:p-6 rounded-xl border-l-4 border-blue-500 dark:border-blue-400">
+            <div className="flex items-start gap-3 sm:gap-4">
               <ProfessionalIcon
-                size={24}
-                className="text-blue-600 dark:text-blue-400 mt-1 flex-shrink-0"
+                size={20}
+                className="text-blue-600 dark:text-blue-400 mt-1 flex-shrink-0 sm:w-6 sm:h-6"
               />
               <div>
-                <h3 className="text-xl font-semibold text-blue-800 dark:text-blue-300 mb-3">
+                <h3 className="text-lg sm:text-xl font-semibold text-blue-800 dark:text-blue-300 mb-2 sm:mb-3">
                   Sobre Eva Porto
                 </h3>
-                <p className="text-blue-700 dark:text-blue-400 leading-relaxed">
+                <p className="text-blue-700 dark:text-blue-400 leading-relaxed text-sm sm:text-base">
                   Eva Porto Soto es una reconocida psicóloga, conferenciante y
                   autora especializada en empleabilidad. Es LinkedIn Top Voice
                   2023 y una referente en España para temas de currículum,
@@ -107,10 +107,10 @@ export const CoverLetterSection: React.FC = () => {
 
           {/* Estructura de la carta */}
           <div id="estructura-carta">
-            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-6">
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4 sm:mb-6">
               Estructura de la Carta Perfecta
             </h3>
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {letterStructure.map((section, index) => {
                 const colors = {
                   blue: {
@@ -149,21 +149,23 @@ export const CoverLetterSection: React.FC = () => {
                 return (
                   <div
                     key={index}
-                    className={`${colorClasses.bg} border ${colorClasses.border} rounded-xl p-6`}
+                    className={`${colorClasses.bg} border ${colorClasses.border} rounded-xl p-4 sm:p-6`}
                   >
-                    <div className="flex items-start gap-4 mb-4">
+                    <div className="flex items-start gap-3 sm:gap-4 mb-3 sm:mb-4">
                       <div
-                        className={`w-8 h-8 ${colorClasses.number} rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0`}
+                        className={`w-6 h-6 sm:w-8 sm:h-8 ${colorClasses.number} rounded-full flex items-center justify-center text-xs sm:text-sm font-bold flex-shrink-0`}
                       >
                         {section.number}
                       </div>
                       <div className="flex-1">
                         <h4
-                          className={`font-semibold ${colorClasses.text} text-lg mb-2`}
+                          className={`font-semibold ${colorClasses.text} text-base sm:text-lg mb-1 sm:mb-2`}
                         >
                           {section.title}
                         </h4>
-                        <p className={`${colorClasses.text} mb-3`}>
+                        <p
+                          className={`${colorClasses.text} mb-2 sm:mb-3 text-sm sm:text-base`}
+                        >
                           <strong>Objetivo:</strong> {section.content}
                         </p>
                       </div>
@@ -171,14 +173,14 @@ export const CoverLetterSection: React.FC = () => {
 
                     {section.items && (
                       <ul
-                        className={`mt-4 space-y-2 ${colorClasses.text} ml-12`}
+                        className={`mt-3 sm:mt-4 space-y-1.5 sm:space-y-2 ${colorClasses.text} ml-8 sm:ml-12`}
                       >
                         {section.items.map((item, idx) => (
                           <li key={idx} className="flex items-start gap-2">
                             <div
-                              className={`w-1.5 h-1.5 ${colorClasses.text} rounded-full mt-2 flex-shrink-0`}
+                              className={`w-1.5 h-1.5 ${colorClasses.text} rounded-full mt-1.5 sm:mt-2 flex-shrink-0`}
                             ></div>
-                            <span className="text-sm">{item}</span>
+                            <span className="text-xs sm:text-sm">{item}</span>
                           </li>
                         ))}
                       </ul>
@@ -186,23 +188,27 @@ export const CoverLetterSection: React.FC = () => {
 
                     {section.example && (
                       <div
-                        className={`mt-4 p-4 bg-white dark:bg-gray-800 rounded-lg ml-12`}
+                        className={`mt-3 sm:mt-4 p-3 sm:p-4 bg-white dark:bg-gray-800 rounded-lg ml-8 sm:ml-12`}
                       >
-                        <p className={`${colorClasses.text} mb-1`}>
+                        <p
+                          className={`${colorClasses.text} mb-1 text-sm sm:text-base`}
+                        >
                           <strong>Ejemplo:</strong>
                         </p>
-                        <p className="text-gray-700 dark:text-gray-300 text-sm italic whitespace-pre-line">
+                        <p className="text-gray-700 dark:text-gray-300 text-xs sm:text-sm italic whitespace-pre-line">
                           &ldquo;{section.example}&rdquo;
                         </p>
                       </div>
                     )}
 
                     {section.note && (
-                      <p
-                        className={`text-xs ${colorClasses.text} mt-3 ml-12 italic`}
+                      <div
+                        className={`mt-3 sm:mt-4 p-3 sm:p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-600 ml-8 sm:ml-12`}
                       >
-                        <em>{section.note}</em>
-                      </p>
+                        <p className="text-yellow-800 dark:text-yellow-300 text-xs sm:text-sm">
+                          💡 {section.note}
+                        </p>
+                      </div>
                     )}
                   </div>
                 );
@@ -210,52 +216,50 @@ export const CoverLetterSection: React.FC = () => {
             </div>
           </div>
 
-          {/* Personalización estratégica */}
+          {/* Investigación previa */}
           <div id="personalizacion">
-            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-6">
-              Personalización Estratégica
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4 sm:mb-6">
+              Investigación Previa: Clave del Éxito
             </h3>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Investigación previa */}
-              <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-600">
-                <div className="flex items-center gap-3 mb-4">
-                  <ExperienceIcon
-                    size={20}
-                    className="text-green-600 dark:text-green-400"
-                  />
-                  <h4 className="font-semibold text-green-800 dark:text-green-300 text-lg">
-                    Investigación Previa
-                  </h4>
-                </div>
-                <ul className="text-sm text-green-700 dark:text-green-400 space-y-3">
-                  {researchTips.map((tip, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <div className="w-1.5 h-1.5 bg-green-600 dark:bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
-                      <span>{tip}</span>
-                    </li>
-                  ))}
-                </ul>
+            <div className="bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 p-4 sm:p-6 lg:p-8 rounded-xl border border-yellow-200 dark:border-yellow-600">
+              <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                <ExperienceIcon
+                  size={20}
+                  className="text-yellow-600 dark:text-yellow-400 sm:w-6 sm:h-6"
+                />
+                <h4 className="text-base sm:text-lg font-semibold text-yellow-800 dark:text-yellow-300">
+                  Qué investigar antes de escribir
+                </h4>
               </div>
 
-              {/* Recomendaciones de Eva Porto */}
-              <div className="bg-orange-50 dark:bg-orange-900/20 p-6 rounded-xl border border-orange-200 dark:border-orange-600">
-                <div className="flex items-center gap-3 mb-4">
-                  <ProfessionalIcon
-                    size={20}
-                    className="text-orange-600 dark:text-orange-400"
-                  />
-                  <h4 className="font-semibold text-orange-800 dark:text-orange-300 text-lg">
-                    Recomendaciones de Eva Porto
-                  </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm">
+                  <h5 className="font-semibold text-yellow-800 dark:text-yellow-300 mb-3 sm:mb-4 text-sm sm:text-base">
+                    Fuentes de información
+                  </h5>
+                  <ul className="space-y-2 text-yellow-700 dark:text-yellow-400">
+                    {researchTips.map((tip, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <div className="w-1.5 h-1.5 bg-yellow-600 dark:bg-yellow-400 rounded-full mt-1.5 sm:mt-2 flex-shrink-0"></div>
+                        <span className="text-xs sm:text-sm">{tip}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="text-sm text-orange-700 dark:text-orange-400 space-y-3">
-                  {evaPortoTips.map((tip, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <div className="w-1.5 h-1.5 bg-orange-600 dark:bg-orange-400 rounded-full mt-2 flex-shrink-0"></div>
-                      <span>{tip}</span>
-                    </li>
-                  ))}
-                </ul>
+
+                <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm">
+                  <h5 className="font-semibold text-yellow-800 dark:text-yellow-300 mb-3 sm:mb-4 text-sm sm:text-base">
+                    Consejos de Eva Porto
+                  </h5>
+                  <ul className="space-y-2 text-yellow-700 dark:text-yellow-400">
+                    {evaPortoTips.map((tip, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <div className="w-1.5 h-1.5 bg-yellow-600 dark:bg-yellow-400 rounded-full mt-1.5 sm:mt-2 flex-shrink-0"></div>
+                        <span className="text-xs sm:text-sm">{tip}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </div>
           </div>

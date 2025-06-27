@@ -1,3 +1,5 @@
+"use client";
+
 // src/components/ui/Modal.tsx
 
 import React, { useEffect, useState, useCallback } from "react";

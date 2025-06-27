@@ -1,3 +1,5 @@
+"use client";
+
 // src/components/ui/Badge.tsx
 
 import React, { useState } from "react";

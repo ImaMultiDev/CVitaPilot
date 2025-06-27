@@ -1,6 +1,6 @@
-// src/components/layout/Navbar.tsx
-
 "use client";
+
+// src/components/layout/Navbar.tsx
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";

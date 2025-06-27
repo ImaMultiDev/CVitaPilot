@@ -1,6 +1,6 @@
-// src/components/layout/Sidebar/Sidebar.tsx
-
 "use client";
+
+// src/components/layout/Sidebar/Sidebar.tsx
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
