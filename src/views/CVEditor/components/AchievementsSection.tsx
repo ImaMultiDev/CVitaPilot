@@ -97,7 +97,6 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
   return (
     <Card>
       <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-4 md:mb-6 flex items-center gap-2">
-        <CVEditorIcons.Trophy size={24} />
         Logros y Proyectos Destacados
       </h3>
 

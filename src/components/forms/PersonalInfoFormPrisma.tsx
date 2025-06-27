@@ -482,7 +482,7 @@ export const PersonalInfoFormPrisma: React.FC<PersonalInfoFormPrismaProps> = ({
 
         {/* Formulario para añadir nueva red social */}
         {formData.socialNetworks.length < 5 && (
-          <div className="space-y-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+          <div className="space-y-3 p-3 bg-blue-50 dark:bg-blue-900 rounded-lg border border-blue-200 dark:border-blue-700">
             <h5 className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
               <CVEditorIcons.Add size={16} />
               Añadir Red Social
@@ -539,15 +539,15 @@ export const PersonalInfoFormPrisma: React.FC<PersonalInfoFormPrismaProps> = ({
               }
               variant="secondary"
               size="sm"
-              className="flex items-center gap-2"
+              className="flex items-center gap-1 w-auto min-w-fit"
             >
               {isUpdating ? (
                 "Añadiendo..."
               ) : (
-                <>
+                <span className="flex items-center gap-1">
                   <CVEditorIcons.Add size={14} />
                   Añadir Red Social
-                </>
+                </span>
               )}
             </Button>
           </div>

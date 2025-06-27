@@ -1,6 +1,6 @@
 // src/components/ui/Select.tsx
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 interface SelectProps
   extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "onChange"> {
@@ -26,12 +26,34 @@ export const Select: React.FC<SelectProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   const [selectedOption, setSelectedOption] = useState(
     options.find((opt) => opt.value === value) || null
   );
   const containerRef = useRef<HTMLDivElement>(null);
+  const selectId =
+    id || `select-${label?.toLowerCase().replace(/\s+/g, "-") || "unnamed"}`;
 
-  const selectId = id || label?.toLowerCase().replace(/\s+/g, "-");
+  // Detectar tema oscuro
+  useEffect(() => {
+    const checkDarkMode = () => {
+      const isDarkMode =
+        document.documentElement.classList.contains("dark") ||
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+      setIsDark(isDarkMode);
+    };
+
+    checkDarkMode();
+
+    // Observer para cambios en la clase dark
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -57,86 +79,90 @@ export const Select: React.FC<SelectProps> = ({
 
   const variants = {
     default: {
-      container: `relative ${isOpen ? "z-[99999]" : ""}`,
+      container: `relative ${isOpen ? "z-50" : "z-10"}`,
       button: `
-        w-full px-4 py-3 rounded-xl border-2 transition-all duration-300 
+        w-full px-3 py-2 md:px-4 md:py-3 rounded-lg border transition-colors duration-200 
         bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
-        focus:outline-none focus:ring-0 cursor-pointer
+        focus:outline-none cursor-pointer
         flex items-center justify-between
+        text-sm md:text-base
       `,
       dropdown: `
-        absolute top-full left-0 right-0 mt-2 
-        bg-white dark:bg-gray-800 
-        border-2 border-gray-200 dark:border-gray-600 rounded-xl shadow-xl z-[99999]
+        absolute top-full left-0 right-0 mt-1 
+        bg-gray-50 dark:bg-gray-900 
+        border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg z-50
         max-h-60 overflow-y-auto
       `,
       option:
-        "px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors duration-200 flex items-center space-x-2",
+        "px-3 py-2 md:px-4 md:py-3 hover:bg-white dark:hover:bg-gray-800 cursor-pointer transition-colors duration-200 flex items-center space-x-2",
       label: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block",
       border:
         isOpen || isFocused
           ? error
-            ? "border-red-400 shadow-lg shadow-red-500/25"
-            : "border-blue-400 shadow-lg shadow-blue-500/25"
+            ? "border-red-500 focus:ring-2 focus:ring-red-500"
+            : "border-blue-500 focus:ring-2 focus:ring-blue-500"
           : error
           ? "border-red-300 dark:border-red-600"
-          : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500",
+          : "border-gray-300 dark:border-gray-600",
     },
     modern: {
-      container: `relative group ${isOpen ? "z-[99999]" : ""}`,
+      container: `relative ${isOpen ? "z-50" : "z-10"}`,
       button: `
-        w-full px-4 py-3 rounded-xl border-2 transition-all duration-300 
-        bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900
-        text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-0 cursor-pointer
-        flex items-center justify-between transform-gpu
+        w-full px-3 py-2 md:px-4 md:py-3 rounded-lg border transition-colors duration-200 
+        bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
+        focus:outline-none cursor-pointer
+        flex items-center justify-between
+        text-sm md:text-base
       `,
       dropdown: `
-        absolute top-full left-0 right-0 mt-2 
-        bg-white dark:bg-gray-800
-        border-2 border-blue-200 dark:border-blue-800 rounded-xl 
-        shadow-2xl shadow-blue-500/20 z-[99999] max-h-60 overflow-y-auto
+        absolute top-full left-0 right-0 mt-1 
+        bg-gray-50 dark:bg-gray-900
+        border border-gray-200 dark:border-gray-600 rounded-lg 
+        shadow-2xl z-50 max-h-60 overflow-y-auto
+        isolation-isolate
       `,
       option: `
-        px-4 py-3 cursor-pointer transition-all duration-200 flex items-center space-x-2
-        hover:bg-blue-50 dark:hover:bg-blue-900/30
-        hover:shadow-sm mx-1 my-0.5 rounded-lg
+        px-3 py-2 md:px-4 md:py-3 cursor-pointer transition-colors duration-200 flex items-center space-x-2
+        hover:bg-white dark:hover:bg-gray-800
       `,
       label:
         "text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 block",
       border:
         isOpen || isFocused
           ? error
-            ? "border-red-400 shadow-xl shadow-red-500/30"
-            : "border-blue-400 shadow-xl shadow-blue-500/30"
+            ? "border-red-500 focus:ring-2 focus:ring-red-500"
+            : "border-blue-500 focus:ring-2 focus:ring-blue-500"
           : error
-          ? "border-red-300 dark:border-red-600 shadow-md shadow-red-500/20"
-          : "border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/10",
+          ? "border-red-300 dark:border-red-600"
+          : "border-gray-300 dark:border-gray-600",
     },
     glass: {
-      container: `relative group ${isOpen ? "z-[99999]" : ""}`,
+      container: `relative ${isOpen ? "z-50" : "z-10"}`,
       button: `
-        w-full px-4 py-3 rounded-xl border transition-all duration-300 
-        bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl
-        text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-0 cursor-pointer
+        w-full px-3 py-2 md:px-4 md:py-3 rounded-lg border transition-colors duration-200 
+        bg-white/10 dark:bg-gray-800/10 backdrop-blur-sm
+        text-gray-900 dark:text-gray-100 focus:outline-none cursor-pointer
         flex items-center justify-between
+        text-sm md:text-base
       `,
       dropdown: `
-        absolute top-full left-0 right-0 mt-2 
-        bg-white/10 dark:bg-gray-800/10 backdrop-blur-2xl
-        border border-white/20 dark:border-gray-600/20 rounded-xl 
-        shadow-2xl z-[99999] max-h-60 overflow-y-auto
+        absolute top-full left-0 right-0 mt-1 
+        bg-gray-50 dark:bg-gray-900
+        border border-gray-200 dark:border-gray-600 rounded-lg 
+        shadow-2xl z-50 max-h-60 overflow-y-auto
+        isolation-isolate
       `,
       option:
-        "px-4 py-3 hover:bg-white/20 dark:hover:bg-gray-700/20 cursor-pointer transition-colors duration-200 flex items-center space-x-2",
+        "px-3 py-2 md:px-4 md:py-3 hover:bg-white/30 dark:hover:bg-gray-800/30 cursor-pointer transition-colors duration-200 flex items-center space-x-2",
       label: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block",
       border:
         isOpen || isFocused
           ? error
-            ? "border-red-400/60 shadow-2xl shadow-red-500/20"
-            : "border-blue-400/60 shadow-2xl shadow-blue-500/20"
+            ? "border-red-400/60"
+            : "border-blue-400/60"
           : error
           ? "border-red-300/40 dark:border-red-600/40"
-          : "border-white/20 dark:border-gray-600/20 hover:border-blue-300/40 dark:hover:border-blue-500/40",
+          : "border-white/20 dark:border-gray-600/20",
     },
   };
 
@@ -175,7 +201,7 @@ export const Select: React.FC<SelectProps> = ({
           className={`
             ${currentVariant.button}
             ${currentVariant.border}
-            ${error ? "pr-12" : "pr-10"}
+            ${error ? "pr-10" : "pr-8"}
             ${className}
           `}
           onClick={toggleDropdown}
@@ -197,11 +223,11 @@ export const Select: React.FC<SelectProps> = ({
           {/* Dropdown Arrow */}
           <div
             className={`
-            text-gray-400 dark:text-gray-500 transition-transform duration-300
+            text-gray-400 dark:text-gray-500 transition-transform duration-200
             ${isOpen ? "rotate-180" : "rotate-0"}
           `}
           >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
               <path
                 fillRule="evenodd"
                 d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -213,8 +239,8 @@ export const Select: React.FC<SelectProps> = ({
 
         {/* Error Icon */}
         {error && (
-          <div className="absolute right-10 top-1/2 transform -translate-y-1/2 text-red-500">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+          <div className="absolute right-8 top-1/2 transform -translate-y-1/2 text-red-500">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
               <path
                 fillRule="evenodd"
                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -227,22 +253,36 @@ export const Select: React.FC<SelectProps> = ({
         {/* Dropdown Menu */}
         {isOpen && (
           <div
-            className={currentVariant.dropdown}
+            data-dropdown="true"
+            className={`
+              absolute top-full left-0 right-0 mt-1 
+              rounded-lg shadow-2xl z-[9999] max-h-60 overflow-y-auto
+              border-2
+            `}
             style={{
-              backgroundColor: document.documentElement.classList.contains(
-                "dark"
-              )
-                ? "rgb(31, 41, 55)"
-                : "white",
-              opacity: 1,
-              backdropFilter: "none",
-              WebkitBackdropFilter: "none",
+              backgroundColor: isDark
+                ? "rgb(17, 24, 39)"
+                : "rgb(249, 250, 251)", // bg-gray-900 : bg-gray-50
+              borderColor: isDark ? "rgb(75, 85, 99)" : "rgb(209, 213, 219)", // border-gray-600 : border-gray-300
+              color: isDark ? "rgb(243, 244, 246)" : "rgb(17, 24, 39)", // text-gray-100 : text-gray-900
             }}
           >
             {options.map((option) => (
               <div
                 key={option.value}
-                className={currentVariant.option}
+                className="px-3 py-2 md:px-4 md:py-3 cursor-pointer transition-colors duration-200 flex items-center space-x-2"
+                style={{
+                  backgroundColor: "transparent",
+                  color: isDark ? "rgb(243, 244, 246)" : "rgb(17, 24, 39)", // text-gray-100 : text-gray-900
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = isDark
+                    ? "rgb(31, 41, 55)"
+                    : "rgb(243, 244, 246)"; // bg-gray-800 : bg-gray-100
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                }}
                 onClick={() => handleSelect(option)}
               >
                 {option.icon && (
@@ -256,27 +296,14 @@ export const Select: React.FC<SelectProps> = ({
             ))}
           </div>
         )}
-
-        {/* Shine Effect */}
-        {(isOpen || isFocused) && variant !== "glass" && (
-          <div
-            className="absolute inset-0 rounded-xl pointer-events-none overflow-hidden"
-            style={{
-              background: `linear-gradient(90deg, transparent, ${
-                error ? "rgba(239, 68, 68, 0.1)" : "rgba(59, 130, 246, 0.1)"
-              }, transparent)`,
-              animation: "shimmer 2s infinite",
-            }}
-          />
-        )}
       </div>
 
       {/* Error Message */}
       {error && (
         <div className="flex items-center space-x-1 mt-1">
           <svg
-            width="16"
-            height="16"
+            width="14"
+            height="14"
             viewBox="0 0 20 20"
             fill="currentColor"
             className="text-red-500"
@@ -287,44 +314,9 @@ export const Select: React.FC<SelectProps> = ({
               clipRule="evenodd"
             />
           </svg>
-          <p className="text-sm text-red-600 dark:text-red-400 font-medium">
-            {error}
-          </p>
+          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
         </div>
       )}
-
-      <style jsx>{`
-        @keyframes slideDown {
-          0% {
-            opacity: 0;
-            transform: translateY(-10px) scale(0.95);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
-        }
-
-        @keyframes fadeIn {
-          0% {
-            opacity: 0;
-            transform: translateX(-10px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        @keyframes shimmer {
-          0% {
-            transform: translateX(-100%);
-          }
-          100% {
-            transform: translateX(100%);
-          }
-        }
-      `}</style>
     </div>
   );
 };

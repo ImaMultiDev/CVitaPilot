@@ -183,7 +183,7 @@ export const Card: React.FC<CardProps> = ({
       )}
 
       {/* Content */}
-      <div className="relative z-10">{children}</div>
+      <div className="relative">{children}</div>
 
       {/* Bottom highlight for modern variant */}
       {variant === "modern" && (

@@ -88,7 +88,6 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({
   return (
     <Card>
       <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-4 md:mb-6 flex items-center gap-2">
-        <CVEditorIcons.Skills size={24} />
         Habilidades Técnicas
       </h3>
 

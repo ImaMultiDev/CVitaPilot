@@ -79,7 +79,7 @@ export const ReferencesSection: React.FC<ReferencesSectionProps> = ({
   return (
     <Card>
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-        📋 Referencias Profesionales
+        Referencias Profesionales
       </h3>
 
       {/* Añadir nueva referencia */}

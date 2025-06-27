@@ -211,8 +211,10 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
           </Button>
         </div>
 
-        {/* Información Personal */}
-        <PersonalInfoFormPrisma initialData={initialData.personalInfo} />
+        {/* Información Personal - Z-index especial para dropdowns */}
+        <div className="relative" style={{ zIndex: 1000 }}>
+          <PersonalInfoFormPrisma initialData={initialData.personalInfo} />
+        </div>
 
         {/* Perfil Profesional */}
         <ProfessionalProfileSection
@@ -221,12 +223,14 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
           isUpdating={isUpdating}
         />
 
-        {/* Idiomas */}
-        <LanguagesSection
-          languages={initialData.languages}
-          onUpdate={handleUpdate}
-          isUpdating={isUpdating}
-        />
+        {/* Idiomas - Z-index especial para dropdowns */}
+        <div className="relative" style={{ zIndex: 999 }}>
+          <LanguagesSection
+            languages={initialData.languages}
+            onUpdate={handleUpdate}
+            isUpdating={isUpdating}
+          />
+        </div>
 
         {/* Gestión de Categorías de Habilidades */}
         <SkillCategoriesSection
@@ -236,13 +240,15 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
           isUpdating={isUpdating}
         />
 
-        {/* Habilidades por Categoría */}
-        <SkillsSection
-          skills={initialData.skills}
-          skillCategories={initialData.skillCategories}
-          onUpdate={handleUpdate}
-          isUpdating={isUpdating}
-        />
+        {/* Habilidades por Categoría - Z-index especial para dropdowns */}
+        <div className="relative" style={{ zIndex: 998 }}>
+          <SkillsSection
+            skills={initialData.skills}
+            skillCategories={initialData.skillCategories}
+            onUpdate={handleUpdate}
+            isUpdating={isUpdating}
+          />
+        </div>
 
         {/* Competences */}
         <CompetencesSection
@@ -258,12 +264,14 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
           isUpdating={isUpdating}
         />
 
-        {/* Experiencias */}
-        <ExperiencesSection
-          experiences={initialData.experiences}
-          onUpdate={handleUpdate}
-          isUpdating={isUpdating}
-        />
+        {/* Experiencias - Z-index especial para dropdowns */}
+        <div className="relative" style={{ zIndex: 997 }}>
+          <ExperiencesSection
+            experiences={initialData.experiences}
+            onUpdate={handleUpdate}
+            isUpdating={isUpdating}
+          />
+        </div>
 
         {/* Formación Académica */}
         <EducationSection
@@ -279,12 +287,14 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
           isUpdating={isUpdating}
         />
 
-        {/* Logros y Proyectos */}
-        <AchievementsSection
-          achievements={initialData.achievements}
-          onUpdate={handleUpdate}
-          isUpdating={isUpdating}
-        />
+        {/* Logros y Proyectos - Z-index especial para dropdowns */}
+        <div className="relative" style={{ zIndex: 996 }}>
+          <AchievementsSection
+            achievements={initialData.achievements}
+            onUpdate={handleUpdate}
+            isUpdating={isUpdating}
+          />
+        </div>
 
         {/* Referencias Profesionales */}
         <ReferencesSection
