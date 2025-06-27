@@ -199,27 +199,31 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
             className="h-12 md:h-10 text-base md:text-sm"
           />
         </div>
-        <Textarea
-          label="Descripción"
-          value={newAchievement.description}
-          onChange={(e) =>
-            setNewAchievement((prev) => ({
-              ...prev,
-              description: e.target.value,
-            }))
-          }
-          placeholder="Describe el proyecto/logro, tu rol, tecnologías utilizadas y resultados obtenidos..."
-          rows={3}
-          className="mt-3 md:mt-4 text-base md:text-sm"
-        />
-        <Button
-          onClick={handleAddAchievement}
-          size="sm"
-          className="mt-3 md:mt-4 h-12 md:h-10 text-base md:text-sm font-medium"
-          disabled={isUpdating}
-        >
-          🏆 Añadir logro/proyecto
-        </Button>
+        <div className="mt-4 md:mt-5">
+          <Textarea
+            label="Descripción"
+            value={newAchievement.description}
+            onChange={(e) =>
+              setNewAchievement((prev) => ({
+                ...prev,
+                description: e.target.value,
+              }))
+            }
+            placeholder="Describe el proyecto/logro, tu rol, tecnologías utilizadas y resultados obtenidos..."
+            rows={3}
+            className="text-base md:text-sm"
+          />
+        </div>
+        <div className="mt-4 md:mt-5">
+          <Button
+            onClick={handleAddAchievement}
+            size="sm"
+            className="h-12 md:h-10 text-base md:text-sm font-medium"
+            disabled={isUpdating}
+          >
+            🏆 Añadir logro/proyecto
+          </Button>
+        </div>
       </div>
 
       {/* Logros/Proyectos existentes */}

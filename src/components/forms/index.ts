@@ -1,13 +1,4 @@
 // src/components/forms/index.ts
 
-export { PersonalInfoForm } from "./PersonalInfoForm";
-export { ExperienceForm } from "./ExperienceForm";
-export { SkillForm } from "./SkillForm";
-export { LanguageForm } from "./LanguageForm";
-
-// Prisma forms
+// Solo exportamos el formulario que se usa actualmente
 export { PersonalInfoFormPrisma } from "./PersonalInfoFormPrisma";
-export { ExperienceFormPrisma } from "./ExperienceFormPrisma";
-export { EducationFormPrisma } from "./EducationFormPrisma";
-export { SkillFormPrisma } from "./SkillFormPrisma";
-export { LanguageFormPrisma } from "./LanguageFormPrisma";
