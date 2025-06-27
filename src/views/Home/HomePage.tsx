@@ -24,8 +24,6 @@ export const HomePage: React.FC = () => {
   const { theme } = useTheme();
   const router = useRouter();
   const [savedCVs, setSavedCVs] = useState<SavedCV[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [currentSection, setCurrentSection] = useState(0);
 
   // Función para obtener el logo correcto según el tema
   const getLogoSrc = (size: string = "256x256") => {
@@ -40,19 +38,9 @@ export const HomePage: React.FC = () => {
         setSavedCVs(cvs);
       } catch (error) {
         console.error("Error loading user CVs:", error);
-      } finally {
-        setIsLoading(false);
       }
     };
     loadUserCVs();
-  }, []);
-
-  // Animación automática de secciones
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSection((prev) => (prev + 1) % 4);
-    }, 4000);
-    return () => clearInterval(interval);
   }, []);
 
   const handleLoadCV = async (cvId: string) => {
