@@ -139,7 +139,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = React.memo(
 
             {/* Panel del menú */}
             <div
-              className="md:hidden fixed left-4 right-4 top-20 h-[70vh] backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl z-[1000] overflow-hidden"
+              className="md:hidden fixed left-4 right-4 top-16 h-[70vh] backdrop-blur-xl border border-white/20 rounded-t-none rounded-b-3xl shadow-2xl z-[1000] overflow-hidden"
               style={{
                 background:
                   "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
