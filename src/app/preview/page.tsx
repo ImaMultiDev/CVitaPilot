@@ -58,7 +58,8 @@ export default async function PreviewPage() {
   }
 
   // Obtener el nombre del CV actual
-  const currentCVName = await getCurrentCVName();
+  const currentCVNameResult = await getCurrentCVName();
+  const currentCVName: string | undefined = currentCVNameResult ?? undefined;
 
   return (
     <MainLayout showSidebar={false}>
