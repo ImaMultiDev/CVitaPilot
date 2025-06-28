@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { HomeIcons } from "@/components/ui";
+import Image from "next/image";
 
 export const ATSInfoSection: React.FC = () => {
   const router = useRouter();
@@ -12,9 +13,9 @@ export const ATSInfoSection: React.FC = () => {
   return (
     <section className="py-16 bg-gray-50 dark:bg-gray-900/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+        <div className="flex flex-col lg:flex-row gap-12 items-center">
+          <Card className="w-full lg:w-4/6">
+            <h2 className="text-3xl lg:text-4xl opacity-90 font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
               <HomeIcons.Robot
                 size={36}
                 className="text-blue-600 dark:text-blue-400"
@@ -60,7 +61,6 @@ export const ATSInfoSection: React.FC = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/guia-cv">
                 <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2">
-                  <HomeIcons.BookOpen size={20} />
                   Guía Completa ATS
                 </Button>
               </Link>
@@ -69,61 +69,19 @@ export const ATSInfoSection: React.FC = () => {
                 onClick={() => router.push("/editor")}
                 className="flex items-center gap-2"
               >
-                <HomeIcons.Rocket size={20} />
                 Probar Ahora
               </Button>
             </div>
-          </div>
+          </Card>
 
-          <div className="relative">
-            <Card className="p-8 transform hover:scale-105 transition-transform duration-300">
-              <div className="text-center">
-                <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-r from-green-500 to-emerald-500 rounded-3xl flex items-center justify-center">
-                  <HomeIcons.Bullseye size={48} className="text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                  Optimización Automática
-                </h3>
-                <div className="space-y-3 text-left">
-                  <div className="flex items-center gap-3">
-                    <HomeIcons.CheckCircle
-                      size={20}
-                      className="text-green-500"
-                    />
-                    <span className="text-gray-700 dark:text-gray-300">
-                      Palabras clave relevantes
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <HomeIcons.CheckCircle
-                      size={20}
-                      className="text-green-500"
-                    />
-                    <span className="text-gray-700 dark:text-gray-300">
-                      Formato estándar
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <HomeIcons.CheckCircle
-                      size={20}
-                      className="text-green-500"
-                    />
-                    <span className="text-gray-700 dark:text-gray-300">
-                      Estructura legible
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <HomeIcons.CheckCircle
-                      size={20}
-                      className="text-green-500"
-                    />
-                    <span className="text-gray-700 dark:text-gray-300">
-                      Secciones organizadas
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </Card>
+          <div className="relative mx-auto">
+            <Image
+              src="/characters/atscharacter.png"
+              alt="ATS animated Character"
+              width={300}
+              height={300}
+              className="rounded-2xl"
+            />
 
             {/* Floating badges */}
             <div className="absolute -top-4 -right-4 animate-bounce delay-300">

@@ -1,8 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { CVData } from "@/types/cv";
-import { PreviewSidebar } from "./components";
+import {
+  PreviewSidebar,
+  CVVisualFormat,
+  CVATSFormat,
+  ResponsiveStyles,
+} from "./components";
 
 interface CVPreviewPrismaProps {
   cvData: CVData;
@@ -15,6 +20,25 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
 }) => {
   const [cvFormat, setCvFormat] = useState<"visual" | "ats">("visual");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+  const [isClient, setIsClient] = useState(false); // Para manejar hidratación SSR
+
+  const [zoomLevel, setZoomLevel] = useState(1.0); // Valor inicial para desktop por defecto en SSR
+
+  // Funciones de zoom memorizadas con rangos más amplios
+  const handleZoomIn = useCallback(() => {
+    setZoomLevel((prev) => Math.min(prev + 0.05, 1.5)); // Incrementos más pequeños
+  }, []);
+
+  const handleZoomOut = useCallback(() => {
+    setZoomLevel((prev) => Math.max(prev - 0.05, 0.25)); // Zoom mucho más pequeño
+  }, []);
+
+  const handleZoomReset = useCallback(() => {
+    const resetZoom = isMobile ? 0.4 : isTablet ? 0.75 : 1.0; // Valores optimizados por dispositivo
+    setZoomLevel(resetZoom);
+  }, [isMobile, isTablet]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -24,532 +48,113 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
     setIsSidebarOpen(false);
   };
 
-  // Cerrar sidebar automáticamente cuando la pantalla se hace más grande
+  // Detectar tamaño de pantalla y ajustar zoom inicial
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 1280) {
-        // xl breakpoint
+    // Verificar que estamos en el cliente
+    if (typeof window === "undefined") return;
+
+    // Marcar como cliente montado
+    setIsClient(true);
+
+    const updateScreenSize = () => {
+      const newIsMobile = window.innerWidth < 768;
+      const newIsTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
+
+      setIsMobile(newIsMobile);
+      setIsTablet(newIsTablet);
+
+      // Solo ajustar zoom si es la primera carga o si cambió drásticamente el tipo de pantalla
+      const currentType = isMobile ? "mobile" : isTablet ? "tablet" : "desktop";
+      const newType = newIsMobile
+        ? "mobile"
+        : newIsTablet
+        ? "tablet"
+        : "desktop";
+
+      if (currentType !== newType) {
+        const newZoom = newIsMobile ? 0.4 : newIsTablet ? 0.75 : 1.0; // Valores optimizados por dispositivo
+        setZoomLevel(newZoom);
+      }
+    };
+
+    // Ejecutar al montar
+    updateScreenSize();
+
+    window.addEventListener("resize", updateScreenSize);
+    return () => window.removeEventListener("resize", updateScreenSize);
+  }, [isMobile, isTablet]); // Agregar dependencias requeridas
+
+  // Cerrar sidebar al hacer clic fuera o cambio de ruta + atajos de teclado para zoom
+  useEffect(() => {
+    // Verificar que estamos en el cliente
+    if (typeof window === "undefined" || typeof document === "undefined")
+      return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (
+        isSidebarOpen &&
+        !target.closest(".sidebar-container") &&
+        !target.closest("button[aria-label*='controles']")
+      ) {
         setIsSidebarOpen(false);
       }
     };
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Escape para cerrar sidebar
+      if (event.key === "Escape" && isSidebarOpen) {
+        setIsSidebarOpen(false);
+        return;
+      }
+
+      // Atajos de zoom (Ctrl + / Ctrl -)
+      if (event.ctrlKey || event.metaKey) {
+        if (event.key === "=" || event.key === "+") {
+          event.preventDefault();
+          handleZoomIn();
+        } else if (event.key === "-") {
+          event.preventDefault();
+          handleZoomOut();
+        } else if (event.key === "0") {
+          event.preventDefault();
+          handleZoomReset();
+        }
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isSidebarOpen, handleZoomIn, handleZoomOut, handleZoomReset]); // Agregar dependencias de funciones
 
   const renderCV = () => {
     if (cvFormat === "visual") {
-      return (
-        <div className="cv-container visual-format">
-          <style jsx>{`
-            .cv-container {
-              color-scheme: light !important;
-              background: white !important;
-            }
-            .cv-container * {
-              color-scheme: light !important;
-            }
-          `}</style>
-
-          {/* Página 1 - Visual */}
-          <div
-            id="cv-page-1"
-            className="cv-page bg-white shadow-2xl mx-auto mb-8 overflow-hidden"
-            style={{
-              width: "210mm",
-              minHeight: "297mm",
-              maxWidth: "210mm",
-              fontSize: "0.85em",
-            }}
-          >
-            <div className="flex h-full">
-              {/* Sidebar */}
-              <div
-                className="sidebar-section flex-shrink-0 text-white p-6"
-                style={{
-                  width: "33.333%",
-                  background:
-                    "linear-gradient(135deg, #374151 0%, #1f2937 100%)",
-                  padding: "calc(20mm * 0.85)",
-                }}
-              >
-                {/* Datos Personales */}
-                <div className="mb-8">
-                  <div
-                    className="text-center p-4 rounded-lg mb-6"
-                    style={{
-                      background: "rgba(255, 255, 255, 0.1)",
-                      backdropFilter: "blur(10px)",
-                    }}
-                  >
-                    <h1 className="text-2xl font-bold mb-2 text-white">
-                      {cvData.personalInfo?.name || ""}
-                    </h1>
-                    <p className="text-cyan-200 font-medium">
-                      {cvData.personalInfo?.position || ""}
-                    </p>
-                  </div>
-
-                  <div className="space-y-3">
-                    {cvData.personalInfo?.phone && (
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-white text-sm">📞</span>
-                        </div>
-                        <span className="text-gray-200 text-sm">
-                          {cvData.personalInfo.phone}
-                        </span>
-                      </div>
-                    )}
-                    {cvData.personalInfo?.email && (
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-white text-sm">✉️</span>
-                        </div>
-                        <span className="text-gray-200 text-sm break-all">
-                          {cvData.personalInfo.email}
-                        </span>
-                      </div>
-                    )}
-                    {cvData.personalInfo?.linkedin && (
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-white text-sm">💼</span>
-                        </div>
-                        <span className="text-gray-200 text-sm break-all">
-                          {cvData.personalInfo.linkedin}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Especialización */}
-                <div className="mb-8">
-                  <h3
-                    className="text-lg font-bold mb-4 pb-2 text-white"
-                    style={{
-                      borderBottom: "2px solid #06b6d4",
-                    }}
-                  >
-                    Especialización
-                  </h3>
-                  <div className="space-y-2">
-                    <div>
-                      <h4 className="text-cyan-200 font-semibold mb-2">
-                        Lenguajes de Programación:
-                      </h4>
-                      <p className="text-gray-300 text-sm">
-                        {cvData.skills
-                          ?.filter((skill) => skill.selected)
-                          .slice(0, 3)
-                          .map((skill) => skill.name)
-                          .join(", ") || ""}
-                      </p>
-                    </div>
-                    <div>
-                      <h4 className="text-cyan-200 font-semibold mb-2">
-                        Herramientas:
-                      </h4>
-                      <p className="text-gray-300 text-sm">
-                        {cvData.skills
-                          ?.filter((skill) => skill.selected)
-                          .slice(3, 6)
-                          .map((skill) => skill.name)
-                          .join(", ") || ""}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Idiomas */}
-                {cvData.languages && cvData.languages.length > 0 && (
-                  <div className="mb-8">
-                    <h3
-                      className="text-lg font-bold mb-4 pb-2 text-white"
-                      style={{
-                        borderBottom: "2px solid #06b6d4",
-                      }}
-                    >
-                      Idiomas
-                    </h3>
-                    <div className="space-y-2">
-                      {cvData.languages.slice(0, 3).map((language, index) => (
-                        <div key={index} className="flex justify-between">
-                          <span className="text-gray-200 text-sm">
-                            {language.name}
-                          </span>
-                          <span className="text-cyan-200 text-sm">
-                            {language.level}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Contenido Principal */}
-              <div
-                className="main-content flex-1 p-6 text-gray-800"
-                style={{
-                  padding: "calc(20mm * 0.85)",
-                  color: "#374151 !important",
-                }}
-              >
-                {/* Experiencia Laboral */}
-                <div className="mb-8">
-                  <h2
-                    className="text-xl font-bold mb-6 pb-2"
-                    style={{
-                      color: "#374151 !important",
-                      borderBottom: "2px solid #06b6d4",
-                    }}
-                  >
-                    Experiencia Laboral
-                  </h2>
-                  {cvData.experiences
-                    ?.filter((exp) => exp.selected)
-                    .slice(0, 2)
-                    .map((experience, index) => (
-                      <div key={index} className="mb-6">
-                        <div className="flex justify-between items-start mb-2">
-                          <h3
-                            className="text-lg font-semibold"
-                            style={{ color: "#374151 !important" }}
-                          >
-                            {experience.position}
-                          </h3>
-                          <span
-                            className="text-sm font-medium px-3 py-1 rounded-full"
-                            style={{
-                              background: "#e0f2fe",
-                              color: "#0891b2 !important",
-                            }}
-                          >
-                            ({experience.contractType},{" "}
-                            {experience.workSchedule}, {experience.workModality}
-                            )
-                          </span>
-                        </div>
-                        <div className="mb-2">
-                          <h4
-                            className="font-medium"
-                            style={{ color: "#374151 !important" }}
-                          >
-                            {experience.company}
-                          </h4>
-                          <p
-                            className="text-sm"
-                            style={{ color: "#6b7280 !important" }}
-                          >
-                            {experience.startDate} - {experience.endDate} /{" "}
-                            {experience.location}
-                          </p>
-                        </div>
-                        {experience.technologies &&
-                          experience.technologies.length > 0 && (
-                            <p
-                              className="text-sm mb-2"
-                              style={{ color: "#374151 !important" }}
-                            >
-                              <strong>Tecnologías:</strong>{" "}
-                              {experience.technologies.join(", ")}
-                            </p>
-                          )}
-                        {experience.description && (
-                          <p
-                            className="text-sm"
-                            style={{ color: "#374151 !important" }}
-                          >
-                            <strong>Descripción:</strong>{" "}
-                            {experience.description}
-                          </p>
-                        )}
-                      </div>
-                    ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Página 2 - Visual */}
-          <div
-            id="cv-page-2"
-            className="cv-page bg-white shadow-2xl mx-auto overflow-hidden"
-            style={{
-              width: "210mm",
-              minHeight: "297mm",
-              maxWidth: "210mm",
-              fontSize: "0.85em",
-            }}
-          >
-            <div className="flex flex-col h-full">
-              <div
-                className="flex-1 p-6 text-gray-800"
-                style={{
-                  padding: "calc(20mm * 0.85)",
-                  color: "#374151 !important",
-                }}
-              >
-                {/* Formación */}
-                {cvData.education && cvData.education.length > 0 && (
-                  <div className="mb-8">
-                    <h2
-                      className="text-xl font-bold mb-6 pb-2"
-                      style={{
-                        color: "#374151 !important",
-                        borderBottom: "2px solid #06b6d4",
-                      }}
-                    >
-                      Formación
-                    </h2>
-                    {cvData.education
-                      .filter((edu) => edu.selected)
-                      .map((education, index) => (
-                        <div key={index} className="mb-4">
-                          <h3
-                            className="text-lg font-semibold"
-                            style={{ color: "#374151 !important" }}
-                          >
-                            {education.title}
-                          </h3>
-                          <p
-                            className="text-sm"
-                            style={{ color: "#6b7280 !important" }}
-                          >
-                            {education.institution} • {education.startYear} -{" "}
-                            {education.endYear}
-                          </p>
-                        </div>
-                      ))}
-                  </div>
-                )}
-
-                {/* Habilidades Adicionales */}
-                {cvData.skills && cvData.skills.length > 6 && (
-                  <div className="mb-8">
-                    <h2
-                      className="text-xl font-bold mb-6 pb-2"
-                      style={{
-                        color: "#374151 !important",
-                        borderBottom: "2px solid #06b6d4",
-                      }}
-                    >
-                      Habilidades Adicionales
-                    </h2>
-                    <div className="grid grid-cols-2 gap-4">
-                      {cvData.skills
-                        .filter((skill) => skill.selected)
-                        .slice(6)
-                        .map((skill, index) => (
-                          <div key={index} className="flex items-center gap-2">
-                            <div className="w-2 h-2 bg-cyan-500 rounded-full"></div>
-                            <span
-                              className="text-sm"
-                              style={{ color: "#374151 !important" }}
-                            >
-                              {skill.name}
-                            </span>
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Footer */}
-              <div
-                className="cv-footer p-4 text-center"
-                style={{
-                  background: "#f3f4f6",
-                  borderTop: "1px solid #e5e7eb",
-                }}
-              >
-                <p className="text-xs" style={{ color: "#6b7280 !important" }}>
-                  {cvData.personalInfo?.name
-                    ? `${cvData.personalInfo.name} - CV Profesional - Página 2`
-                    : ""}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
+      return <CVVisualFormat cvData={cvData} />;
     } else {
-      // Formato ATS
-      return (
-        <div className="cv-container ats-format">
-          <style jsx>{`
-            .cv-container {
-              color-scheme: light !important;
-              background: white !important;
-            }
-            .cv-container * {
-              color-scheme: light !important;
-              color: #000000 !important;
-            }
-          `}</style>
-
-          <div
-            id="cv-page-1"
-            className="cv-page bg-white shadow-2xl mx-auto mb-8 overflow-hidden"
-            style={{
-              width: "210mm",
-              minHeight: "297mm",
-              maxWidth: "210mm",
-              fontSize: "0.75em",
-              padding: "calc(12mm * 0.75)",
-              color: "#000000 !important",
-            }}
-          >
-            {/* Header */}
-            <div className="text-center mb-6">
-              <h1
-                className="text-2xl font-bold mb-2"
-                style={{ color: "#000000 !important" }}
-              >
-                {cvData.personalInfo?.name || ""}
-              </h1>
-              <p
-                className="text-lg mb-4"
-                style={{ color: "#000000 !important" }}
-              >
-                {cvData.personalInfo?.position || ""}
-              </p>
-              <div className="flex justify-center gap-4 text-sm">
-                {cvData.personalInfo?.phone && (
-                  <span style={{ color: "#000000 !important" }}>
-                    Teléfono: {cvData.personalInfo.phone}
-                  </span>
-                )}
-                {cvData.personalInfo?.email && (
-                  <span style={{ color: "#000000 !important" }}>
-                    Email: {cvData.personalInfo.email}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            {/* Experiencia */}
-            <div className="mb-6">
-              <h2
-                className="text-xl font-bold mb-4 pb-1 border-b border-black"
-                style={{ color: "#000000 !important" }}
-              >
-                EXPERIENCIA LABORAL
-              </h2>
-              {cvData.experiences
-                ?.filter((exp) => exp.selected)
-                .map((experience, index) => (
-                  <div key={index} className="mb-4">
-                    <h3
-                      className="text-lg font-semibold"
-                      style={{ color: "#000000 !important" }}
-                    >
-                      {experience.position}
-                    </h3>
-                    <p
-                      className="font-medium"
-                      style={{ color: "#000000 !important" }}
-                    >
-                      {experience.company}
-                    </p>
-                    <p
-                      className="text-sm mb-2"
-                      style={{ color: "#000000 !important" }}
-                    >
-                      {experience.startDate} - {experience.endDate} |{" "}
-                      {experience.location}
-                    </p>
-                    {experience.technologies &&
-                      experience.technologies.length > 0 && (
-                        <p
-                          className="text-sm"
-                          style={{ color: "#000000 !important" }}
-                        >
-                          Tecnologías: {experience.technologies.join(", ")}
-                        </p>
-                      )}
-                  </div>
-                ))}
-            </div>
-
-            {/* Habilidades */}
-            {cvData.skills && cvData.skills.length > 0 && (
-              <div className="mb-6">
-                <h2
-                  className="text-xl font-bold mb-4 pb-1 border-b border-black"
-                  style={{ color: "#000000 !important" }}
-                >
-                  HABILIDADES
-                </h2>
-                <p style={{ color: "#000000 !important" }}>
-                  {cvData.skills
-                    .filter((skill) => skill.selected)
-                    .map((skill) => skill.name)
-                    .join(", ")}
-                </p>
-              </div>
-            )}
-
-            {/* Formación */}
-            {cvData.education && cvData.education.length > 0 && (
-              <div className="mb-6">
-                <h2
-                  className="text-xl font-bold mb-4 pb-1 border-b border-black"
-                  style={{ color: "#000000 !important" }}
-                >
-                  FORMACIÓN
-                </h2>
-                {cvData.education
-                  .filter((edu) => edu.selected)
-                  .map((education, index) => (
-                    <div key={index} className="mb-2">
-                      <h3
-                        className="font-semibold"
-                        style={{ color: "#000000 !important" }}
-                      >
-                        {education.title}
-                      </h3>
-                      <p style={{ color: "#000000 !important" }}>
-                        {education.institution} | {education.startYear} -{" "}
-                        {education.endYear}
-                      </p>
-                    </div>
-                  ))}
-              </div>
-            )}
-          </div>
-        </div>
-      );
+      return <CVATSFormat cvData={cvData} />;
     }
   };
 
   return (
     <div className="relative min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Sidebar Desktop - Solo visible en xl+ (1280px+) */}
-      <div className="hidden xl:block fixed left-0 top-16 h-[calc(100vh-4rem)] z-40">
-        <PreviewSidebar
-          currentFormat={cvFormat}
-          onFormatChange={setCvFormat}
-          currentCVName={currentCVName}
-        />
-      </div>
-
-      {/* Sidebar Mobile/Tablet - Overlay deslizante */}
+      {/* Sidebar Universal - Overlay deslizante en todas las resoluciones */}
       {isSidebarOpen && (
         <>
-          {/* Overlay */}
+          {/* Overlay de fondo */}
           <div
-            className="xl:hidden fixed inset-0 bg-black/50 z-[40] transition-opacity duration-300"
+            className="no-print fixed inset-0 bg-black/50 z-[40] transition-opacity duration-300"
             onClick={closeSidebar}
             style={{ top: "64px" }} // Debajo del navbar
           />
 
-          {/* Sidebar Panel */}
+          {/* Panel del Sidebar */}
           <div
-            className="xl:hidden fixed left-0 h-[calc(100vh-64px)] w-80 z-[45] transform transition-transform duration-300 ease-out animate-in slide-in-from-left shadow-2xl dark:shadow-black/50"
+            className="no-print sidebar-container fixed left-0 h-[calc(100vh-64px)] w-64 lg:w-72 z-[45] transform transition-transform duration-300 ease-out animate-in slide-in-from-left shadow-2xl dark:shadow-black/50"
             style={{
               top: "64px", // Debajo del navbar
               backgroundColor: "var(--sidebar-bg)",
@@ -581,19 +186,25 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                 currentFormat={cvFormat}
                 onFormatChange={setCvFormat}
                 currentCVName={currentCVName}
+                zoomLevel={zoomLevel}
+                onZoomIn={handleZoomIn}
+                onZoomOut={handleZoomOut}
+                onZoomReset={handleZoomReset}
+                isMobile={isClient ? isMobile : false}
+                isTablet={isClient ? isTablet : false}
               />
             </div>
           </div>
         </>
       )}
 
-      {/* Botón flotante para abrir sidebar en mobile/tablet */}
+      {/* Botón flotante para controles - Universal */}
       <button
         onClick={isSidebarOpen ? closeSidebar : toggleSidebar}
-        className={`xl:hidden fixed top-20 left-4 z-[50] p-2 md:p-3 text-white rounded-full border-2 transition-all duration-300 hover:scale-110 active:scale-95 ${
+        className={`no-print fixed top-20 left-4 z-[50] p-3 lg:p-4 text-white rounded-full border-2 transition-all duration-300 hover:scale-110 active:scale-95 ${
           isSidebarOpen
-            ? "border-red-300/50 shadow-2xl ring-4 ring-red-500/30 hover:ring-red-500/50"
-            : "border-white/30 dark:border-white/20 shadow-xl hover:shadow-2xl hover:border-white/50 dark:hover:border-white/40 ring-4 ring-purple-500/20 hover:ring-purple-500/40 animate-pulse hover:animate-none"
+            ? "border-red-300/50 shadow-2xl ring-4 ring-red-500/30 hover:ring-red-500/50 opacity-70 hover:opacity-90"
+            : "border-white/30 dark:border-white/20 shadow-xl hover:shadow-2xl hover:border-white/50 dark:hover:border-white/40 ring-4 ring-purple-500/20 hover:ring-purple-500/40 animate-pulse hover:animate-none opacity-80 hover:opacity-100"
         }`}
         aria-label={
           isSidebarOpen
@@ -612,7 +223,7 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
         {isSidebarOpen ? (
           // X para cerrar
           <svg
-            className="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300"
+            className="w-5 h-5 lg:w-6 lg:h-6 transition-transform duration-300"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -625,9 +236,9 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
             />
           </svg>
         ) : (
-          // Ojo para abrir
+          // Icono de controles
           <svg
-            className="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300"
+            className="w-5 h-5 lg:w-6 lg:h-6 transition-transform duration-300"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -636,104 +247,62 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+              d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"
             />
           </svg>
         )}
       </button>
 
-      {/* Contenido principal - CV */}
-      <div className="xl:ml-80 min-h-screen">
-        <div className="container mx-auto px-4 py-6">
-          {/* Header móvil */}
-          <div className="xl:hidden mb-6 text-center">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              Vista Previa del CV
-            </h1>
-            {currentCVName && (
-              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-3 mb-3 mx-4">
-                <p className="text-blue-800 dark:text-blue-200 text-sm">
-                  <span className="font-semibold">CV Activo:</span>{" "}
-                  {currentCVName}
-                </p>
-              </div>
-            )}
-            <div className="flex items-center justify-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+      {/* Contenido principal - Solo CV Canvas */}
+      <div className="min-h-screen">
+        {/* CV Content - Completamente optimizado para móvil y desktop */}
+        <div className="w-full min-h-screen overflow-x-auto overflow-y-auto">
+          <ResponsiveStyles />
+
+          {/* Contenedor responsive del CV - Optimizado para móvil */}
+          <div
+            className={`w-full min-h-screen flex ${
+              isClient && isMobile ? "justify-start" : "justify-center"
+            }`}
+            style={{
+              // En móvil: sin padding, CV desde borde izquierdo
+              // En desktop: padding para centrado
+              padding: isClient && isMobile ? "0" : "1rem 2rem",
+            }}
+          >
+            <div
+              className="cv-zoom-container transition-transform duration-200 ease-out"
+              style={{
+                transform: `scale(${zoomLevel})`,
+                transformOrigin:
+                  isClient && isMobile
+                    ? "top left" // Móvil: origen en esquina superior izquierda
+                    : "top center", // Desktop: origen en centro superior
+
+                // Espaciado dinámico para zoom
+                marginBottom:
+                  zoomLevel > 1 ? `${(zoomLevel - 1) * 60}vh` : "1rem",
+                marginTop: "0",
+
+                // Ancho optimizado: en móvil usa todo el viewport
+                width: isClient && isMobile ? "100vw" : "auto",
+
+                // Alineación perfecta
+                display: "flex",
+                flexDirection: "column",
+                alignItems: isClient && isMobile ? "flex-start" : "center",
+              }}
+            >
               <div
-                className={`w-2 h-2 rounded-full ${
-                  cvFormat === "visual" ? "bg-blue-500" : "bg-green-500"
-                }`}
-              ></div>
-              <span>Formato {cvFormat === "visual" ? "Visual" : "ATS"}</span>
+                style={{
+                  width: isClient && isMobile ? "100%" : "auto", // Móvil: CV usa todo el ancho disponible
+                  maxWidth: isClient && isMobile ? "none" : "100%", // Móvil: sin límite de ancho máximo
+                  minWidth: isClient && isMobile ? "100%" : "auto", // Móvil: forzar ancho completo
+                }}
+              >
+                {renderCV()}
+              </div>
             </div>
-          </div>
-
-          {/* CV Content */}
-          <div className="flex justify-center">
-            <style jsx>{`
-              /* Estilos responsive estilo Canva */
-              @media (max-width: 1279px) {
-                .cv-container {
-                  width: 100% !important;
-                  max-width: 100% !important;
-                  margin: 0 !important;
-                  transform: scale(0.95);
-                  transform-origin: top center;
-                }
-
-                .cv-page {
-                  width: 100% !important;
-                  max-width: 100vw !important;
-                  margin: 0 auto 2rem auto !important;
-                  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
-                }
-              }
-
-              @media (max-width: 768px) {
-                .cv-container {
-                  transform: scale(0.85);
-                  margin: 0 -2rem !important;
-                }
-
-                .cv-page {
-                  font-size: 0.7em !important;
-                }
-
-                .sidebar-section {
-                  padding: calc(15mm * 0.7) !important;
-                }
-
-                .main-content {
-                  padding: calc(15mm * 0.7) !important;
-                }
-              }
-
-              @media (max-width: 480px) {
-                .cv-container {
-                  transform: scale(0.75);
-                  margin: 0 -3rem !important;
-                }
-
-                .cv-page {
-                  font-size: 0.65em !important;
-                }
-
-                .sidebar-section {
-                  padding: calc(12mm * 0.65) !important;
-                }
-
-                .main-content {
-                  padding: calc(12mm * 0.65) !important;
-                }
-              }
-
-              /* Asegurar que el CV siempre mantenga proporciones A4 */
-              .cv-page {
-                aspect-ratio: 210 / 297;
-                min-height: auto !important;
-              }
-            `}</style>
-            {renderCV()}
           </div>
         </div>
       </div>

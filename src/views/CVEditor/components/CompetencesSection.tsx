@@ -101,13 +101,11 @@ export const CompetencesSection: React.FC<CompetencesSectionProps> = ({
               {competence.name}
             </span>
             <div className="flex items-center space-x-2 md:space-x-1 flex-shrink-0">
-              <div className="scale-125 md:scale-100">
-                <Toggle
-                  checked={competence.selected}
-                  onChange={() => handleToggleCompetence(competence.id)}
-                  disabled={isUpdating}
-                />
-              </div>
+              <Toggle
+                checked={competence.selected}
+                onChange={() => handleToggleCompetence(competence.id)}
+                disabled={isUpdating}
+              />
               <Button
                 onClick={() => handleDeleteCompetence(competence.id)}
                 size="sm"

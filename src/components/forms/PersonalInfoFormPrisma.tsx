@@ -385,7 +385,7 @@ export const PersonalInfoFormPrisma: React.FC<PersonalInfoFormPrismaProps> = ({
             {formData.socialNetworks.map((sn) => (
               <div
                 key={sn.id}
-                className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                className="flex flex-col md:flex-row border border-gray-200 dark:border-gray-600 gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
               >
                 {editingSocialNetwork === sn.id ? (
                   <>
@@ -453,26 +453,28 @@ export const PersonalInfoFormPrisma: React.FC<PersonalInfoFormPrismaProps> = ({
                         {sn.url}
                       </div>
                     </div>
-                    <Button
-                      onClick={() => startEditing(sn)}
-                      disabled={isUpdating}
-                      variant="secondary"
-                      size="sm"
-                      className="flex items-center gap-1"
-                    >
-                      <CVEditorIcons.Write size={14} />
-                      Editar
-                    </Button>
-                    <Button
-                      onClick={() => handleDeleteSocialNetwork(sn.id)}
-                      disabled={isUpdating}
-                      variant="secondary"
-                      size="sm"
-                      className="flex items-center gap-1"
-                    >
-                      <CVEditorIcons.Delete size={14} />
-                      Eliminar
-                    </Button>
+                    <div className="flex items-center gap-3">
+                      <Button
+                        onClick={() => startEditing(sn)}
+                        disabled={isUpdating}
+                        variant="secondary"
+                        size="sm"
+                        className="flex items-center gap-1"
+                      >
+                        <CVEditorIcons.Write size={14} />
+                        Editar
+                      </Button>
+                      <Button
+                        onClick={() => handleDeleteSocialNetwork(sn.id)}
+                        disabled={isUpdating}
+                        variant="secondary"
+                        size="sm"
+                        className="flex items-center gap-1"
+                      >
+                        <CVEditorIcons.Delete size={14} />
+                        Eliminar
+                      </Button>
+                    </div>
                   </>
                 )}
               </div>

@@ -160,22 +160,16 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
       </div>
 
       {/* Formación existente */}
-      <div className="space-y-3">
+      <div className="space-y-3 md:space-y-4">
         {education.map((edu) => (
           <div
             key={edu.id}
-            className="border rounded-lg p-4 flex items-start justify-between"
+            className="border rounded-lg p-4 md:p-5 flex flex-col md:flex-row md:items-start md:justify-between gap-4 md:gap-0"
           >
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
-                <h4 className="font-semibold text-gray-900 dark:text-white">
-                  {edu.title}
-                </h4>
-                <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-800 flex items-center gap-1">
-                  <CVEditorIcons.Book size={12} />
-                  Formación académica
-                </span>
-              </div>
+            <div className="flex-1 min-w-0">
+              <h4 className="font-semibold text-gray-900 dark:text-white">
+                {edu.title}
+              </h4>
               <p className="text-gray-600 dark:text-gray-300">
                 {edu.institution} - {edu.location}
               </p>
@@ -183,7 +177,7 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
                 {edu.startYear} - {edu.endYear}
               </p>
             </div>
-            <div className="flex items-center space-x-2 ml-4">
+            <div className="flex items-center justify-end md:justify-center space-x-3 md:space-x-2 md:ml-4 flex-shrink-0">
               <Toggle
                 checked={edu.selected}
                 onChange={() => handleToggleEducation(edu.id)}

@@ -187,13 +187,13 @@ export const ReferencesSection: React.FC<ReferencesSectionProps> = ({
       </div>
 
       {/* Referencias existentes */}
-      <div className="space-y-3">
+      <div className="space-y-3 md:space-y-4">
         {references.map((reference) => (
           <div
             key={reference.id}
-            className="border rounded-lg p-4 flex items-start justify-between"
+            className="border rounded-lg p-4 md:p-5 flex flex-col md:flex-row md:items-start md:justify-between gap-4 md:gap-0"
           >
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
                 {reference.name}
               </h4>
@@ -203,15 +203,12 @@ export const ReferencesSection: React.FC<ReferencesSectionProps> = ({
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">
                 {reference.relationship}
               </p>
-              <div className="flex flex-wrap gap-4 text-xs text-gray-500 dark:text-gray-400">
+              <div className="flex flex-col flex-wrap gap-4 text-xs text-gray-500 dark:text-gray-400">
                 {reference.phone && <span>📞 {reference.phone}</span>}
                 {reference.email && <span>✉️ {reference.email}</span>}
-                {reference.yearsWorking && (
-                  <span>⏱️ {reference.yearsWorking}</span>
-                )}
               </div>
             </div>
-            <div className="flex items-center space-x-2 ml-4">
+            <div className="flex items-center justify-end md:justify-center space-x-3 md:space-x-2 md:ml-4 flex-shrink-0">
               <Toggle
                 checked={reference.selected}
                 onChange={() => handleToggleReference(reference.id)}

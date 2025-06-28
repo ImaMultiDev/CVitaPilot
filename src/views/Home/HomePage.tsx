@@ -6,13 +6,13 @@ import { HomeIcons } from "@/components/ui";
 import { getSavedCVs, loadCV } from "@/lib/actions/cv-actions";
 import {
   HeroSection,
-  CVGallery,
   UserCVsSection,
   FeaturesSection,
   VideoTutorialSection,
   ATSInfoSection,
   QuickActionsSection,
 } from "./components";
+import Image from "next/image";
 
 interface SavedCV {
   id: string;
@@ -124,9 +124,17 @@ export const HomePage: React.FC = () => {
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="flex items-center justify-center">
             <HeroSection theme={theme} statsData={statsData} />
-            <CVGallery />
+            <div className="hidden lg:block absolute top-10 right-0 opacity-90 ">
+              <Image
+                src="/characters/cvitapilotcharacter.png"
+                alt="Hero Section"
+                width={250}
+                height={250}
+                className="rounded-2xl"
+              />
+            </div>
           </div>
         </div>
       </section>

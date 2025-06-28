@@ -103,13 +103,11 @@ export const SoftSkillsSection: React.FC<SoftSkillsSectionProps> = ({
               {softSkill.name}
             </span>
             <div className="flex items-center space-x-2 md:space-x-1 flex-shrink-0">
-              <div className="scale-125 md:scale-100">
-                <Toggle
-                  checked={softSkill.selected}
-                  onChange={() => handleToggleSoftSkill(softSkill.id)}
-                  disabled={isUpdating}
-                />
-              </div>
+              <Toggle
+                checked={softSkill.selected}
+                onChange={() => handleToggleSoftSkill(softSkill.id)}
+                disabled={isUpdating}
+              />
               <Button
                 onClick={() => handleDeleteSoftSkill(softSkill.id)}
                 size="sm"

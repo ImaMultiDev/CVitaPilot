@@ -73,7 +73,6 @@ export const QuickActionsSection: React.FC = () => {
             onClick={() => router.push("/editor")}
             className="bg-white text-purple-600 hover:bg-gray-100 text-xl px-12 py-4 rounded-2xl font-bold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-3 mx-auto"
           >
-            <HomeIcons.Rocket size={24} />
             Empezar Ahora - Es Gratis
           </Button>
         </div>

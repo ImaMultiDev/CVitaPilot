@@ -152,13 +152,11 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({
                   {skill.name}
                 </span>
                 <div className="flex items-center space-x-2 md:space-x-1 flex-shrink-0">
-                  <div className="scale-125 md:scale-100">
-                    <Toggle
-                      checked={skill.selected}
-                      onChange={() => handleToggleSkill(skill.id)}
-                      disabled={isUpdating}
-                    />
-                  </div>
+                  <Toggle
+                    checked={skill.selected}
+                    onChange={() => handleToggleSkill(skill.id)}
+                    disabled={isUpdating}
+                  />
                   <Button
                     onClick={() => handleDeleteSkill(skill.id)}
                     size="sm"

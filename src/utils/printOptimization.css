@@ -1,0 +1,297 @@
+/* Estilos específicos para impresión optimizada */
+@media print {
+
+    /* Configuración básica de página */
+    @page {
+        size: A4;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Reset general para impresión */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+        color: black !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 12pt !important;
+        line-height: 1.4 !important;
+    }
+
+    /* Estilos específicos para páginas CV */
+    .cv-page {
+        width: 210mm !important;
+        height: 297mm !important;
+        max-width: 210mm !important;
+        min-height: 297mm !important;
+        margin: 0 !important;
+        padding: 15mm !important;
+        background: white !important;
+        color: black !important;
+        box-shadow: none !important;
+        border: none !important;
+        page-break-after: always !important;
+        page-break-inside: avoid !important;
+        overflow: visible !important;
+        display: block !important;
+    }
+
+    .cv-page:last-child {
+        page-break-after: avoid !important;
+    }
+
+    /* Ocultar elementos de interfaz */
+    .no-print,
+    [class*="no-print"],
+    .print-hide,
+    button,
+    .sidebar,
+    nav,
+    header,
+    footer,
+    .zoom-controls,
+    .preview-sidebar,
+    .format-selector {
+        display: none !important;
+        visibility: hidden !important;
+    }
+
+    /* ===== ESTILOS ESPECÍFICOS PARA FORMATO VISUAL ===== */
+
+    /* Corregir layout de la página 1 del formato visual */
+    .visual-format #cv-page-1 .visual-page-layout,
+    .visual-format #cv-page-1 .flex {
+        display: block !important;
+        height: auto !important;
+    }
+
+    /* Sidebar del formato visual - convertir a bloque superior */
+    .visual-format #cv-page-1>div>div:first-child {
+        width: 100% !important;
+        display: block !important;
+        margin-bottom: 15pt !important;
+        padding: 12pt !important;
+        flex-shrink: initial !important;
+        background: #14b8a6 !important;
+        color: white !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        page-break-inside: avoid !important;
+    }
+
+    /* Contenido principal del formato visual */
+    .visual-format #cv-page-1>div>div:last-child {
+        flex: none !important;
+        width: 100% !important;
+        display: block !important;
+        padding: 8pt !important;
+        background: white !important;
+        color: black !important;
+    }
+
+    /* Layout de página 2 del formato visual */
+    .visual-format #cv-page-2>div {
+        display: block !important;
+        height: auto !important;
+    }
+
+    .visual-format #cv-page-2>div>div {
+        flex: none !important;
+        display: block !important;
+    }
+
+    /* Preservar colores del CV Visual */
+    .cv-page [style*="background: linear-gradient"],
+    .cv-page [style*="background:linear-gradient"] {
+        background: #14b8a6 !important;
+        color: white !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .cv-page [style*="background:#14b8a6"],
+    .cv-page [style*="background: #14b8a6"] {
+        background: #14b8a6 !important;
+        color: white !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .cv-page [style*="color: #ffffff"],
+    .cv-page [style*="color:#ffffff"] {
+        color: white !important;
+    }
+
+    .cv-page [style*="color: #000000"],
+    .cv-page [style*="color:#000000"] {
+        color: black !important;
+    }
+
+    /* Tipografía optimizada para impresión */
+    .cv-page h1 {
+        font-size: 18pt !important;
+        font-weight: bold !important;
+        margin-bottom: 8pt !important;
+        line-height: 1.2 !important;
+    }
+
+    .cv-page h2 {
+        font-size: 14pt !important;
+        font-weight: bold !important;
+        margin-bottom: 6pt !important;
+        line-height: 1.3 !important;
+    }
+
+    .cv-page h3 {
+        font-size: 12pt !important;
+        font-weight: 600 !important;
+        margin-bottom: 4pt !important;
+        line-height: 1.3 !important;
+    }
+
+    .cv-page p,
+    .cv-page span,
+    .cv-page div {
+        font-size: 10pt !important;
+        line-height: 1.4 !important;
+        margin-bottom: 3pt !important;
+    }
+
+    /* Espaciado optimizado */
+    .cv-page section,
+    .cv-page .section {
+        margin-bottom: 12pt !important;
+        page-break-inside: avoid !important;
+    }
+
+    /* Listas optimizadas */
+    .cv-page ul,
+    .cv-page ol {
+        margin-left: 12pt !important;
+        margin-bottom: 6pt !important;
+    }
+
+    .cv-page li {
+        margin-bottom: 2pt !important;
+        font-size: 10pt !important;
+        line-height: 1.4 !important;
+    }
+
+    /* Tablas y grid layouts */
+    .cv-page table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+    }
+
+    .cv-page .flex {
+        display: block !important;
+    }
+
+    .cv-page .grid {
+        display: block !important;
+    }
+
+    /* Bordes y separadores */
+    .cv-page hr {
+        border: none !important;
+        border-top: 1px solid black !important;
+        margin: 6pt 0 !important;
+    }
+
+    /* Formato ATS específico */
+    .ats-format .cv-page {
+        padding: 20mm !important;
+    }
+
+    .ats-format h1,
+    .ats-format h2,
+    .ats-format h3 {
+        color: black !important;
+        font-family: Arial, sans-serif !important;
+    }
+
+    /* Formato Visual específico - ajustes adicionales */
+    .visual-format .cv-page {
+        padding: 12mm !important;
+    }
+
+    /* Espaciado compacto en sidebar para aprovechar mejor el espacio */
+    .visual-format .cv-page [style*="background: linear-gradient"] {
+        margin-bottom: 8pt !important;
+    }
+
+    .visual-format .cv-page [style*="background: linear-gradient"] * {
+        margin-bottom: 4pt !important;
+        font-size: 9pt !important;
+        line-height: 1.3 !important;
+    }
+
+    /* Headers en sidebar más compactos */
+    .visual-format .cv-page [style*="background: linear-gradient"] h3 {
+        font-size: 11pt !important;
+        margin-bottom: 6pt !important;
+    }
+
+    /* Asegurar que todo el texto sea legible */
+    .cv-page * {
+        text-rendering: optimizeLegibility !important;
+        -webkit-font-smoothing: antialiased !important;
+    }
+
+    /* Evitar cortes de página indeseados */
+    .cv-page .experience-item,
+    .cv-page .education-item,
+    .cv-page .certification-item,
+    .cv-page .achievement-item {
+        page-break-inside: avoid !important;
+        margin-bottom: 8pt !important;
+    }
+
+    /* Enlaces y URLs */
+    .cv-page a {
+        color: inherit !important;
+        text-decoration: none !important;
+    }
+
+    .cv-page a::after {
+        content: " (" attr(href) ")" !important;
+        font-size: 8pt !important;
+        color: #666 !important;
+    }
+
+    /* ===== MEJORAS ESPECÍFICAS PARA IMPRESIÓN VISUAL ===== */
+
+    /* Convertir flex containers a block para mejor compatibilidad */
+    .visual-format .cv-page [style*="display: flex"],
+    .visual-format .cv-page .flex {
+        display: block !important;
+    }
+
+    /* Ajustar anchos relativos a absolutos en impresión */
+    .visual-format .cv-page [style*="width: 35%"] {
+        width: 100% !important;
+    }
+
+    .visual-format .cv-page [style*="flex: 1"] {
+        flex: none !important;
+        width: 100% !important;
+    }
+
+    /* Mejorar saltos de página en formato visual */
+    .visual-format #cv-page-1>div>div:first-child {
+        page-break-after: avoid !important;
+    }
+
+    .visual-format #cv-page-1>div>div:last-child {
+        page-break-before: avoid !important;
+    }
+}

@@ -4,18 +4,36 @@ import React, { useState } from "react";
 import { FormatSelector } from "./FormatSelector";
 import { ActiveCVIndicator } from "./ActiveCVIndicator";
 import { PrintControls } from "./PrintControls";
-import { VisualFormatIcon, ActiveCVIcon, PrintIcon } from "./CVPreviewIcons";
+import { ZoomControls } from "./ZoomControls";
+import {
+  VisualFormatIcon,
+  ActiveCVIcon,
+  PrintIcon,
+  ZoomInIcon,
+} from "./CVPreviewIcons";
 
 interface PreviewSidebarProps {
   currentFormat: "visual" | "ats";
   onFormatChange: (format: "visual" | "ats") => void;
   currentCVName?: string;
+  zoomLevel: number;
+  onZoomIn: () => void;
+  onZoomOut: () => void;
+  onZoomReset: () => void;
+  isMobile?: boolean;
+  isTablet?: boolean;
 }
 
 export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
   currentFormat,
   onFormatChange,
   currentCVName,
+  zoomLevel,
+  onZoomIn,
+  onZoomOut,
+  onZoomReset,
+  isMobile = false,
+  isTablet = false,
 }) => {
   const [activeSection, setActiveSection] = useState<string>("formato");
 
@@ -25,6 +43,12 @@ export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
       name: "Formato del CV",
       description: "Selecciona entre formato visual o ATS",
       icon: VisualFormatIcon,
+    },
+    {
+      id: "zoom",
+      name: "Controles de Zoom",
+      description: "Acerca y aleja la vista del CV",
+      icon: ZoomInIcon,
     },
     {
       id: "impresion",
@@ -46,12 +70,12 @@ export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
     switch (activeSection) {
       case "formato":
         return (
-          <div className="space-y-4">
+          <div className="space-y-2">
             <FormatSelector
               cvFormat={currentFormat}
               setCvFormat={onFormatChange}
             />
-            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+            <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
               <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">
                 💡 Consejo
               </h4>
@@ -64,16 +88,25 @@ export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
           </div>
         );
 
+      case "zoom":
+        const initialZoom = isMobile ? 0.4 : isTablet ? 0.75 : 1.0; // Valores optimizados por dispositivo
+        return (
+          <ZoomControls
+            zoomLevel={zoomLevel}
+            onZoomIn={onZoomIn}
+            onZoomOut={onZoomOut}
+            onZoomReset={onZoomReset}
+            minZoom={0.25} // Nuevo rango mínimo
+            maxZoom={1.5} // Nuevo rango máximo
+            initialZoom={initialZoom}
+          />
+        );
+
       case "impresion":
         return (
-          <div className="space-y-4">
-            <PrintControls
-              handlePrintPage={(pageId, pageName) => {
-                console.log(`Imprimiendo ${pageName} (${pageId})`);
-                window.print();
-              }}
-            />
-            <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-700">
+          <div className="space-y-2">
+            <PrintControls />
+            <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-700">
               <h4 className="font-medium text-green-900 dark:text-green-100 mb-2">
                 📄 Formato de Impresión
               </h4>
@@ -87,13 +120,13 @@ export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
 
       case "configuracion":
         return (
-          <div className="space-y-4">
+          <div className="space-y-2">
             <ActiveCVIndicator currentCVName={currentCVName} />
-            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-              <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3">
+            <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+              <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">
                 🔧 Configuración Adicional
               </h4>
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-700 dark:text-gray-300">
                     Vista previa en tiempo real
@@ -124,10 +157,9 @@ export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
 
   return (
     <div
-      className="w-80 border-r h-screen overflow-hidden flex flex-col shadow-xl"
+      className="w-full h-screen overflow-hidden flex flex-col"
       style={{
         backgroundColor: "var(--sidebar-bg, #ffffff)",
-        borderRightColor: "var(--sidebar-border, #e5e7eb)",
         color: "var(--sidebar-text, #111827)",
       }}
     >
@@ -168,29 +200,70 @@ export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
 
       {/* Header */}
       <div
-        className="p-4 border-b"
+        className="p-2 border-b"
         style={{
           backgroundColor: "var(--sidebar-bg)",
           borderBottomColor: "var(--sidebar-border)",
         }}
       >
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-2 mb-3">
           <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
-            <VisualFormatIcon className="w-5 h-5 text-white" />
+            <VisualFormatIcon className="w-4 h-4 text-white" />
           </div>
-          <div>
+          <div className="flex-1">
             <h2
-              className="font-semibold"
+              className="font-semibold text-sm"
               style={{ color: "var(--sidebar-text)" }}
             >
-              Vista Previa
+              Vista Previa del CV
             </h2>
             <p
-              className="text-xs"
+              className="text-xs leading-tight"
               style={{ color: "var(--sidebar-text-secondary)" }}
             >
               {currentSection?.description}
             </p>
+          </div>
+        </div>
+
+        {/* Información del CV */}
+        <div className="space-y-2 mb-3">
+          {/* CV Activo */}
+          {currentCVName && (
+            <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                <p className="text-xs font-medium text-blue-800 dark:text-blue-200">
+                  CV Activo: {currentCVName}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Estado actual */}
+          <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2">
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  currentFormat === "visual" ? "bg-blue-500" : "bg-green-500"
+                }`}
+              ></div>
+              <span style={{ color: "var(--sidebar-text-secondary)" }}>
+                Formato {currentFormat === "visual" ? "Visual" : "ATS"}
+              </span>
+            </div>
+
+            {/* Indicador de zoom */}
+            {(() => {
+              const initialZoom = isMobile ? 0.4 : isTablet ? 0.75 : 1.0; // Valores actualizados
+              return (
+                Math.abs(zoomLevel - initialZoom) > 0.01 && (
+                  <div className="px-2 py-1 bg-purple-100 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700 rounded text-xs font-mono text-purple-700 dark:text-purple-300">
+                    🔍 {Math.round(zoomLevel * 100)}%
+                  </div>
+                )
+              );
+            })()}
           </div>
         </div>
 
@@ -205,7 +278,7 @@ export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
-                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-xs font-medium transition-all duration-200 ${
+                className={`flex-1 flex items-center justify-center px-2 py-2 rounded-md transition-all duration-200 ${
                   activeSection === section.id ? "shadow-sm ring-1" : ""
                 }`}
                 style={{
@@ -234,11 +307,9 @@ export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
                       "var(--sidebar-text-secondary)";
                   }
                 }}
+                title={section.name}
               >
                 <IconComponent className="w-4 h-4" />
-                <span className="hidden sm:inline">
-                  {section.name.split(" ")[0]}
-                </span>
               </button>
             );
           })}
@@ -247,7 +318,7 @@ export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
 
       {/* Content */}
       <div
-        className="flex-1 overflow-y-auto p-4 custom-scrollbar"
+        className="flex-1 overflow-y-auto p-2 custom-scrollbar"
         style={{ backgroundColor: "var(--sidebar-bg)" }}
       >
         {renderSectionContent()}
@@ -255,19 +326,27 @@ export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
 
       {/* Footer */}
       <div
-        className="p-4 border-t"
+        className="p-2 border-t"
         style={{
           backgroundColor: "var(--sidebar-bg)",
           borderTopColor: "var(--sidebar-border)",
         }}
       >
-        <div className="text-center">
-          <p
-            className="text-xs"
-            style={{ color: "var(--sidebar-text-secondary)" }}
-          >
-            CVitaPilot - Vista Previa Profesional
-          </p>
+        <div className="space-y-1">
+          <div className="flex items-center justify-between text-xs">
+            <span style={{ color: "var(--sidebar-text-secondary)" }}>
+              Vista previa en tiempo real
+            </span>
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+          </div>
+          <div className="text-center">
+            <p
+              className="text-xs font-medium"
+              style={{ color: "var(--sidebar-text-secondary)" }}
+            >
+              CVitaPilot - Vista Previa Profesional
+            </p>
+          </div>
         </div>
       </div>
     </div>

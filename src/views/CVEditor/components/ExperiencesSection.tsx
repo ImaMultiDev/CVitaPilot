@@ -317,13 +317,11 @@ export const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
                 )}
             </div>
             <div className="flex items-center justify-end md:justify-center space-x-3 md:space-x-2 md:ml-4 flex-shrink-0">
-              <div className="scale-125 md:scale-100">
-                <Toggle
-                  checked={experience.selected}
-                  onChange={() => handleToggleExperience(experience.id)}
-                  disabled={isUpdating}
-                />
-              </div>
+              <Toggle
+                checked={experience.selected}
+                onChange={() => handleToggleExperience(experience.id)}
+                disabled={isUpdating}
+              />
               <Button
                 onClick={() => handleDeleteExperience(experience.id)}
                 size="sm"

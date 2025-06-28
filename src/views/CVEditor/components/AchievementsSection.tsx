@@ -240,11 +240,7 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
             <div className="flex-1 min-w-0">
               <div className="flex flex-col md:flex-row md:items-center gap-2 mb-2">
                 <h4 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2 text-base md:text-lg">
-                  {achievement.type === "project" ? (
-                    <CVEditorIcons.Project size={20} />
-                  ) : (
-                    <CVEditorIcons.Trophy size={20} />
-                  )}
+                  {achievement.type === "project"}
                   {achievement.title}
                 </h4>
                 <span
@@ -296,13 +292,11 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
               )}
             </div>
             <div className="flex items-center justify-end md:justify-center space-x-3 md:space-x-2 md:ml-4 flex-shrink-0">
-              <div className="scale-125 md:scale-100">
-                <Toggle
-                  checked={achievement.selected}
-                  onChange={() => handleToggleAchievement(achievement.id)}
-                  disabled={isUpdating}
-                />
-              </div>
+              <Toggle
+                checked={achievement.selected}
+                onChange={() => handleToggleAchievement(achievement.id)}
+                disabled={isUpdating}
+              />
               <Button
                 onClick={() => handleDeleteAchievement(achievement.id)}
                 size="sm"

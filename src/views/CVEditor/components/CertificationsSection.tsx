@@ -181,15 +181,14 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({
       </div>
 
       {/* Certificaciones existentes */}
-      <div className="space-y-3">
+      <div className="space-y-3 md:space-y-4">
         {certifications.map((certification) => (
           <div
             key={certification.id}
-            className="border rounded-lg p-4 flex items-start justify-between"
+            className="border rounded-lg p-4 md:p-5 flex flex-col md:flex-row md:items-start md:justify-between gap-4 md:gap-0"
           >
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <h4 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <CVEditorIcons.Badge size={18} />
                 {certification.name}
               </h4>
               <p className="text-gray-600 dark:text-gray-300">
@@ -198,9 +197,6 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({
               <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
                 <CVEditorIcons.Calendar size={14} />
                 Obtenida: {certification.date}
-                {certification.expiryDate && (
-                  <span> • Expira: {certification.expiryDate}</span>
-                )}
               </p>
               {certification.credentialId && (
                 <p className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
@@ -222,7 +218,7 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({
                 </p>
               )}
             </div>
-            <div className="flex items-center space-x-2 ml-4">
+            <div className="flex items-center justify-end md:justify-center space-x-3 md:space-x-2 md:ml-4 flex-shrink-0">
               <Toggle
                 checked={certification.selected}
                 onChange={() => handleToggleCertification(certification.id)}

@@ -322,7 +322,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         />
 
         {/* Guardar CV */}
-        <Card>
+        <Card className="border-none">
           <div className="text-center">
             <Button
               onClick={handleSaveCV}

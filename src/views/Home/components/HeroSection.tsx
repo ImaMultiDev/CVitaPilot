@@ -26,30 +26,41 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   };
 
   return (
-    <div className="text-center lg:text-left">
+    <div className="text-center lg:w-2/3 mx-auto flex flex-col lg:text-left">
       {/* Logo animado */}
-      <div className="mb-8 flex justify-center lg:justify-start">
-        <div className="relative group">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 rounded-3xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
-          <div className="relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-2xl transform group-hover:scale-105 transition-transform duration-300">
-            <Image
-              src={getLogoSrc("256x256")}
-              alt="CVitaPilot Logo"
-              width={120}
-              height={120}
-              className="rounded-2xl"
-              priority
-              key={`home-logo-${theme}`}
-            />
+      <div className=" flex justify-center items-center gap-4 mb-4 lg:mb-8 lg:justify-start">
+        <div className="flex items-center gap-4 my-auto">
+          <div className="relative group">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 rounded-3xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
+            <div className="block lg:hidden fixed top-20 opacity-10 left-0 -z-10">
+              <Image
+                src={getLogoSrc("256x256")}
+                alt="CVitaPilot Logo"
+                width={120}
+                height={120}
+                className="rounded-2xl"
+                priority
+                key={`home-logo-${theme}`}
+              />
+            </div>
+            <div className="hidden lg:block fixed top-20 opacity-10 -left-10 -z-10">
+              <Image
+                src={getLogoSrc("256x256")}
+                alt="CVitaPilot Logo"
+                width={320}
+                height={320}
+                className="rounded-2xl"
+                priority
+                key={`home-logo-${theme}`}
+              />
+            </div>
           </div>
         </div>
-      </div>
 
-      <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-6">
-        <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
+        <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-6">
           CVitaPilot
-        </span>
-      </h1>
+        </h1>
+      </div>
 
       <p className="text-xl lg:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl">
         <span className="font-semibold text-gray-900 dark:text-white">

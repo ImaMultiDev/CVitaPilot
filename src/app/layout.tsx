@@ -6,6 +6,7 @@ import { CVProvider, ThemeProvider } from "@/contexts";
 import { SessionProvider } from "@/components/providers/SessionProvider";
 import { auth } from "@/auth";
 import "./globals.css";
+import "../utils/printOptimization.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

@@ -1,5 +1,13 @@
 // src/utils/index.ts
 
-export { cvUtils } from "./cvUtils";
-export { dateUtils } from "./dateUtils";
-export { pdfUtils } from "./pdfUtils";
+// Utilidades de CV
+export * from "./cvUtils";
+
+// Utilidades de fechas
+export * from "./dateUtils";
+
+// Utilidades de PDF
+export * from "./pdfUtils";
+
+// Utilidades de impresión
+export * from "./printUtils";
