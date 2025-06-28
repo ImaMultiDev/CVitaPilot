@@ -90,6 +90,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
   };
 
   // Cerrar sidebar automáticamente cuando la pantalla se hace más grande
+  // y prevenir fallos al cambiar de vista
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1280) {
@@ -98,14 +99,42 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
       }
     };
 
+    const handleRouteChange = () => {
+      // Cerrar sidebar al cambiar de ruta para evitar conflictos
+      setIsSidebarOpen(false);
+    };
+
+    // Escuchar cambios de tamaño de ventana
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+
+    // Escuchar cambios de ruta (popstate para navegación del navegador)
+    window.addEventListener("popstate", handleRouteChange);
+
+    // Cerrar sidebar al hacer clic fuera del área del sidebar
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (
+        isSidebarOpen &&
+        !target.closest(".sidebar-container") &&
+        !target.closest("button[aria-label*='panel de personalización']")
+      ) {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("popstate", handleRouteChange);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isSidebarOpen]);
 
   return (
     <div className="relative">
       {/* Sidebar Desktop - Solo visible en xl+ (1280px+) */}
-      <div className="hidden xl:block fixed left-0 top-16 h-[calc(100vh-4rem)] z-40">
+      <div className="hidden xl:block fixed left-0 top-16 h-[calc(100vh-4rem)] z-[1100]">
         <Sidebar cvData={initialData} />
       </div>
 
@@ -114,14 +143,18 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         <>
           {/* Overlay */}
           <div
-            className="xl:hidden fixed inset-0 bg-black/50 z-[1100] transition-opacity duration-300"
+            className="xl:hidden fixed inset-0 bg-black/50 z-[1000] transition-opacity duration-300"
             onClick={closeSidebar}
           />
 
           {/* Sidebar Panel */}
-          <div className="xl:hidden fixed left-0 top-0 h-full w-72 md:w-80 z-[1200] transform transition-transform duration-300 ease-out animate-in slide-in-from-left">
+          <div className="xl:hidden fixed left-0 top-0 h-full w-72 md:w-80 z-[1100] transform transition-transform duration-300 ease-out animate-in slide-in-from-left">
             <div className="h-full pt-16">
-              <Sidebar cvData={initialData} />
+              <Sidebar
+                cvData={initialData}
+                isMobile={true}
+                onClose={closeSidebar}
+              />
             </div>
           </div>
         </>
@@ -130,46 +163,31 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
       {/* Botón flotante para abrir sidebar en mobile/tablet */}
       <button
         onClick={toggleSidebar}
-        className={`xl:hidden fixed top-20 left-4 z-[1050] p-2 md:p-3 text-white rounded-full border-2 transition-all duration-300 hover:scale-110 active:scale-95 backdrop-blur-sm ${
+        className={`xl:hidden fixed top-20 left-4 z-[60] p-2 md:p-3 text-white rounded-full border-2 transition-all duration-300 hover:scale-110 active:scale-95 backdrop-blur-sm ${
           isSidebarOpen
-            ? "border-green-300/50 dark:border-green-400/40 shadow-2xl ring-4 ring-green-500/30 hover:ring-green-500/50"
+            ? "opacity-0 pointer-events-none"
             : "border-white/30 dark:border-white/20 shadow-xl hover:shadow-2xl hover:border-white/50 dark:hover:border-white/40 ring-4 ring-indigo-500/20 hover:ring-indigo-500/40 animate-pulse hover:animate-none"
         }`}
-        aria-label={
-          isSidebarOpen
-            ? "Cerrar panel de personalización"
-            : "Abrir panel de personalización"
-        }
+        aria-label="Abrir panel de personalización"
         style={{
-          boxShadow: isSidebarOpen
-            ? "0 15px 35px rgba(34, 197, 94, 0.4), 0 6px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)"
-            : "0 10px 25px rgba(79, 70, 229, 0.4), 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
-          background: isSidebarOpen
-            ? "linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)"
-            : "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
+          boxShadow:
+            "0 10px 25px rgba(79, 70, 229, 0.4), 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
+          background:
+            "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
         }}
       >
         <svg
-          className="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300"
+          className="w-5 h-5 md:w-6 md:h-6"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
         >
-          {isSidebarOpen ? (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          ) : (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"
-            />
-          )}
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 6h16M4 12h16M4 18h16"
+          />
         </svg>
       </button>
 
@@ -212,7 +230,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         </div>
 
         {/* Información Personal - Z-index especial para dropdowns */}
-        <div className="relative" style={{ zIndex: 1000 }}>
+        <div className="relative" style={{ zIndex: 100 }}>
           <PersonalInfoFormPrisma initialData={initialData.personalInfo} />
         </div>
 
@@ -224,7 +242,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         />
 
         {/* Idiomas - Z-index especial para dropdowns */}
-        <div className="relative" style={{ zIndex: 999 }}>
+        <div className="relative" style={{ zIndex: 99 }}>
           <LanguagesSection
             languages={initialData.languages}
             onUpdate={handleUpdate}
@@ -241,7 +259,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         />
 
         {/* Habilidades por Categoría - Z-index especial para dropdowns */}
-        <div className="relative" style={{ zIndex: 998 }}>
+        <div className="relative" style={{ zIndex: 98 }}>
           <SkillsSection
             skills={initialData.skills}
             skillCategories={initialData.skillCategories}
@@ -265,7 +283,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         />
 
         {/* Experiencias - Z-index especial para dropdowns */}
-        <div className="relative" style={{ zIndex: 997 }}>
+        <div className="relative" style={{ zIndex: 97 }}>
           <ExperiencesSection
             experiences={initialData.experiences}
             onUpdate={handleUpdate}
@@ -288,7 +306,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         />
 
         {/* Logros y Proyectos - Z-index especial para dropdowns */}
-        <div className="relative" style={{ zIndex: 996 }}>
+        <div className="relative" style={{ zIndex: 96 }}>
           <AchievementsSection
             achievements={initialData.achievements}
             onUpdate={handleUpdate}

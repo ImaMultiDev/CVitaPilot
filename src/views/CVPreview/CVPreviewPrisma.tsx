@@ -83,10 +83,10 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                     }}
                   >
                     <h1 className="text-2xl font-bold mb-2 text-white">
-                      {cvData.personalInfo?.name || "Nombre Completo"}
+                      {cvData.personalInfo?.name || ""}
                     </h1>
                     <p className="text-cyan-200 font-medium">
-                      {cvData.personalInfo?.position || "Título Profesional"}
+                      {cvData.personalInfo?.position || ""}
                     </p>
                   </div>
 
@@ -144,7 +144,7 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                           ?.filter((skill) => skill.selected)
                           .slice(0, 3)
                           .map((skill) => skill.name)
-                          .join(", ") || "Java"}
+                          .join(", ") || ""}
                       </p>
                     </div>
                     <div>
@@ -156,7 +156,7 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                           ?.filter((skill) => skill.selected)
                           .slice(3, 6)
                           .map((skill) => skill.name)
-                          .join(", ") || "Git"}
+                          .join(", ") || ""}
                       </p>
                     </div>
                   </div>
@@ -267,53 +267,7 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                           </p>
                         )}
                       </div>
-                    )) || (
-                    <div className="mb-6">
-                      <div className="flex justify-between items-start mb-2">
-                        <h3
-                          className="text-lg font-semibold"
-                          style={{ color: "#374151 !important" }}
-                        >
-                          Puesto de prueba
-                        </h3>
-                        <span
-                          className="text-sm font-medium px-3 py-1 rounded-full"
-                          style={{
-                            background: "#e0f2fe",
-                            color: "#0891b2 !important",
-                          }}
-                        >
-                          (Contrato indefinido, Jornada completa, Presencial)
-                        </span>
-                      </div>
-                      <div className="mb-2">
-                        <h4
-                          className="font-medium"
-                          style={{ color: "#374151 !important" }}
-                        >
-                          Empresa de prueba
-                        </h4>
-                        <p
-                          className="text-sm"
-                          style={{ color: "#6b7280 !important" }}
-                        >
-                          2020-01-01 - 2020-01-01 / Madrid
-                        </p>
-                      </div>
-                      <p
-                        className="text-sm mb-2"
-                        style={{ color: "#374151 !important" }}
-                      >
-                        <strong>Next.js</strong>
-                      </p>
-                      <p
-                        className="text-sm"
-                        style={{ color: "#374151 !important" }}
-                      >
-                        <strong>Tecnologías:</strong> React
-                      </p>
-                    </div>
-                  )}
+                    ))}
                 </div>
               </div>
             </div>
@@ -413,8 +367,9 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                 }}
               >
                 <p className="text-xs" style={{ color: "#6b7280 !important" }}>
-                  {cvData.personalInfo?.name || "Nombre Completo"} - CV
-                  Profesional - Página 2
+                  {cvData.personalInfo?.name
+                    ? `${cvData.personalInfo.name} - CV Profesional - Página 2`
+                    : ""}
                 </p>
               </div>
             </div>
@@ -454,13 +409,13 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                 className="text-2xl font-bold mb-2"
                 style={{ color: "#000000 !important" }}
               >
-                {cvData.personalInfo?.name || "Nombre Completo"}
+                {cvData.personalInfo?.name || ""}
               </h1>
               <p
                 className="text-lg mb-4"
                 style={{ color: "#000000 !important" }}
               >
-                {cvData.personalInfo?.position || "Título Profesional"}
+                {cvData.personalInfo?.position || ""}
               </p>
               <div className="flex justify-center gap-4 text-sm">
                 {cvData.personalInfo?.phone && (
@@ -517,34 +472,7 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                         </p>
                       )}
                   </div>
-                )) || (
-                <div className="mb-4">
-                  <h3
-                    className="text-lg font-semibold"
-                    style={{ color: "#000000 !important" }}
-                  >
-                    Puesto de prueba
-                  </h3>
-                  <p
-                    className="font-medium"
-                    style={{ color: "#000000 !important" }}
-                  >
-                    Empresa de prueba
-                  </p>
-                  <p
-                    className="text-sm mb-2"
-                    style={{ color: "#000000 !important" }}
-                  >
-                    2020-01-01 - 2020-01-01 | Madrid
-                  </p>
-                  <p
-                    className="text-sm"
-                    style={{ color: "#000000 !important" }}
-                  >
-                    Tecnologías: React
-                  </p>
-                </div>
-              )}
+                ))}
             </div>
 
             {/* Habilidades */}
