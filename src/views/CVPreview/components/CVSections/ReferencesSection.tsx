@@ -20,10 +20,10 @@ export const ReferencesSection: React.FC<ReferencesSectionProps> = ({
 
   if (format === "visual") {
     return (
-      <div className={className} style={{ marginBottom: "2rem" }}>
+      <div className={className} style={{ marginBottom: "1rem" }}>
         <h2
           style={{
-            fontSize: "1.25rem",
+            fontSize: "0.875rem",
             fontWeight: "bold",
             marginBottom: "1.5rem",
             paddingBottom: "0.5rem",
@@ -35,7 +35,7 @@ export const ReferencesSection: React.FC<ReferencesSectionProps> = ({
           Referencias
         </h2>
         {selectedReferences.map((reference, index) => (
-          <div key={index} style={{ marginBottom: "1.5rem" }}>
+          <div key={index} style={{ marginTop: "1rem" }}>
             <h3
               style={{
                 fontSize: "1rem",
@@ -96,7 +96,7 @@ export const ReferencesSection: React.FC<ReferencesSectionProps> = ({
     <div className={className} style={{ marginBottom: "1.5rem" }}>
       <h2
         style={{
-          fontSize: "1.25rem",
+          fontSize: "0.875rem",
           fontWeight: "bold",
           marginBottom: "1rem",
           paddingBottom: "0.25rem",

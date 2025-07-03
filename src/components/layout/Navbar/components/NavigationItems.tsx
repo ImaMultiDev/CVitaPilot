@@ -70,7 +70,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = React.memo(
     const pathname = usePathname();
 
     return (
-      <div className={`hidden md:flex items-center space-x-3 ${className}`}>
+      <div className={`hidden md:flex items-center gap-6 ${className}`}>
         {navigation.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -79,7 +79,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = React.memo(
               href={item.href}
               className={`
               group relative px-6 py-3 rounded-2xl font-semibold text-sm
-              transition-all duration-300 ease-out
+              transition-all duration-300 ease-out min-w-32
               ${
                 isActive
                   ? `text-gray-900 dark:text-white ${getActiveClasses(
@@ -87,7 +87,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = React.memo(
                     )}`
                   : "text-white/90 hover:text-white bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 hover:border-white/30 hover:shadow-lg hover:shadow-white/10"
               }
-              transform hover:scale-105 active:scale-95
+              transform hover:brightness-125 transition ease-in active:scale-95 
             `}
             >
               <div className="flex items-center space-x-2">

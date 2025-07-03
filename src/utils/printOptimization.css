@@ -144,6 +144,58 @@
         line-height: 1.2 !important;
     }
 
+    /* Optimizaciones específicas para formato ATS */
+    .cv-container.ats-format .cv-page h2 {
+        font-size: 12pt !important;
+        /* Reducido de 14pt */
+        font-weight: bold !important;
+        margin-bottom: 12pt !important;
+        /* Aumentado de 6pt */
+        line-height: 1.2 !important;
+    }
+
+    .cv-container.ats-format .cv-page h3 {
+        font-size: 10pt !important;
+        /* Reducido de 12pt */
+        font-weight: 600 !important;
+        margin-bottom: 6pt !important;
+        line-height: 1.2 !important;
+    }
+
+    /* Espaciado aumentado entre secciones para ATS */
+    .cv-container.ats-format .cv-page>div:not(:last-child) {
+        margin-bottom: 24pt !important;
+        /* Espaciado aumentado entre secciones */
+        page-break-inside: avoid !important;
+    }
+
+    /* Espaciado entre experiencias para ATS */
+    .cv-container.ats-format .cv-page div[style*="marginBottom"],
+    .cv-container.ats-format .cv-page div[style*="margin-bottom"] {
+        margin-bottom: 18pt !important;
+    }
+
+    /* Padding reducido para páginas ATS */
+    .cv-container.ats-format .cv-page {
+        padding: 8mm 16mm !important;
+        /* Reducido de 15mm */
+    }
+
+    /* Sobrescribir estilos inline específicos */
+    .cv-container.ats-format #cv-page-1 h2,
+    .cv-container.ats-format #cv-page-2 h2 {
+        font-size: 12pt !important;
+        margin-bottom: 12pt !important;
+    }
+
+    .cv-container.ats-format #cv-page-1 h3,
+    .cv-container.ats-format #cv-page-2 h3 {
+        font-size: 11pt !important;
+        margin-bottom: 6pt !important;
+    }
+
+    /* Estilos por defecto para formato visual */
+    .visual-format .cv-page h2,
     .cv-page h2 {
         font-size: 14pt !important;
         font-weight: bold !important;
@@ -151,6 +203,7 @@
         line-height: 1.3 !important;
     }
 
+    .visual-format .cv-page h3,
     .cv-page h3 {
         font-size: 12pt !important;
         font-weight: 600 !important;
@@ -166,7 +219,7 @@
         margin-bottom: 3pt !important;
     }
 
-    /* Espaciado optimizado */
+    /* Espaciado optimizado por defecto */
     .cv-page section,
     .cv-page .section {
         margin-bottom: 12pt !important;

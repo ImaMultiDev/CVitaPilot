@@ -137,42 +137,63 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
 
   // Formato ATS
   return (
-    <div className={className} style={{ marginBottom: "1.5rem" }}>
+    <div className={className} style={{ marginBottom: "1rem" }}>
       <h2
         style={{
-          fontSize: "1.25rem",
+          fontSize: "0.875rem",
           fontWeight: "bold",
-          marginBottom: "1rem",
+          marginBottom: "0.75rem",
           paddingBottom: "0.25rem",
           borderBottom: "1px solid #000000",
           color: "#000000",
-          lineHeight: "1.75rem",
+          lineHeight: "1.2",
         }}
       >
         LOGROS Y PROYECTOS
       </h2>
-      {selectedAchievements.map((achievement, index) => (
-        <div key={index} style={{ marginBottom: "1rem" }}>
-          <h3 style={{ fontSize: "1rem", fontWeight: "600", color: "#000000" }}>
-            {achievement.title} (
-            {achievement.type === "project" ? "Proyecto" : "Logro"})
-          </h3>
-          <p
-            style={{
-              fontSize: "0.875rem",
-              color: "#000000",
-              marginBottom: "0.25rem",
-            }}
-          >
-            {achievement.description}
-          </p>
-          {achievement.technologies && achievement.technologies.length > 0 && (
-            <p style={{ fontSize: "0.875rem", color: "#000000" }}>
-              Tecnologías: {achievement.technologies.join(", ")}
+      <div style={{ marginTop: "1rem" }}>
+        {selectedAchievements.map((achievement, index) => (
+          <div key={index} style={{ marginTop: "1rem" }}>
+            <span
+              style={{
+                fontSize: "0.875rem",
+                fontWeight: "600",
+                color: "#000000",
+              }}
+            >
+              {achievement.title}
+            </span>
+
+            <span
+              style={{
+                fontSize: "0.8rem",
+                color: "##2563eb",
+                marginBottom: "0.25rem",
+              }}
+            >
+              {" ("}
+              {achievement.url}
+              {")"}
+            </span>
+
+            <p
+              style={{
+                fontSize: "0.875rem",
+                color: "#000000",
+                marginBottom: "0.25rem",
+              }}
+            >
+              {achievement.description}
             </p>
-          )}
-        </div>
-      ))}
+            {achievement.technologies &&
+              achievement.technologies.length > 0 && (
+                <p style={{ fontSize: "0.875rem", color: "#000000" }}>
+                  Tecnologías: {achievement.technologies.join(", ")}
+                </p>
+              )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

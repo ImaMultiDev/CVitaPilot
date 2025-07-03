@@ -20,7 +20,7 @@ export const CompetencesSection: React.FC<CompetencesSectionProps> = ({
 
   if (format === "visual") {
     return (
-      <div className={className} style={{ marginBottom: "0.75rem" }}>
+      <div className={className} style={{ marginBottom: "1rem" }}>
         {/* Header con fondo turquesa */}
         <div
           style={{
@@ -70,10 +70,10 @@ export const CompetencesSection: React.FC<CompetencesSectionProps> = ({
 
   // Formato ATS
   return (
-    <div className={className} style={{ marginBottom: "1.5rem" }}>
+    <div className={className} style={{ marginBottom: "1rem" }}>
       <h2
         style={{
-          fontSize: "1.25rem",
+          fontSize: "0.875rem",
           fontWeight: "bold",
           marginBottom: "1rem",
           paddingBottom: "0.25rem",
@@ -84,9 +84,13 @@ export const CompetencesSection: React.FC<CompetencesSectionProps> = ({
       >
         COMPETENCIAS
       </h2>
-      <p style={{ color: "#000000", lineHeight: "1.6" }}>
-        {selectedCompetences.map((comp) => comp.name).join(", ")}
-      </p>
+      <div style={{ marginTop: "1rem" }}>
+        <p
+          style={{ fontSize: "0.875rem", color: "#000000", lineHeight: "1.6" }}
+        >
+          {selectedCompetences.map((competence) => competence.name).join(", ")}
+        </p>
+      </div>
     </div>
   );
 };

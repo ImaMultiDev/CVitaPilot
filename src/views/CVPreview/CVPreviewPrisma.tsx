@@ -256,7 +256,7 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
       {/* Contenido principal - Solo CV Canvas */}
       <div className="min-h-screen">
         {/* CV Content - Completamente optimizado para móvil y desktop */}
-        <div className="w-full min-h-screen overflow-x-auto overflow-y-auto">
+        <div className="w-full min-h-screen overflow-y-auto">
           <ResponsiveStyles />
 
           {/* Contenedor responsive del CV - Optimizado para móvil */}

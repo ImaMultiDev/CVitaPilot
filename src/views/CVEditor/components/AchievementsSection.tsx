@@ -258,13 +258,26 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
                   {achievement.company}
                 </p>
               )}
+              {achievement.url && (
+                <p className="text-sm md:text-xs text-purple-600 dark:text-purple-400 flex items-center gap-1">
+                  <CVEditorIcons.Link size={12} />
+                  <a
+                    href={achievement.url || ""}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:underline"
+                  >
+                    {achievement.url || ""}
+                  </a>
+                </p>
+              )}
               <p className="text-sm md:text-xs text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-1">
                 <CVEditorIcons.Calendar size={14} />
                 {achievement.date}
               </p>
-              <p className="text-sm md:text-sm text-gray-700 dark:text-gray-300 mb-2 leading-relaxed">
+              <div className="text-sm md:text-sm text-gray-700 dark:text-gray-300 mb-2 leading-relaxed whitespace-pre-line">
                 {achievement.description}
-              </p>
+              </div>
               {achievement.technologies.length > 0 && (
                 <p className="text-xs md:text-xs text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1">
                   <CVEditorIcons.Tech size={12} />

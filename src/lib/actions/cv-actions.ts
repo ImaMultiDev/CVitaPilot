@@ -20,6 +20,7 @@ import type {
   Reference,
   CVDelivery,
   SocialNetwork,
+  OtherInformation,
 } from "@/types/cv";
 
 // Función helper para obtener el usuario actual - CRÍTICO PARA MULTIUSUARIO
@@ -64,6 +65,7 @@ export async function getCurrentCV(): Promise<CVData | null> {
         achievements: true,
         references: true,
         socialNetworks: true,
+        otherInformation: true,
       },
     });
 
@@ -176,6 +178,13 @@ export async function getCurrentCV(): Promise<CVData | null> {
           email: reference.email,
           yearsWorking: reference.yearsWorking || undefined,
           selected: reference.selected,
+        })) || [],
+      otherInformation:
+        cv.otherInformation?.map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          icon: item.icon || undefined,
+          selected: item.selected,
         })) || [],
       drivingLicense: cv.drivingLicense,
       ownVehicle: cv.ownVehicle,
@@ -2473,5 +2482,177 @@ export async function deleteSkillCategory(id: string) {
   } catch (error) {
     console.error("Error deleting skill category:", error);
     return { success: false, error: "Failed to delete skill category" };
+  }
+}
+
+// ===============================
+// OTRA INFORMACIÓN
+// ===============================
+
+export async function addOtherInformation(
+  otherInfo: Omit<OtherInformation, "id">
+) {
+  try {
+    const userId = await getCurrentUserId();
+    const currentCV = await prisma.cV.findFirst({
+      where: { userId: userId, isActive: true },
+      include: { otherInformation: true },
+    });
+
+    if (!currentCV) {
+      throw new Error("No active CV found");
+    }
+
+    // Verificar límite máximo de 10 elementos
+    if (currentCV.otherInformation.length >= 10) {
+      return {
+        success: false,
+        error: "Maximum 10 other information items allowed",
+      };
+    }
+
+    await prisma.otherInformation.create({
+      data: {
+        ...otherInfo,
+        cvId: currentCV.id,
+      },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error adding other information:", error);
+    return { success: false, error: "Failed to add other information" };
+  }
+}
+
+export async function updateOtherInformation(otherInfo: OtherInformation) {
+  try {
+    await prisma.otherInformation.update({
+      where: { id: otherInfo.id },
+      data: {
+        name: otherInfo.name,
+        icon: otherInfo.icon,
+        selected: otherInfo.selected,
+      },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating other information:", error);
+    return { success: false, error: "Failed to update other information" };
+  }
+}
+
+export async function toggleOtherInformation(id: string) {
+  try {
+    const otherInfo = await prisma.otherInformation.findUnique({
+      where: { id },
+    });
+
+    if (!otherInfo) {
+      return { success: false, error: "Other information not found" };
+    }
+
+    await prisma.otherInformation.update({
+      where: { id },
+      data: {
+        selected: !otherInfo.selected,
+      },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error toggling other information:", error);
+    return { success: false, error: "Failed to toggle other information" };
+  }
+}
+
+export async function deleteOtherInformation(id: string) {
+  try {
+    await prisma.otherInformation.delete({
+      where: { id },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting other information:", error);
+    return { success: false, error: "Failed to delete other information" };
+  }
+}
+
+export async function updateAllOtherInformation(
+  otherInformation: OtherInformation[]
+) {
+  try {
+    const userId = await getCurrentUserId();
+    const currentCV = await prisma.cV.findFirst({
+      where: { userId: userId, isActive: true },
+    });
+
+    if (!currentCV) {
+      throw new Error("No active CV found");
+    }
+
+    // Usar transacción para actualizar todo atomicamente
+    await prisma.$transaction(async (tx) => {
+      // Obtener items existentes
+      const existingItems = await tx.otherInformation.findMany({
+        where: { cvId: currentCV.id },
+      });
+
+      // Separar items a actualizar, crear y eliminar
+      const itemsToUpdate = otherInformation.filter((item) =>
+        existingItems.some((existing) => existing.id === item.id)
+      );
+
+      const itemsToCreate = otherInformation.filter(
+        (item) => !existingItems.some((existing) => existing.id === item.id)
+      );
+
+      const itemsToDelete = existingItems.filter(
+        (existing) => !otherInformation.some((item) => item.id === existing.id)
+      );
+
+      // Actualizar items existentes
+      for (const item of itemsToUpdate) {
+        await tx.otherInformation.update({
+          where: { id: item.id },
+          data: {
+            name: item.name,
+            icon: item.icon,
+            selected: item.selected,
+          },
+        });
+      }
+
+      // Crear nuevos items
+      for (const item of itemsToCreate) {
+        await tx.otherInformation.create({
+          data: {
+            name: item.name,
+            icon: item.icon,
+            selected: item.selected,
+            cvId: currentCV.id,
+          },
+        });
+      }
+
+      // Eliminar items no presentes
+      for (const item of itemsToDelete) {
+        await tx.otherInformation.delete({
+          where: { id: item.id },
+        });
+      }
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating all other information:", error);
+    return { success: false, error: "Failed to update other information" };
   }
 }

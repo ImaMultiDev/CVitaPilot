@@ -121,6 +121,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           );
         })}
       </div>
+      <div className="hidden lg:block absolute top-10 right-0 opacity-90 ">
+        <Image
+          src="/characters/cvitapilotcharacter.png"
+          alt="Hero Section"
+          width={250}
+          height={250}
+          priority
+          className="rounded-2xl"
+        />
+      </div>
     </div>
   );
 };

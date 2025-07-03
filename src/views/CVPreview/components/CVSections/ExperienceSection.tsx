@@ -108,6 +108,7 @@ export const ExperienceSection: React.FC<ExperienceSectionProps> = ({
                     color: "#374151",
                     lineHeight: "1.4",
                     margin: "0",
+                    whiteSpace: "pre-line",
                   }}
                 >
                   <span style={{ fontWeight: "600", color: "#0f766e" }}>
@@ -125,64 +126,77 @@ export const ExperienceSection: React.FC<ExperienceSectionProps> = ({
 
   // Formato ATS
   return (
-    <div className={className} style={{ marginBottom: "1.5rem" }}>
+    <div className={className} style={{ marginBottom: "2rem" }}>
       <h2
         style={{
-          fontSize: "1.25rem",
+          fontSize: "0.875rem",
           fontWeight: "bold",
-          marginBottom: "1rem",
+          marginBottom: "0.75rem",
           paddingBottom: "0.25rem",
           borderBottom: "1px solid #000000",
           color: "#000000",
-          lineHeight: "1.75rem",
+          lineHeight: "1.2",
         }}
       >
         EXPERIENCIA LABORAL
       </h2>
-      {selectedExperiences.map((experience, index) => (
-        <div key={index} style={{ marginBottom: "1rem" }}>
-          <h3
-            style={{
-              fontSize: "1.125rem",
-              fontWeight: "600",
-              color: "#000000",
-              lineHeight: "1.75rem",
-            }}
-          >
-            {experience.position}
-          </h3>
-          <p style={{ fontWeight: "500", color: "#000000" }}>
-            {experience.company}
-          </p>
-          <p
-            style={{
-              fontSize: "0.875rem",
-              marginBottom: "0.5rem",
-              color: "#000000",
-            }}
-          >
-            {experience.startDate} - {experience.endDate} |{" "}
-            {experience.location}
-          </p>
-          {experience.description && (
+      <div style={{ marginTop: "1rem" }}>
+        {selectedExperiences.map((experience, index) => (
+          <div key={index} style={{ marginTop: "1rem" }}>
+            <span
+              style={{
+                fontSize: "0.875rem",
+                fontWeight: "600",
+                color: "#000000",
+                lineHeight: "1.2",
+              }}
+            >
+              {experience.position}
+            </span>
+            <span style={{ fontSize: "0.8rem", color: "#000000" }}>
+              {" ("}
+              {experience.startDate} / {experience.endDate}
+              {")"}
+            </span>
+            <p
+              style={{
+                fontSize: "0.8rem",
+                fontWeight: "500",
+                color: "#000000",
+              }}
+            >
+              {experience.company} | {experience.location}
+            </p>
             <p
               style={{
                 fontSize: "0.875rem",
-                color: "#000000",
                 marginBottom: "0.5rem",
-                lineHeight: "1.4",
+                color: "#000000",
               }}
             >
-              {experience.description}
+              {" "}
             </p>
-          )}
-          {experience.technologies && experience.technologies.length > 0 && (
-            <p style={{ fontSize: "0.875rem", color: "#000000" }}>
-              Tecnologías: {experience.technologies.join(", ")}
-            </p>
-          )}
-        </div>
-      ))}
+            {experience.description && (
+              <p
+                style={{
+                  fontSize: "0.875rem",
+                  color: "#000000",
+                  marginBottom: "0.5rem",
+                  lineHeight: "1.4",
+                  whiteSpace: "pre-line",
+                }}
+              >
+                {experience.description}
+              </p>
+            )}
+            {experience.technologies && experience.technologies.length > 0 && (
+              <p style={{ fontSize: "0.875rem", color: "#000000" }}>
+                Tecnologías: {experience.technologies.join(", ")}
+              </p>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

@@ -10,6 +10,7 @@ import { CertificationsSection } from "./CertificationsSection";
 import { AchievementsSection } from "./AchievementsSection";
 import { ReferencesSection } from "./ReferencesSection";
 import { LanguagesSection } from "./LanguagesSection";
+import { OtherInformationSection } from "./OtherInformationSection";
 
 interface SectionRendererProps {
   activeSection: string;
@@ -22,6 +23,7 @@ interface SectionRendererProps {
   onToggleCertification: (certificationId: string) => void;
   onToggleAchievement: (achievementId: string) => void;
   onToggleReference: (referenceId: string) => void;
+  onToggleOtherInformation: (otherInfoId: string) => void;
 }
 
 export const SectionRenderer: React.FC<SectionRendererProps> = ({
@@ -35,6 +37,7 @@ export const SectionRenderer: React.FC<SectionRendererProps> = ({
   onToggleCertification,
   onToggleAchievement,
   onToggleReference,
+  onToggleOtherInformation,
 }) => {
   switch (activeSection) {
     case "resumen":
@@ -101,6 +104,14 @@ export const SectionRenderer: React.FC<SectionRendererProps> = ({
 
     case "languages":
       return <LanguagesSection cvData={cvData} />;
+
+    case "otherInformation":
+      return (
+        <OtherInformationSection
+          otherInformation={cvData.otherInformation}
+          onToggleOtherInformation={onToggleOtherInformation}
+        />
+      );
 
     default:
       return <ResumenSection cvData={cvData} />;

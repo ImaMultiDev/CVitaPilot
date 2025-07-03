@@ -24,7 +24,7 @@ export const NavbarSkeleton: React.FC = React.memo(() => {
           </div>
 
           {/* Navigation items skeleton */}
-          <div className="hidden md:flex items-center space-x-3">
+          <div className="hidden md:flex items-center gap-3">
             {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}

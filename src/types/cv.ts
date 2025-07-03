@@ -1,5 +1,3 @@
-// src/types/cv.ts
-
 export interface PersonalInfo {
   name: string;
   position: string;
@@ -115,6 +113,13 @@ export interface Reference {
   selected: boolean;
 }
 
+export interface OtherInformation {
+  id: string;
+  name: string; // Nombre del elemento (ej: "Carnet de conducir", "Vehículo propio")
+  icon?: string; // Icono opcional (emoji o nombre de icono)
+  selected: boolean;
+}
+
 export interface CVData {
   personalInfo: PersonalInfo;
   aboutMe: string;
@@ -129,6 +134,7 @@ export interface CVData {
   certifications: Certification[];
   achievements: Achievement[];
   references: Reference[];
+  otherInformation: OtherInformation[];
   drivingLicense: boolean;
   ownVehicle: boolean;
 }

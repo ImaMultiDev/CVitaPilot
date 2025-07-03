@@ -304,9 +304,9 @@ export const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
                 {experience.workModality}
               </p>
               {experience.description && (
-                <p className="text-sm md:text-sm text-gray-700 dark:text-gray-300 mt-2">
+                <div className="text-sm md:text-sm text-gray-700 dark:text-gray-300 mt-2 whitespace-pre-line">
                   {experience.description}
-                </p>
+                </div>
               )}
               {experience.technologies &&
                 experience.technologies.length > 0 && (

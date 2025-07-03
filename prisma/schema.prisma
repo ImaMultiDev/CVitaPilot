@@ -59,6 +59,7 @@ model CV {
   deliveries       CVDelivery[]
   socialNetworks   SocialNetwork[]
   skillCategories  SkillCategory[]
+  otherInformation OtherInformation[]
   
   @@map("cvs")
 }
@@ -334,4 +335,18 @@ model SocialNetwork {
   cvId     String
   
   @@map("social_networks")
+}
+
+// Otra información adicional
+model OtherInformation {
+  id       String  @id @default(cuid())
+  name     String  // Nombre del elemento (ej: "Carnet de conducir", "Vehículo propio", "Disponibilidad inmediata")
+  icon     String? // Icono opcional (emoji o nombre de icono)
+  selected Boolean @default(true)
+  
+  // Relación
+  cv       CV      @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId     String
+  
+  @@map("other_information")
 }

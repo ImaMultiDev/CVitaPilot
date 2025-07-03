@@ -6,7 +6,11 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { PersonalInfoFormPrisma } from "@/components/forms/PersonalInfoFormPrisma";
 import { Sidebar } from "@/components/layout/Sidebar/Sidebar";
-import { saveCurrentCVAs, forceRevalidation } from "@/lib/actions/cv-actions";
+import {
+  saveCurrentCVAs,
+  forceRevalidation,
+  updateAllOtherInformation,
+} from "@/lib/actions/cv-actions";
 import {
   LanguagesSection,
   SkillCategoriesSection,
@@ -19,6 +23,7 @@ import {
   CompetencesSection,
   SoftSkillsSection,
   ProfessionalProfileSection,
+  OtherInformationSection,
 } from "./components";
 import { CVData } from "@/types/cv";
 
@@ -319,6 +324,14 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
           references={initialData.references}
           onUpdate={handleUpdate}
           isUpdating={isUpdating}
+        />
+
+        {/* Otra Información */}
+        <OtherInformationSection
+          otherInformation={initialData.otherInformation}
+          onChange={(otherInformation) => {
+            handleUpdate(() => updateAllOtherInformation(otherInformation));
+          }}
         />
 
         {/* Guardar CV */}

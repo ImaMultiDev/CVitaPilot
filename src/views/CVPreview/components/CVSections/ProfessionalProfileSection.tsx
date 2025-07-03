@@ -15,29 +15,33 @@ export const ProfessionalProfileSection: React.FC<
 
   if (format === "ats") {
     return (
-      <div className={className} style={{ marginBottom: "1.5rem" }}>
+      <div className={className} style={{ marginBottom: "1rem" }}>
         <h2
           style={{
-            fontSize: "1.25rem",
+            fontSize: "0.875rem",
             fontWeight: "bold",
-            marginBottom: "1rem",
+            marginBottom: "0.75rem",
             paddingBottom: "0.25rem",
             borderBottom: "1px solid #000000",
             color: "#000000",
-            lineHeight: "1.75rem",
+            lineHeight: "1.2",
           }}
         >
           PERFIL PROFESIONAL
         </h2>
-        <p
-          style={{
-            color: "#000000",
-            lineHeight: "1.6",
-            textAlign: "justify",
-          }}
-        >
-          {professionalProfile}
-        </p>
+        <div style={{ marginTop: "1rem" }}>
+          <p
+            style={{
+              fontSize: "0.875rem",
+              color: "#000000",
+              marginTop: "1rem",
+              lineHeight: "1.6",
+              textAlign: "justify",
+            }}
+          >
+            {professionalProfile}
+          </p>
+        </div>
       </div>
     );
   }

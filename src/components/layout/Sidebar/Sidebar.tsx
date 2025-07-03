@@ -13,6 +13,7 @@ import {
   toggleCertification,
   toggleAchievement,
   toggleReference,
+  toggleOtherInformation,
   forceRevalidation,
 } from "@/lib/actions/cv-actions";
 import type { CVData } from "@/types/cv";
@@ -88,6 +89,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
       name: "Idiomas",
       description: "Idiomas y niveles",
     },
+    {
+      id: "otherInformation",
+      name: "Otra Información",
+      description: "Información adicional",
+    },
   ];
 
   // Función helper para manejar actualizaciones
@@ -144,6 +150,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
     await handleUpdate(() => toggleReference(referenceId));
   };
 
+  const handleToggleOtherInformation = async (otherInfoId: string) => {
+    await handleUpdate(() => toggleOtherInformation(otherInfoId));
+  };
+
   // Encontrar descripción de la sección actual
   const currentSection = sections.find((s) => s.id === activeSection);
 
@@ -172,6 +182,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           onToggleCertification={handleToggleCertification}
           onToggleAchievement={handleToggleAchievement}
           onToggleReference={handleToggleReference}
+          onToggleOtherInformation={handleToggleOtherInformation}
         />
       </div>
 
@@ -204,7 +215,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           flex-direction: column;
           box-shadow: 4px 0 20px var(--sidebar-shadow);
           position: relative;
-          z-index: 1100;
+          z-index: 10;
         }
 
         .sidebar-container::before {

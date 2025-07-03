@@ -73,7 +73,7 @@ export const Navbar: React.FC = () => {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-[1001] transition-all duration-500 ${
+        className={`fixed top-0 left-0 text-white brightness-110 right-0 z-[1001] transition-all duration-500 ${
           isScrolled
             ? "transform translate-y-0 shadow-2xl"
             : "transform translate-y-0"
@@ -101,13 +101,13 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Contenido principal del navbar */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className="flex items-center">
               <Link
                 href="/"
-                className="flex items-center space-x-3 group transition-transform duration-300 hover:scale-105"
+                className="flex items-center space-x-3 group transition-transform duration-300 hover:brightness-125"
               >
                 <div className="relative w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 shadow-xl overflow-hidden group-hover:shadow-2xl transition-all duration-300">
                   <Image
@@ -115,7 +115,7 @@ export const Navbar: React.FC = () => {
                     alt="CVitaPilot Logo"
                     width={40}
                     height={40}
-                    className="rounded-2xl transition-all duration-500 group-hover:scale-110"
+                    className="rounded-2xl transition-all duration-500 group-hover:brightness-125"
                     priority
                     key={`logo-${theme}`} // Force re-render cuando cambia el tema
                   />

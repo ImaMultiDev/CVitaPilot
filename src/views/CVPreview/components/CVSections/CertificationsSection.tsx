@@ -49,7 +49,7 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({
                 marginBottom: "0.5rem",
               }}
             >
-              <h3
+              <div
                 style={{
                   fontSize: "1rem",
                   fontWeight: "600",
@@ -58,7 +58,7 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({
                 }}
               >
                 {certification.name}
-              </h3>
+              </div>
               <span
                 style={{
                   fontSize: "0.875rem",
@@ -102,10 +102,10 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({
 
   // Formato ATS
   return (
-    <div className={className} style={{ marginBottom: "1.5rem" }}>
+    <div className={className} style={{ marginBottom: "1rem" }}>
       <h2
         style={{
-          fontSize: "1.25rem",
+          fontSize: "0.875rem",
           fontWeight: "bold",
           marginBottom: "1rem",
           paddingBottom: "0.25rem",
@@ -116,21 +116,36 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({
       >
         CERTIFICACIONES
       </h2>
-      {selectedCertifications.map((certification, index) => (
-        <div key={index} style={{ marginBottom: "1rem" }}>
-          <h3 style={{ fontSize: "1rem", fontWeight: "600", color: "#000000" }}>
-            {certification.name}
-          </h3>
-          <p style={{ fontWeight: "500", color: "#000000" }}>
-            {certification.issuer} - {certification.date}
-          </p>
-          {certification.credentialId && (
-            <p style={{ fontSize: "0.875rem", color: "#000000" }}>
-              ID: {certification.credentialId}
-            </p>
-          )}
-        </div>
-      ))}
+      <div style={{ marginTop: "1rem" }}>
+        {selectedCertifications.map((certification, index) => (
+          <div key={index} style={{ marginTop: "0.2rem" }}>
+            <span
+              style={{
+                fontSize: "0.875rem",
+                fontWeight: "600",
+                color: "#000000",
+              }}
+            >
+              {certification.name}
+              {" : "}
+            </span>
+            <span
+              style={{
+                fontSize: "0.875rem",
+                fontWeight: "500",
+                color: "#000000",
+              }}
+            >
+              {certification.issuer} {"("} {certification.date} {")"}
+            </span>
+            {certification.credentialId && (
+              <span style={{ fontSize: "0.875rem", color: "#000000" }}>
+                ID: {certification.credentialId}
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

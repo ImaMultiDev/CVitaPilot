@@ -79,36 +79,40 @@ export const LanguagesSection: React.FC<LanguagesSectionProps> = ({
   }
 
   // Formato ATS
-  return (
-    <div className={className} style={{ marginBottom: "1.5rem" }}>
-      <h2
-        style={{
-          fontSize: "1.25rem",
-          fontWeight: "bold",
-          marginBottom: "1rem",
-          paddingBottom: "0.25rem",
-          borderBottom: "1px solid #000000",
-          color: "#000000",
-          lineHeight: "1.75rem",
-        }}
-      >
-        IDIOMAS
-      </h2>
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-        {languages.map((language, index) => (
-          <div
-            key={index}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              color: "#000000",
-            }}
-          >
-            <span style={{ fontWeight: "500" }}>{language.name}</span>
-            <span>{language.level}</span>
-          </div>
-        ))}
+  if (format === "ats") {
+    return (
+      <div className={className} style={{ marginBottom: "1rem" }}>
+        <h2
+          style={{
+            fontSize: "0.875rem",
+            fontWeight: "bold",
+            marginBottom: "0.75rem",
+            paddingBottom: "0.25rem",
+            borderBottom: "1px solid #000000",
+            color: "#000000",
+            lineHeight: "1.2",
+          }}
+        >
+          IDIOMAS
+        </h2>
+        <div style={{ marginTop: "1rem" }}>
+          {languages.map((language, index) => (
+            <div key={index}>
+              <span
+                style={{
+                  fontSize: "0.875rem",
+                  fontWeight: "500",
+                  color: "#000000",
+                }}
+              >
+                {language.name}: {language.level}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  return null;
 };

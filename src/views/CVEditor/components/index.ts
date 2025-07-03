@@ -10,3 +10,4 @@ export { ReferencesSection } from "./ReferencesSection";
 export { CompetencesSection } from "./CompetencesSection";
 export { SoftSkillsSection } from "./SoftSkillsSection";
 export { ProfessionalProfileSection } from "./ProfessionalProfileSection";
+export { OtherInformationSection } from "./OtherInformationSection";

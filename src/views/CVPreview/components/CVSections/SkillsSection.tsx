@@ -18,17 +18,17 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({
     return null;
   }
 
-  if (format === "visual") {
-    // Agrupar habilidades por categoría
-    const skillsByCategory = selectedSkills.reduce((acc, skill) => {
-      const categoryName = skill.categoryName || "Sin categoría";
-      if (!acc[categoryName]) {
-        acc[categoryName] = [];
-      }
-      acc[categoryName].push(skill);
-      return acc;
-    }, {} as Record<string, Skill[]>);
+  // Agrupar habilidades por categoría
+  const skillsByCategory = selectedSkills.reduce((acc, skill) => {
+    const categoryName = skill.categoryName || "Sin categoría";
+    if (!acc[categoryName]) {
+      acc[categoryName] = [];
+    }
+    acc[categoryName].push(skill);
+    return acc;
+  }, {} as Record<string, Skill[]>);
 
+  if (format === "visual") {
     return (
       <div className={className} style={{ marginBottom: "0.75rem" }}>
         {/* Header con fondo turquesa */}
@@ -98,23 +98,41 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({
 
   // Formato ATS
   return (
-    <div className={className} style={{ marginBottom: "1.5rem" }}>
+    <div className={className} style={{ marginBottom: "1rem" }}>
       <h2
         style={{
-          fontSize: "1.25rem",
+          fontSize: "0.875rem",
           fontWeight: "bold",
           marginBottom: "1rem",
           paddingBottom: "0.25rem",
           borderBottom: "1px solid #000000",
           color: "#000000",
-          lineHeight: "1.75rem",
+          lineHeight: "1.2",
         }}
       >
         HABILIDADES TÉCNICAS
       </h2>
-      <p style={{ color: "#000000", lineHeight: "1.6" }}>
-        {selectedSkills.map((skill) => skill.name).join(", ")}
-      </p>
+      <div style={{ marginTop: "1rem" }}>
+        {/* Agrupar skills por categoría */}
+        {Object.entries(skillsByCategory).map(([categoryName, skills]) => (
+          <div key={categoryName} style={{ marginTop: "0.5rem" }}>
+            <span
+              style={{
+                fontSize: "0.875rem",
+                fontWeight: "600",
+                color: "#000000",
+                marginBottom: "0.5rem",
+                lineHeight: "1.2",
+              }}
+            >
+              {categoryName}:{" "}
+            </span>
+            <span style={{ fontSize: "0.875rem", color: "#000000" }}>
+              {skills.map((skill) => skill.name).join(", ")}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

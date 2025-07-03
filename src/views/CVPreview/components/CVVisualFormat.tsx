@@ -85,8 +85,7 @@ export const CVVisualFormat: React.FC<CVVisualFormatProps> = ({ cvData }) => {
 
             {/* Otra información */}
             <OtherInformationSection
-              drivingLicense={cvData.drivingLicense}
-              ownVehicle={cvData.ownVehicle}
+              otherInformation={cvData.otherInformation}
               format="visual"
             />
           </div>

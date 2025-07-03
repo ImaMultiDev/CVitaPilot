@@ -63,7 +63,7 @@ export const SpecializationSection: React.FC<SpecializationSectionProps> = ({
   const libraries = getSkillsByType("libraries");
 
   return (
-    <div className={className} style={{ marginBottom: "0.75rem" }}>
+    <div className={className} style={{ marginBottom: "1rem" }}>
       {/* Header con fondo turquesa */}
       <div
         style={{
@@ -74,7 +74,7 @@ export const SpecializationSection: React.FC<SpecializationSectionProps> = ({
       >
         <h3
           style={{
-            fontSize: "1.125rem",
+            fontSize: "0.875rem",
             fontWeight: "bold",
             color: "#ffffff",
             lineHeight: "1.75rem",

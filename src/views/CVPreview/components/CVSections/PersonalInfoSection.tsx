@@ -279,7 +279,7 @@ export const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   );
 
   return (
-    <div className={className} style={{ marginBottom: "1.5rem" }}>
+    <div className={className} style={{ marginTop: "1rem" }}>
       {/* Nombre completo */}
       <h1
         style={{
@@ -301,21 +301,30 @@ export const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
           marginBottom: "1rem",
           color: "#000000",
           textAlign: "center",
-          fontWeight: "500",
+          fontWeight: "normal",
           lineHeight: "1.75rem",
         }}
       >
         {personalInfo?.position || ""}
       </h2>
 
+      {/* Línea separadora */}
+      <hr
+        style={{
+          border: "none",
+          borderTop: "2px solid #000000",
+          margin: "1rem 0",
+        }}
+      />
+
       {/* Información de contacto en 2 columnas */}
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          gap: "1rem",
-          marginBottom: "1rem",
-          fontSize: "0.875rem",
+          gap: "0.5rem",
+          marginTop: "0.5rem",
+          fontSize: "0.8rem",
           color: "#000000",
         }}
       >
@@ -371,15 +380,6 @@ export const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
               ))}
         </div>
       </div>
-
-      {/* Línea separadora */}
-      <hr
-        style={{
-          border: "none",
-          borderTop: "2px solid #000000",
-          margin: "1rem 0",
-        }}
-      />
     </div>
   );
 };

@@ -20,7 +20,7 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
 
   if (format === "visual") {
     return (
-      <div className={className} style={{ marginBottom: "2rem" }}>
+      <div className={className} style={{ marginBottom: "1rem" }}>
         <h2
           style={{
             fontSize: "1.25rem",
@@ -73,42 +73,53 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
 
   // Formato ATS
   return (
-    <div className={className} style={{ marginBottom: "1.5rem" }}>
+    <div className={className} style={{ marginBottom: "1rem" }}>
       <h2
         style={{
-          fontSize: "1.25rem",
+          fontSize: "0.875rem",
           fontWeight: "bold",
-          marginBottom: "1rem",
+          marginBottom: "0.75rem",
           paddingBottom: "0.25rem",
           borderBottom: "1px solid #000000",
           color: "#000000",
-          lineHeight: "1.75rem",
+          lineHeight: "1.2",
         }}
       >
         FORMACIÓN ACADÉMICA
       </h2>
-      {selectedEducation.map((edu, index) => (
-        <div key={index} style={{ marginBottom: "1rem" }}>
-          <h3
-            style={{
-              fontSize: "1.125rem",
-              fontWeight: "600",
-              color: "#000000",
-              lineHeight: "1.75rem",
-            }}
-          >
-            {edu.title}
-          </h3>
-          <p
-            style={{ fontWeight: "500", color: "#000000", margin: "0.25rem 0" }}
-          >
-            {edu.institution}
-          </p>
-          <p style={{ fontSize: "0.875rem", color: "#000000", margin: "0" }}>
-            {edu.startYear} - {edu.endYear} | {edu.location}
-          </p>
-        </div>
-      ))}
+      <div style={{ marginTop: "1rem" }}>
+        {selectedEducation.map((edu, index) => (
+          <div key={index} style={{ marginTop: "0.75rem" }}>
+            <div>
+              <span
+                style={{
+                  fontSize: "0.875rem",
+                  fontWeight: "600",
+                  color: "#000000",
+                  lineHeight: "1.2",
+                }}
+              >
+                {edu.title}
+              </span>
+
+              <span style={{ fontSize: "0.8rem", color: "#000000" }}>
+                {" ("}
+                {edu.startYear} - {edu.endYear}
+                {")"}
+              </span>
+              <p
+                style={{
+                  fontSize: "0.875rem",
+                  color: "#000000",
+                  marginBottom: "0.25rem",
+                }}
+              >
+                {edu.institution} | {edu.location}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
