@@ -12,6 +12,7 @@ export { Toggle } from "./Toggle";
 export { Card } from "./Card";
 export { Modal, ConfirmationModal } from "./Modal";
 export { CreateCVModal } from "./CreateCVModal";
+export { SolidModal } from "./SolidModal";
 
 // Display Components
 export { Badge } from "./Badge";

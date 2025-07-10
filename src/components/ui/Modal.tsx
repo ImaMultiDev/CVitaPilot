@@ -105,14 +105,17 @@ export const Modal: React.FC<ModalProps> = ({
       footer: "border-t border-gray-200 dark:border-gray-700",
     },
     solid: {
-      overlay: "bg-black/50",
+      overlay: "bg-black/60",
       modal: `
-        bg-white dark:bg-gray-800 
-        border border-gray-200 dark:border-gray-700
+        bg-white dark:bg-gray-900 
+        border-2 border-gray-300 dark:border-gray-600
         rounded-2xl shadow-2xl
+        ring-2 ring-gray-200/50 dark:ring-gray-700/50
       `,
-      header: "border-b border-gray-200 dark:border-gray-700",
-      footer: "border-t border-gray-200 dark:border-gray-700",
+      header:
+        "border-b-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800",
+      footer:
+        "border-t-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800",
     },
     modern: {
       overlay: "bg-black/60 backdrop-blur-sm",
