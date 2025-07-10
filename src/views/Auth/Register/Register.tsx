@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { InputWithValidation } from "@/components/ui/InputWithValidation";
-import { registerUser } from "@/lib/actions/auth-actions";
+import { registerUserWithEmailVerification } from "@/lib/actions/auth-actions";
 import { registerSchema, type RegisterFormData } from "@/lib/validations/auth";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -47,14 +47,14 @@ export default function Register() {
     setServerErrors({});
 
     try {
-      const result = await registerUser(formData);
+      const result = await registerUserWithEmailVerification(formData);
 
       if (result.success) {
         setSuccess(true);
-        // Redirigir al login después de 2 segundos
+        // Mostrar mensaje de verificación de email
         setTimeout(() => {
           router.push(
-            "/auth/login?message=Registro exitoso. Ya puedes iniciar sesión."
+            "/auth/login?message=Registro exitoso. Por favor, verifica tu email para activar tu cuenta."
           );
         }, 2000);
       } else if (result.errors) {
@@ -104,7 +104,12 @@ export default function Register() {
               ¡Registro Exitoso!
             </h1>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Tu cuenta ha sido creada con éxito. Redirigiendo al login...
+              Tu cuenta ha sido creada. Te hemos enviado un email de
+              verificación.
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+              Por favor, revisa tu bandeja de entrada y haz clic en el enlace de
+              verificación para activar tu cuenta.
             </p>
             <div className="animate-spin h-6 w-6 border-2 border-blue-600 border-t-transparent rounded-full mx-auto"></div>
           </div>

@@ -11,7 +11,7 @@ interface ModalProps {
   title?: string;
   children: React.ReactNode;
   size?: "sm" | "md" | "lg" | "xl" | "full";
-  variant?: "default" | "modern" | "glass" | "gradient";
+  variant?: "default" | "modern" | "glass" | "gradient" | "solid";
   showCloseButton?: boolean;
   closeOnOverlayClick?: boolean;
   closeOnEscapeKey?: boolean;
@@ -95,6 +95,16 @@ export const Modal: React.FC<ModalProps> = ({
 
   const variants = {
     default: {
+      overlay: "bg-black/50",
+      modal: `
+        bg-white dark:bg-gray-800 
+        border border-gray-200 dark:border-gray-700
+        rounded-2xl shadow-2xl
+      `,
+      header: "border-b border-gray-200 dark:border-gray-700",
+      footer: "border-t border-gray-200 dark:border-gray-700",
+    },
+    solid: {
       overlay: "bg-black/50",
       modal: `
         bg-white dark:bg-gray-800 
@@ -241,15 +251,17 @@ export const Modal: React.FC<ModalProps> = ({
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-400/5 via-purple-500/5 to-indigo-600/5 pointer-events-none animate-pulse opacity-50"></div>
         )}
 
-        {/* Shine effect */}
-        <div
-          className="absolute inset-0 rounded-2xl pointer-events-none overflow-hidden opacity-20"
-          style={{
-            background:
-              "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent)",
-            animation: "shimmer 3s infinite",
-          }}
-        />
+        {/* Shine effect - Skip for solid variant */}
+        {variant !== "solid" && (
+          <div
+            className="absolute inset-0 rounded-2xl pointer-events-none overflow-hidden opacity-20"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent)",
+              animation: "shimmer 3s infinite",
+            }}
+          />
+        )}
       </div>
 
       <style jsx>{`

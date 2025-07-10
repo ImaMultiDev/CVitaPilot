@@ -44,7 +44,10 @@ model CV {
   // Timestamps
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-  
+
+  // Miniatura/preview del CV (dataURL de imagen, SVG, o HTML reducido)
+  thumbnail        String?
+
   // Relaciones
   languages        Language[]
   skills           Skill[]

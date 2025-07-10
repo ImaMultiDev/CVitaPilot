@@ -1,8 +1,8 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
@@ -14,8 +14,24 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+  const [showResendVerification, setShowResendVerification] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { theme } = useTheme();
+
+  // Mostrar mensaje de verificación exitosa si viene de la URL
+  useEffect(() => {
+    const verified = searchParams.get("verified");
+    const messageParam = searchParams.get("message");
+
+    if (verified === "true") {
+      setMessage("¡Email verificado exitosamente! Ya puedes iniciar sesión.");
+    } else if (messageParam) {
+      setMessage(decodeURIComponent(messageParam));
+    }
+  }, [searchParams]);
 
   // Función para obtener el logo correcto según el tema
   const getLogoSrc = () => {
@@ -35,7 +51,14 @@ export default function Login() {
       });
 
       if (result?.error) {
-        setError("Credenciales inválidas. Verifica tu email y contraseña.");
+        if (result.error === "EMAIL_NOT_VERIFIED") {
+          setError(
+            "Tu email no está verificado. Por favor, revisa tu bandeja de entrada y haz clic en el enlace de verificación."
+          );
+          setShowResendVerification(true);
+        } else {
+          setError("Credenciales inválidas. Verifica tu email y contraseña.");
+        }
       } else if (result?.ok) {
         router.push("/");
         router.refresh();
@@ -45,6 +68,42 @@ export default function Login() {
       setError("Error interno. Inténtalo de nuevo.");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!email) {
+      setError("Por favor, introduce tu email primero.");
+      return;
+    }
+
+    setResendLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/auth/resend-verification", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setMessage(
+          "Email de verificación reenviado. Revisa tu bandeja de entrada."
+        );
+        setShowResendVerification(false);
+      } else {
+        setError(result.error || "Error reenviando email de verificación.");
+      }
+    } catch (error) {
+      console.error("Error reenviando verificación:", error);
+      setError("Error interno. Inténtalo de nuevo.");
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -110,6 +169,15 @@ export default function Login() {
             </div>
           </div>
 
+          {/* Mensaje de éxito */}
+          {message && (
+            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3 mb-6">
+              <p className="text-sm text-green-600 dark:text-green-400">
+                {message}
+              </p>
+            </div>
+          )}
+
           {/* Formulario */}
           <form onSubmit={handleSubmit} className="space-y-6 mt-10">
             <div>
@@ -155,6 +223,25 @@ export default function Login() {
                 <p className="text-sm text-red-600 dark:text-red-400">
                   {error}
                 </p>
+                {showResendVerification && (
+                  <div className="mt-3 pt-3 border-t border-red-200 dark:border-red-800">
+                    <p className="text-xs text-red-500 dark:text-red-400 mb-2">
+                      ¿No recibiste el email?
+                    </p>
+                    <Button
+                      type="button"
+                      onClick={handleResendVerification}
+                      disabled={resendLoading}
+                      size="sm"
+                      variant="ghost"
+                      className="text-xs"
+                    >
+                      {resendLoading
+                        ? "Reenviando..."
+                        : "Reenviar email de verificación"}
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
 

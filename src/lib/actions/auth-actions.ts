@@ -5,6 +5,18 @@ import { hashPassword } from "@/auth";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
+// Función auxiliar para obtener el ID del usuario actual
+async function getCurrentUserId(): Promise<string> {
+  const { auth } = await import("@/auth");
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    throw new Error("Usuario no autenticado");
+  }
+
+  return session.user.id;
+}
+
 // Regex para validación de email más estricta
 const emailRegex =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
@@ -165,48 +177,14 @@ export async function registerUser(data: RegisterData) {
 
 // Función para inicializar CV por defecto para un nuevo usuario
 export async function initializeDefaultCVForUser(
-  userId: string
+  _userId: string
 ): Promise<string> {
   try {
-    // Datos iniciales para el nuevo usuario
-    const defaultData = {
-      name: "Mi CV Principal",
-      userId: userId,
-      isActive: true,
-      personalName: "",
-      position: "",
-      phone: "",
-      email: "",
-      linkedin: "",
-      website: "",
-      location: "",
-      aboutMe: "",
-      drivingLicense: false,
-      ownVehicle: false,
-    };
+    // Importar la función que ya tiene todos los datos de ejemplo
+    const { initializeDefaultCV } = await import("./cv-actions");
 
-    const cv = await prisma.cV.create({
-      data: defaultData,
-    });
-
-    // Crear categorías de habilidades por defecto
-    const categories = [
-      "Lenguajes de Programación",
-      "Frameworks",
-      "Bases de Datos",
-      "Herramientas",
-      "Librerías",
-    ];
-
-    await Promise.all(
-      categories.map((categoryName) =>
-        prisma.skillCategory.create({
-          data: { cvId: cv.id, name: categoryName },
-        })
-      )
-    );
-
-    return cv.id;
+    // Usar la función existente que ya tiene todos los datos de ejemplo
+    return await initializeDefaultCV();
   } catch (error) {
     console.error("Error inicializando CV por defecto:", error);
     throw error;
@@ -235,6 +213,443 @@ export async function validateLoginData(data: LoginData) {
     return {
       success: false,
       errors: { general: ["Error interno del servidor"] },
+    };
+  }
+}
+
+// Función para exportar datos del usuario
+export async function exportUserData(): Promise<{
+  success: boolean;
+  data?: unknown;
+  error?: string;
+}> {
+  try {
+    const userId = await getCurrentUserId();
+
+    const userData = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        cvs: {
+          include: {
+            languages: true,
+            skills: {
+              include: {
+                category: true,
+              },
+            },
+            skillCategories: true,
+            competences: true,
+            interests: true,
+            softSkills: true,
+            experiences: true,
+            education: true,
+            certifications: true,
+            achievements: true,
+            references: true,
+            deliveries: true,
+            socialNetworks: true,
+            otherInformation: true,
+          },
+        },
+        accounts: true,
+        sessions: true,
+      },
+    });
+
+    if (!userData) {
+      return {
+        success: false,
+        error: "Usuario no encontrado",
+      };
+    }
+
+    // Remover datos sensibles
+    const sanitizedData = {
+      ...userData,
+      password: undefined,
+      accounts: userData.accounts.map((account) => ({
+        ...account,
+        refresh_token: undefined,
+        access_token: undefined,
+        id_token: undefined,
+      })),
+    };
+
+    return {
+      success: true,
+      data: sanitizedData,
+    };
+  } catch (error) {
+    console.error("Error exportando datos del usuario:", error);
+    return {
+      success: false,
+      error: "Error interno del servidor",
+    };
+  }
+}
+
+// Función para eliminar cuenta de usuario
+export async function deleteUserAccount(): Promise<{
+  success: boolean;
+  error?: string;
+}> {
+  try {
+    const userId = await getCurrentUserId();
+
+    // Eliminar usuario (esto eliminará automáticamente todos los CVs y datos relacionados)
+    await prisma.user.delete({
+      where: { id: userId },
+    });
+
+    revalidatePath("/");
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error("Error eliminando cuenta de usuario:", error);
+    return {
+      success: false,
+      error: "Error interno del servidor",
+    };
+  }
+}
+
+// Funciones para verificación de email
+import { randomBytes } from "crypto";
+import { addDays } from "date-fns";
+
+// Función para generar token de verificación
+async function generateVerificationToken(email: string): Promise<string> {
+  const token = randomBytes(32).toString("hex");
+
+  // Eliminar tokens anteriores para este email
+  await prisma.verificationToken.deleteMany({
+    where: { identifier: email },
+  });
+
+  // Crear nuevo token con expiración de 24 horas
+  await prisma.verificationToken.create({
+    data: {
+      identifier: email,
+      token,
+      expires: addDays(new Date(), 1),
+    },
+  });
+
+  return token;
+}
+
+// Función para enviar email de verificación
+async function sendVerificationEmail(
+  email: string,
+  token: string
+): Promise<boolean> {
+  try {
+    // Importar la función de envío de email
+    const { sendVerificationEmail: sendEmail } = await import("@/lib/email");
+    return await sendEmail(email, token);
+  } catch (error) {
+    console.error("Error enviando email de verificación:", error);
+    return false;
+  }
+}
+
+// Función para registrar usuario con verificación de email
+export async function registerUserWithEmailVerification(data: RegisterData) {
+  try {
+    // Validar datos de entrada
+    const validatedFields = registerSchema.safeParse(data);
+
+    if (!validatedFields.success) {
+      return {
+        success: false,
+        errors: validatedFields.error.flatten().fieldErrors,
+      };
+    }
+
+    const { name, email, password } = validatedFields.data;
+
+    // Verificar si el usuario ya existe
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (existingUser) {
+      return {
+        success: false,
+        errors: { email: ["Este email ya está registrado"] },
+      };
+    }
+
+    // Crear hash de la contraseña
+    const hashedPassword = await hashPassword(password);
+
+    // Crear usuario sin verificar
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        emailVerified: null, // No verificado inicialmente
+      },
+    });
+
+    // Generar token de verificación
+    const verificationToken = await generateVerificationToken(email);
+
+    // Enviar email de verificación
+    const emailSent = await sendVerificationEmail(email, verificationToken);
+
+    if (!emailSent) {
+      // Si falla el envío del email, eliminar el usuario creado
+      await prisma.user.delete({
+        where: { id: user.id },
+      });
+
+      return {
+        success: false,
+        errors: { general: ["Error enviando email de verificación"] },
+      };
+    }
+
+    revalidatePath("/auth/login");
+
+    return {
+      success: true,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+      message:
+        "Usuario registrado. Por favor, verifica tu email para activar tu cuenta.",
+    };
+  } catch (error) {
+    console.error("Error registrando usuario con verificación:", error);
+    return {
+      success: false,
+      errors: { general: ["Error interno del servidor"] },
+    };
+  }
+}
+
+// Función para verificar email
+export async function verifyEmail(token: string): Promise<{
+  success: boolean;
+  error?: string;
+}> {
+  try {
+    // Buscar el token de verificación
+    const verificationToken = await prisma.verificationToken.findUnique({
+      where: { token },
+    });
+
+    if (!verificationToken) {
+      return {
+        success: false,
+        error: "Token de verificación inválido",
+      };
+    }
+
+    // Verificar que no haya expirado
+    if (verificationToken.expires < new Date()) {
+      // Eliminar token expirado
+      await prisma.verificationToken.delete({
+        where: { token },
+      });
+
+      return {
+        success: false,
+        error: "Token de verificación expirado",
+      };
+    }
+
+    // Buscar usuario por email
+    const user = await prisma.user.findUnique({
+      where: { email: verificationToken.identifier },
+    });
+
+    if (!user) {
+      return {
+        success: false,
+        error: "Usuario no encontrado",
+      };
+    }
+
+    // Verificar email del usuario
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { emailVerified: new Date() },
+    });
+
+    // Eliminar token usado
+    await prisma.verificationToken.delete({
+      where: { token },
+    });
+
+    // Inicializar CV por defecto para el usuario verificado
+    await initializeDefaultCVForUser(user.id);
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error("Error verificando email:", error);
+    return {
+      success: false,
+      error: "Error interno del servidor",
+    };
+  }
+}
+
+// Función para reenviar email de verificación
+export async function resendVerificationEmail(email: string): Promise<{
+  success: boolean;
+  error?: string;
+}> {
+  try {
+    // Verificar que el usuario existe
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return {
+        success: false,
+        error: "Usuario no encontrado",
+      };
+    }
+
+    // Verificar que el email no esté ya verificado
+    if (user.emailVerified) {
+      return {
+        success: false,
+        error: "El email ya está verificado",
+      };
+    }
+
+    // Generar nuevo token de verificación
+    const verificationToken = await generateVerificationToken(email);
+
+    // Enviar email de verificación
+    const emailSent = await sendVerificationEmail(email, verificationToken);
+
+    if (!emailSent) {
+      return {
+        success: false,
+        error: "Error enviando email de verificación",
+      };
+    }
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error("Error reenviando email de verificación:", error);
+    return {
+      success: false,
+      error: "Error interno del servidor",
+    };
+  }
+}
+
+// Función para limpiar usuarios no verificados y tokens expirados
+export async function cleanupUnverifiedUsers(): Promise<{
+  success: boolean;
+  deletedUsers: number;
+  deletedTokens: number;
+  error?: string;
+}> {
+  try {
+    const now = new Date();
+    const maxAge = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+    const cutoffDate = new Date(now.getTime() - maxAge);
+
+    // Eliminar tokens expirados
+    const deletedTokens = await prisma.verificationToken.deleteMany({
+      where: {
+        expires: {
+          lt: now,
+        },
+      },
+    });
+
+    // Eliminar usuarios no verificados que se registraron hace más de 24 horas
+    const deletedUsers = await prisma.user.deleteMany({
+      where: {
+        emailVerified: null,
+        createdAt: {
+          lt: cutoffDate,
+        },
+        // Solo eliminar usuarios con contraseña (no OAuth)
+        password: {
+          not: null,
+        },
+      },
+    });
+
+    console.log(
+      `Limpieza completada: ${deletedUsers.count} usuarios eliminados, ${deletedTokens.count} tokens eliminados`
+    );
+
+    return {
+      success: true,
+      deletedUsers: deletedUsers.count,
+      deletedTokens: deletedTokens.count,
+    };
+  } catch (error) {
+    console.error("Error en limpieza de usuarios no verificados:", error);
+    return {
+      success: false,
+      deletedUsers: 0,
+      deletedTokens: 0,
+      error: "Error interno del servidor",
+    };
+  }
+}
+
+// Función para obtener estadísticas de limpieza
+export async function getCleanupStats(): Promise<{
+  unverifiedUsers: number;
+  expiredTokens: number;
+  lastCleanup?: Date;
+}> {
+  try {
+    const now = new Date();
+    const maxAge = 24 * 60 * 60 * 1000; // 24 horas
+    const cutoffDate = new Date(now.getTime() - maxAge);
+
+    const [unverifiedUsers, expiredTokens] = await Promise.all([
+      prisma.user.count({
+        where: {
+          emailVerified: null,
+          createdAt: {
+            lt: cutoffDate,
+          },
+          password: {
+            not: null,
+          },
+        },
+      }),
+      prisma.verificationToken.count({
+        where: {
+          expires: {
+            lt: now,
+          },
+        },
+      }),
+    ]);
+
+    return {
+      unverifiedUsers,
+      expiredTokens,
+    };
+  } catch (error) {
+    console.error("Error obteniendo estadísticas de limpieza:", error);
+    return {
+      unverifiedUsers: 0,
+      expiredTokens: 0,
     };
   }
 }

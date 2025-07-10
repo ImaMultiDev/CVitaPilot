@@ -62,6 +62,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             return null;
           }
 
+          // Verificar que el email esté verificado (solo para usuarios con contraseña)
+          if (!user.emailVerified) {
+            throw new Error("EMAIL_NOT_VERIFIED");
+          }
+
           // Verificar contraseña
           const passwordsMatch = await bcrypt.compare(password, user.password);
 
@@ -76,6 +81,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null;
         } catch (error) {
           console.error("Error en autorización:", error);
+          if (
+            error instanceof Error &&
+            error.message === "EMAIL_NOT_VERIFIED"
+          ) {
+            throw error;
+          }
           return null;
         }
       },

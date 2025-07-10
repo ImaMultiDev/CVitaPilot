@@ -15,38 +15,172 @@ import {
   Interest,
 } from "@/types/cv";
 
-// Estado inicial vacío para nuevos usuarios
+// Utilidad para generar una miniatura SVG base64 simple
+function generateCVThumbnail(cv: CVData): string {
+  const name = cv.personalInfo.name || "CV";
+  const position = cv.personalInfo.position || "Puesto";
+  const svg = `
+    <svg width='200' height='260' viewBox='0 0 200 260' fill='none' xmlns='http://www.w3.org/2000/svg'>
+      <rect width='200' height='260' rx='24' fill='#2563eb'/>
+      <text x='50%' y='44%' dominant-baseline='middle' text-anchor='middle' font-size='20' fill='white' font-family='sans-serif' font-weight='bold'>${name}</text>
+      <text x='50%' y='58%' dominant-baseline='middle' text-anchor='middle' font-size='14' fill='#dbeafe' font-family='sans-serif'>${position}</text>
+    </svg>
+  `;
+  return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svg)))}`;
+}
+
+// Estado inicial con datos de ejemplo para nuevos usuarios
 const initialCVData: CVData = {
   personalInfo: {
-    name: "",
-    position: "",
-    phone: "",
-    email: "",
-    linkedin: "",
-    website: "",
-    location: "",
-    socialNetworks: [],
+    name: "Juan Pérez",
+    position: "Desarrollador Full Stack",
+    phone: "+34 600 123 456",
+    email: "juan.perez@email.com",
+    linkedin: "linkedin.com/in/juanperez",
+    website: "juanperez.dev",
+    location: "Madrid, España",
+    socialNetworks: [
+      { id: "sn1", name: "LinkedIn", url: "https://linkedin.com/in/juanperez" },
+      { id: "sn2", name: "GitHub", url: "https://github.com/juanperez" },
+    ],
   },
-  aboutMe: "",
-  languages: [],
+  aboutMe:
+    "Desarrollador Full Stack con 5 años de experiencia en aplicaciones web modernas. Apasionado por la tecnología, el clean code y el aprendizaje continuo.",
+  languages: [{ id: "lang1", name: "Inglés", level: "B2" }],
   skillCategories: [
     { id: "cat1", name: "Lenguajes de Programación" },
     { id: "cat2", name: "Frameworks" },
     { id: "cat3", name: "Bases de Datos" },
-    { id: "cat4", name: "Herramientas" },
-    { id: "cat5", name: "Librerías" },
   ],
-  skills: [],
-  competences: [],
+  skills: [
+    {
+      id: "sk1",
+      name: "JavaScript",
+      categoryId: "cat1",
+      categoryName: "Lenguajes de Programación",
+      selected: true,
+    },
+    {
+      id: "sk2",
+      name: "TypeScript",
+      categoryId: "cat1",
+      categoryName: "Lenguajes de Programación",
+      selected: true,
+    },
+    {
+      id: "sk3",
+      name: "React",
+      categoryId: "cat2",
+      categoryName: "Frameworks",
+      selected: true,
+    },
+    {
+      id: "sk4",
+      name: "Next.js",
+      categoryId: "cat2",
+      categoryName: "Frameworks",
+      selected: true,
+    },
+    {
+      id: "sk5",
+      name: "PostgreSQL",
+      categoryId: "cat3",
+      categoryName: "Bases de Datos",
+      selected: true,
+    },
+    {
+      id: "sk6",
+      name: "MongoDB",
+      categoryId: "cat3",
+      categoryName: "Bases de Datos",
+      selected: true,
+    },
+  ],
+  competences: [
+    { id: "comp1", name: "Trabajo en equipo", selected: true },
+    { id: "comp2", name: "Resolución de problemas", selected: true },
+    { id: "comp3", name: "Comunicación efectiva", selected: true },
+  ],
   interests: [],
-  softSkills: [],
-  experiences: [],
-  education: [],
-  certifications: [],
-  achievements: [],
-  references: [],
-  drivingLicense: false,
-  ownVehicle: false,
+  softSkills: [
+    { id: "ss1", name: "Proactividad", selected: true },
+    { id: "ss2", name: "Adaptabilidad", selected: true },
+    { id: "ss3", name: "Pensamiento crítico", selected: true },
+  ],
+  experiences: [
+    {
+      id: "exp1",
+      position: "Desarrollador Full Stack",
+      company: "Tech Solutions S.A.",
+      location: "Madrid, España",
+      startDate: "2021-01",
+      endDate: "2024-06",
+      contractType: "Indefinido",
+      workSchedule: "Jornada completa",
+      workModality: "Híbrido",
+      description:
+        "Desarrollo de aplicaciones web con React, Next.js y Node.js. Integración de APIs y optimización de rendimiento.",
+      technologies: ["React", "Next.js", "Node.js", "PostgreSQL"],
+      selected: true,
+    },
+  ],
+  education: [
+    {
+      id: "edu1",
+      title: "Grado en Ingeniería Informática",
+      institution: "Universidad Complutense de Madrid",
+      location: "Madrid, España",
+      startYear: "2016",
+      endYear: "2020",
+      selected: true,
+    },
+  ],
+  certifications: [
+    {
+      id: "cert1",
+      name: "Certificado Scrum Master",
+      issuer: "Scrum.org",
+      date: "2022-05",
+      expiryDate: undefined,
+      credentialId: "12345-SM",
+      url: "https://scrum.org/certificates/12345-SM",
+      selected: true,
+    },
+  ],
+  achievements: [
+    {
+      id: "ach1",
+      title: "Proyecto de Automatización de Procesos",
+      type: "project",
+      description:
+        "Lideré el desarrollo de una herramienta interna que automatizó procesos clave, reduciendo el tiempo de gestión en un 30%.",
+      date: "2023-03",
+      company: "Tech Solutions S.A.",
+      technologies: ["Node.js", "PostgreSQL"],
+      metrics: "Reducción del 30% en tiempos de gestión",
+      url: "https://github.com/juanperez/automatizacion-procesos",
+      selected: true,
+    },
+  ],
+  references: [
+    {
+      id: "ref1",
+      name: "María López",
+      position: "CTO",
+      company: "Tech Solutions S.A.",
+      relationship: "Supervisora directa",
+      phone: "+34 600 987 654",
+      email: "maria.lopez@techsolutions.com",
+      yearsWorking: "3",
+      selected: true,
+    },
+  ],
+  otherInformation: [
+    { id: "oi1", name: "Carnet de conducir", icon: "🚗", selected: true },
+    { id: "oi2", name: "Vehículo propio", icon: "🚙", selected: true },
+  ],
+  drivingLicense: true,
+  ownVehicle: true,
 };
 
 interface CVState {
@@ -372,7 +506,8 @@ function cvReducer(state: CVState, action: CVAction): CVState {
         },
       };
 
-    case "SAVE_CV":
+    case "SAVE_CV": {
+      const thumbnail = generateCVThumbnail(state.currentCV);
       const newSavedCV: SavedCV = {
         id: Date.now().toString(),
         name: action.payload.name,
@@ -380,21 +515,34 @@ function cvReducer(state: CVState, action: CVAction): CVState {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         deliveries: [],
+        thumbnail,
       };
       return {
         ...state,
         savedCVs: [...state.savedCVs, newSavedCV],
       };
+    }
 
-    case "LOAD_CV":
+    case "LOAD_CV": {
       const cvToLoad = state.savedCVs.find((cv) => cv.id === action.payload);
       if (cvToLoad) {
+        // Si el CV cargado no tiene miniatura, la generamos y la añadimos
+        if (!cvToLoad.thumbnail) {
+          const thumbnail = generateCVThumbnail(cvToLoad.data);
+          cvToLoad.thumbnail = thumbnail;
+        }
         return {
           ...state,
           currentCV: { ...cvToLoad.data },
+          savedCVs: state.savedCVs.map((cv) =>
+            cv.id === cvToLoad.id
+              ? { ...cv, thumbnail: cvToLoad.thumbnail }
+              : cv
+          ),
         };
       }
       return state;
+    }
 
     case "DELETE_SAVED_CV":
       return {

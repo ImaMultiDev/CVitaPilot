@@ -146,6 +146,7 @@ export interface SavedCV {
   createdAt: string;
   updatedAt: string;
   deliveries: CVDelivery[];
+  thumbnail?: string; // DataURL de imagen, SVG, o HTML reducido
 }
 
 export interface CVDelivery {

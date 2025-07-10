@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 function AuthErrorContent() {
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
+  const message = searchParams.get("message");
 
   const getErrorMessage = (error: string | null) => {
     switch (error) {
@@ -20,6 +21,12 @@ function AuthErrorContent() {
         return "Error de configuración del servidor. Contacta al administrador.";
       case "Verification":
         return "Error de verificación. El enlace puede haber expirado.";
+      case "missing-token":
+        return "Enlace de verificación inválido. Falta el token de verificación.";
+      case "verification-failed":
+        return "Error en la verificación del email. El enlace puede haber expirado o ser inválido.";
+      case "server-error":
+        return "Error interno del servidor. Inténtalo de nuevo más tarde.";
       case "Default":
       default:
         return "Error de autenticación. Inténtalo de nuevo.";
@@ -68,7 +75,12 @@ function AuthErrorContent() {
                 <h3 className="text-sm font-medium text-red-800 dark:text-red-300">
                   {getErrorMessage(error)}
                 </h3>
-                {error && (
+                {message && (
+                  <p className="text-xs text-red-600 dark:text-red-400 mt-1">
+                    {decodeURIComponent(message)}
+                  </p>
+                )}
+                {error && !message && (
                   <p className="text-xs text-red-600 dark:text-red-400 mt-1">
                     Código de error: {error}
                   </p>

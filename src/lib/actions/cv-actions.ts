@@ -221,20 +221,20 @@ export async function initializeDefaultCV(): Promise<string> {
       return existingCV.id;
     }
 
-    // Datos iniciales (los que están en el context)
+    // Datos iniciales de ejemplo genéricos
     const defaultData = {
       name: "CV Principal",
       userId: userId,
       isActive: true,
-      personalName: "Imanol Mugueta Unsain",
-      position: "Multiplatform Developer",
-      phone: "+34 689 18 17 20",
-      email: "contact@imamultidev.dev",
-      linkedin: "https://www.linkedin.com/in/imanol-mugueta-unsain/",
-      website: "https://imamultidev.dev",
-      location: "3130 Carcastillo (Navarra)",
+      personalName: "Ana García López",
+      position: "Desarrolladora Full Stack",
+      phone: "+34 600 123 456",
+      email: "ana.garcia@ejemplo.com",
+      linkedin: "https://www.linkedin.com/in/ana-garcia-lopez",
+      website: "https://anagarcia.dev",
+      location: "Madrid, España",
       aboutMe:
-        "Desarrollador Multiplataforma, con conocimientos en diversos lenguajes de programación, experiencia de desarrollo frontend y backend",
+        "Desarrolladora Full Stack con experiencia en tecnologías modernas, apasionada por crear soluciones innovadoras y escalables. Especializada en React, Node.js y bases de datos.",
       drivingLicense: true,
       ownVehicle: true,
     };
@@ -254,12 +254,12 @@ export async function initializeDefaultCV(): Promise<string> {
     // Añadir redes sociales por defecto
     await prisma.socialNetwork.createMany({
       data: [
-        { cvId: cv.id, name: "GitHub", url: "https://github.com/kodebidean" },
-        { cvId: cv.id, name: "Dev.to", url: "https://dev.to/imamultidev" },
+        { cvId: cv.id, name: "GitHub", url: "https://github.com/anagarcia" },
+        { cvId: cv.id, name: "Dev.to", url: "https://dev.to/anagarcia" },
       ],
     });
 
-    // Crear categorías de habilidades por defecto
+    // Crear categorías de habilidades por defecto (3 categorías como especificaste)
     const languageCategory = await prisma.skillCategory.create({
       data: { cvId: cv.id, name: "Lenguajes de Programación" },
     });
@@ -272,18 +272,10 @@ export async function initializeDefaultCV(): Promise<string> {
       data: { cvId: cv.id, name: "Bases de Datos" },
     });
 
-    const toolCategory = await prisma.skillCategory.create({
-      data: { cvId: cv.id, name: "Herramientas" },
-    });
-
-    const libraryCategory = await prisma.skillCategory.create({
-      data: { cvId: cv.id, name: "Librerías" },
-    });
-
-    // Añadir skills por defecto con categorías
+    // Añadir skills por defecto con categorías (2 habilidades por categoría como especificaste)
     await prisma.skill.createMany({
       data: [
-        // Programming Languages
+        // Programming Languages (2 habilidades)
         {
           cvId: cv.id,
           name: "JavaScript",
@@ -296,38 +288,8 @@ export async function initializeDefaultCV(): Promise<string> {
           categoryId: languageCategory.id,
           selected: true,
         },
-        {
-          cvId: cv.id,
-          name: "Kotlin",
-          categoryId: languageCategory.id,
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          name: "Swift",
-          categoryId: languageCategory.id,
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          name: "Python",
-          categoryId: languageCategory.id,
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          name: "C++",
-          categoryId: languageCategory.id,
-          selected: false,
-        },
-        {
-          cvId: cv.id,
-          name: "C#",
-          categoryId: languageCategory.id,
-          selected: false,
-        },
 
-        // Frameworks
+        // Frameworks (2 habilidades)
         {
           cvId: cv.id,
           name: "React",
@@ -340,56 +302,8 @@ export async function initializeDefaultCV(): Promise<string> {
           categoryId: frameworkCategory.id,
           selected: true,
         },
-        {
-          cvId: cv.id,
-          name: "Tailwind",
-          categoryId: frameworkCategory.id,
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          name: "Angular",
-          categoryId: frameworkCategory.id,
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          name: "Astro",
-          categoryId: frameworkCategory.id,
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          name: "Spring Boot",
-          categoryId: frameworkCategory.id,
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          name: "Flutter",
-          categoryId: frameworkCategory.id,
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          name: "React Native",
-          categoryId: frameworkCategory.id,
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          name: "Vue.js",
-          categoryId: frameworkCategory.id,
-          selected: false,
-        },
-        {
-          cvId: cv.id,
-          name: "Jetpack Compose",
-          categoryId: frameworkCategory.id,
-          selected: false,
-        },
 
-        // Databases
+        // Databases (2 habilidades)
         {
           cvId: cv.id,
           name: "PostgreSQL",
@@ -402,118 +316,15 @@ export async function initializeDefaultCV(): Promise<string> {
           categoryId: databaseCategory.id,
           selected: true,
         },
-        {
-          cvId: cv.id,
-          name: "MongoDB",
-          categoryId: databaseCategory.id,
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          name: "Firebase",
-          categoryId: databaseCategory.id,
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          name: "SQLite",
-          categoryId: databaseCategory.id,
-          selected: false,
-        },
-        {
-          cvId: cv.id,
-          name: "SQL Server",
-          categoryId: databaseCategory.id,
-          selected: false,
-        },
-
-        // Tools
-        {
-          cvId: cv.id,
-          name: "Git",
-          categoryId: toolCategory.id,
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          name: "Docker",
-          categoryId: toolCategory.id,
-          selected: false,
-        },
-        {
-          cvId: cv.id,
-          name: "Node.js",
-          categoryId: toolCategory.id,
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          name: "Postman",
-          categoryId: toolCategory.id,
-          selected: false,
-        },
-        {
-          cvId: cv.id,
-          name: "Jira",
-          categoryId: toolCategory.id,
-          selected: true,
-        },
-
-        // Libraries
-        {
-          cvId: cv.id,
-          name: "Prisma",
-          categoryId: libraryCategory.id,
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          name: "NextAuth",
-          categoryId: libraryCategory.id,
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          name: "Formik",
-          categoryId: libraryCategory.id,
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          name: "Zod",
-          categoryId: libraryCategory.id,
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          name: "GSAP",
-          categoryId: libraryCategory.id,
-          selected: false,
-        },
-        {
-          cvId: cv.id,
-          name: "Bootstrap",
-          categoryId: libraryCategory.id,
-          selected: false,
-        },
       ],
     });
 
-    // Añadir competencias por defecto
+    // Añadir competencias por defecto (3 competencias como especificaste)
     await prisma.competence.createMany({
       data: [
         { cvId: cv.id, name: "Desarrollo Multiplataforma", selected: true },
         { cvId: cv.id, name: "Backend", selected: true },
         { cvId: cv.id, name: "Bases de Datos", selected: true },
-        { cvId: cv.id, name: "Desarrollo de Sistemas ERP", selected: true },
-        { cvId: cv.id, name: "CMS", selected: true },
-        { cvId: cv.id, name: "CRM", selected: true },
-        { cvId: cv.id, name: "Landing page", selected: true },
-        { cvId: cv.id, name: "Construcción MCP", selected: true },
-        { cvId: cv.id, name: "SLM", selected: true },
-        { cvId: cv.id, name: "Frontend", selected: false },
-        { cvId: cv.id, name: "Fullstack", selected: false },
-        { cvId: cv.id, name: "Marketing", selected: false },
       ],
     });
 
@@ -527,23 +338,16 @@ export async function initializeDefaultCV(): Promise<string> {
       ],
     });
 
-    // Añadir habilidades blandas por defecto
+    // Añadir habilidades blandas por defecto (3 habilidades como especificaste)
     await prisma.softSkill.createMany({
       data: [
         { cvId: cv.id, name: "Trabajo en equipo", selected: true },
         { cvId: cv.id, name: "Comunicación efectiva", selected: true },
         { cvId: cv.id, name: "Resolución de problemas", selected: true },
-        { cvId: cv.id, name: "Adaptabilidad", selected: true },
-        { cvId: cv.id, name: "Pensamiento crítico", selected: true },
-        { cvId: cv.id, name: "Liderazgo", selected: false },
-        { cvId: cv.id, name: "Gestión del tiempo", selected: true },
-        { cvId: cv.id, name: "Creatividad", selected: false },
-        { cvId: cv.id, name: "Empatía", selected: false },
-        { cvId: cv.id, name: "Iniciativa", selected: true },
       ],
     });
 
-    // Añadir experiencias por defecto
+    // Añadir experiencias por defecto (1 experiencia como especificaste)
     await prisma.experience.createMany({
       data: [
         {
@@ -569,56 +373,10 @@ export async function initializeDefaultCV(): Promise<string> {
           ],
           selected: true,
         },
-        {
-          cvId: cv.id,
-          position: "Gestor ERP SAP",
-          company: "ERRIBERRI S.L.",
-          location: "Olite (Comunidad foral de Navarra)",
-          startDate: "2024-08",
-          contractType: "Contrato temporal",
-          workSchedule: "Jornada completa",
-          workModality: "Presencial",
-          description: "SAP, Microsoft 365 (SharePoint, Power Platform)",
-          technologies: [
-            "SAP",
-            "Microsoft 365",
-            "SharePoint",
-            "Power Platform",
-          ],
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          position: "Programación CNC",
-          company: "ERRIBERRI S.L.",
-          location: "Carcastillo (Comunidad foral de Navarra)",
-          startDate: "2023-09",
-          contractType: "Contrato indefinido",
-          workSchedule: "Jornada completa",
-          workModality: "Presencial",
-          description:
-            "Elaboración de programas CNC para mecanizado, control de producción",
-          technologies: ["CNC", "Mecanizado"],
-          selected: false,
-        },
-        {
-          cvId: cv.id,
-          position: "Marketing y Comercio Digital",
-          company: "SUPERRECAMBIOS.COM",
-          location: "Pamplona (Comunidad foral de Navarra)",
-          startDate: "2017-03",
-          contractType: "Contrato temporal",
-          workSchedule: "Jornada completa",
-          workModality: "Presencial",
-          description:
-            "Gestión e investigación comercial, análisis de mercado, marketing, comunicación",
-          technologies: ["Marketing Digital", "Análisis de mercado"],
-          selected: false,
-        },
       ],
     });
 
-    // Añadir formación académica oficial por defecto
+    // Añadir formación académica oficial por defecto (1 formación como especificaste)
     await prisma.education.createMany({
       data: [
         {
@@ -631,37 +389,10 @@ export async function initializeDefaultCV(): Promise<string> {
           endYear: "2025",
           selected: true,
         },
-        {
-          cvId: cv.id,
-          title: "Técnico en Programación CNC",
-          institution: "CIP ETI",
-          location: "Tudela, Navarra",
-          startYear: "2017",
-          endYear: "2018",
-          selected: false,
-        },
-        {
-          cvId: cv.id,
-          title: "Técnico Superior en Gestión Comercial y Marketing",
-          institution: "CI Maria Ana Sanz",
-          location: "Pamplona, Navarra",
-          startYear: "2014",
-          endYear: "2016",
-          selected: false,
-        },
-        {
-          cvId: cv.id,
-          title: "Bachillerato Científico-Tecnológico",
-          institution: "IES Tierra Estella",
-          location: "Estella, Navarra",
-          startYear: "2012",
-          endYear: "2014",
-          selected: false,
-        },
       ],
     });
 
-    // Añadir certificaciones por defecto
+    // Añadir certificaciones por defecto (1 certificación como especificaste)
     await prisma.certification.createMany({
       data: [
         {
@@ -674,76 +405,12 @@ export async function initializeDefaultCV(): Promise<string> {
           url: "https://aws.amazon.com/verification/AWS-CP-2024-123456",
           selected: true,
         },
-        {
-          cvId: cv.id,
-          name: "React Developer Certification",
-          issuer: "Meta",
-          date: "2023-11-20",
-          credentialId: "META-REACT-2023-789012",
-          url: "https://coursera.org/verify/META-REACT-2023-789012",
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          name: "Java SE 11 Developer",
-          issuer: "Oracle",
-          date: "2023-08-10",
-          expiryDate: "2026-08-10",
-          credentialId: "OCP-JAVA-SE11-345678",
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          name: "Scrum Master Certified (SMC)",
-          issuer: "Scrum Alliance",
-          date: "2024-01-25",
-          expiryDate: "2026-01-25",
-          credentialId: "SA-SMC-2024-901234",
-          url: "https://scrumalliance.org/verify/SA-SMC-2024-901234",
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          name: "Google Analytics Individual Qualification",
-          issuer: "Google",
-          date: "2023-06-05",
-          expiryDate: "2024-06-05",
-          credentialId: "GA-IQ-2023-567890",
-          selected: false,
-        },
-        {
-          cvId: cv.id,
-          name: "Microsoft Azure Fundamentals",
-          issuer: "Microsoft",
-          date: "2024-02-12",
-          credentialId: "MS-AZ900-2024-123789",
-          url: "https://learn.microsoft.com/verify/MS-AZ900-2024-123789",
-          selected: false,
-        },
       ],
     });
 
-    // Añadir logros y proyectos por defecto
+    // Añadir logros y proyectos por defecto (1 logro como especificaste)
     await prisma.achievement.createMany({
       data: [
-        {
-          cvId: cv.id,
-          title: "Desarrollo de Sistema ERP Completo",
-          type: "project",
-          description:
-            "Diseñé y desarrollé un sistema ERP completo para gestión empresarial, incluyendo módulos de inventario, facturación, CRM y reporting avanzado.",
-          date: "2024",
-          company: "ERRIBERRI S.L.",
-          technologies: [
-            "SAP",
-            "Microsoft 365",
-            "SharePoint",
-            "Power Platform",
-          ],
-          metrics:
-            "Redujo tiempo de procesamiento de pedidos en 40% y mejoró eficiencia operativa en 25%",
-          selected: true,
-        },
         {
           cvId: cv.id,
           title: "Aplicación Web Full Stack con Next.js",
@@ -764,77 +431,12 @@ export async function initializeDefaultCV(): Promise<string> {
           url: "https://github.com/kodebidean/cv-gestor",
           selected: true,
         },
-        {
-          cvId: cv.id,
-          title: "Certificación AWS Cloud Practitioner",
-          type: "achievement",
-          description:
-            "Obtuve la certificación AWS Cloud Practitioner, demostrando conocimientos sólidos en servicios de nube y arquitectura AWS.",
-          date: "2024-03",
-          company: "Amazon Web Services",
-          technologies: ["AWS", "Cloud Computing", "EC2", "S3", "RDS"],
-          metrics: "Puntuación: 850/1000 (85%)",
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          title: "Optimización de Procesos CNC",
-          type: "achievement",
-          description:
-            "Implementé mejoras en procesos de programación CNC que resultaron en significativa reducción de tiempos de producción.",
-          date: "2023",
-          company: "ERRIBERRI S.L.",
-          technologies: ["CNC Programming", "CAD/CAM", "Lean Manufacturing"],
-          metrics:
-            "Redujo tiempo de setup en 30% y aumentó productividad en 20%",
-          selected: true,
-        },
-        {
-          cvId: cv.id,
-          title: "Sistema de Análisis de Mercado Digital",
-          type: "project",
-          description:
-            "Desarrollé herramientas de análisis para investigación comercial y marketing digital, automatizando procesos de recopilación de datos.",
-          date: "2017",
-          company: "SUPERRECAMBIOS.COM",
-          technologies: [
-            "Marketing Digital",
-            "Analytics",
-            "Data Analysis",
-            "Excel VBA",
-          ],
-          metrics: "Aumentó eficiencia en análisis de mercado en 60%",
-          selected: false,
-        },
-        {
-          cvId: cv.id,
-          title: "Reconocimiento por Excelencia Académica",
-          type: "achievement",
-          description:
-            "Reconocimiento por mantener expediente académico sobresaliente durante toda la formación en Desarrollo de Aplicaciones Multiplataforma.",
-          date: "2025",
-          company: "U-TAD",
-          technologies: [],
-          metrics: "Nota media: 9.2/10",
-          selected: false,
-        },
       ],
     });
 
-    // Añadir referencias por defecto
+    // Añadir referencias por defecto (1 referencia como especificaste)
     await prisma.reference.createMany({
       data: [
-        {
-          cvId: cv.id,
-          name: "María González Pérez",
-          position: "Gerente de Sistemas",
-          company: "ERRIBERRI S.L.",
-          relationship: "Supervisora directa",
-          phone: "+34 948 123 456",
-          email: "maria.gonzalez@erriberri.com",
-          yearsWorking: "2 años trabajando juntos",
-          selected: true,
-        },
         {
           cvId: cv.id,
           name: "Carlos Martínez López",
@@ -846,16 +448,21 @@ export async function initializeDefaultCV(): Promise<string> {
           yearsWorking: "6 meses colaborando",
           selected: true,
         },
+      ],
+    });
+
+    // Añadir otra información por defecto (2 ejemplos como especificaste)
+    await prisma.otherInformation.createMany({
+      data: [
         {
           cvId: cv.id,
-          name: "Ana Rodríguez Sánchez",
-          position: "Directora Académica",
-          company: "U-TAD",
-          relationship: "Tutora académica",
-          phone: "+34 918 567 890",
-          email: "ana.rodriguez@u-tad.com",
-          yearsWorking: "2 años de formación",
-          selected: false,
+          name: "Carné de conducir",
+          selected: true,
+        },
+        {
+          cvId: cv.id,
+          name: "Coche propio",
+          selected: true,
         },
       ],
     });
@@ -1828,6 +1435,11 @@ export async function getSavedCVs() {
       },
       include: {
         deliveries: true,
+        skills: {
+          where: { selected: true },
+          take: 3,
+          select: { name: true },
+        },
         _count: {
           select: {
             deliveries: true,
@@ -1847,6 +1459,10 @@ export async function getSavedCVs() {
       updatedAt: cv.updatedAt.toISOString(),
       deliveries: cv.deliveries,
       deliveryCount: cv._count.deliveries,
+      personalName: cv.personalName,
+      position: cv.position,
+      aboutMe: cv.aboutMe,
+      skillsPreview: cv.skills ? cv.skills.map((s: any) => s.name) : [],
     }));
   } catch (error) {
     console.error("Error getting saved CVs:", error);
@@ -2654,5 +2270,66 @@ export async function updateAllOtherInformation(
   } catch (error) {
     console.error("Error updating all other information:", error);
     return { success: false, error: "Failed to update other information" };
+  }
+}
+
+// ===============================
+// CREAR NUEVO CV VACÍO
+// ===============================
+
+export async function createNewCV(
+  name: string
+): Promise<{ success: boolean; cvId?: string; error?: string }> {
+  try {
+    const userId = await getCurrentUserId();
+
+    // Validar que el nombre no esté vacío
+    if (!name || name.trim().length === 0) {
+      return { success: false, error: "El nombre del CV es requerido" };
+    }
+
+    // Verificar que no exista otro CV con el mismo nombre
+    const existingCV = await prisma.cV.findFirst({
+      where: {
+        userId: userId,
+        name: name.trim(),
+      },
+    });
+
+    if (existingCV) {
+      return { success: false, error: "Ya existe un CV con este nombre" };
+    }
+
+    // Desactivar el CV activo actual
+    await prisma.cV.updateMany({
+      where: { userId: userId, isActive: true },
+      data: { isActive: false },
+    });
+
+    // Crear el nuevo CV con datos mínimos vacíos
+    const newCV = await prisma.cV.create({
+      data: {
+        name: name.trim(),
+        userId: userId,
+        isActive: true,
+        // Información personal mínima vacía
+        personalName: "",
+        position: "",
+        phone: "",
+        email: "",
+        linkedin: "",
+        website: "",
+        location: "",
+        aboutMe: "",
+        drivingLicense: false,
+        ownVehicle: false,
+      },
+    });
+
+    revalidatePath("/");
+    return { success: true, cvId: newCV.id };
+  } catch (error) {
+    console.error("Error creating new CV:", error);
+    return { success: false, error: "Error al crear el nuevo CV" };
   }
 }

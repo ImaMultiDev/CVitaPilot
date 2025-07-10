@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { signOut } from "next-auth/react";
 import {
   PrivacyIcon,
   ExportIcon,
@@ -11,10 +12,17 @@ import { Card } from "@/components/ui/Card";
 import { Toggle } from "@/components/ui/Toggle";
 import { Modal } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/Input";
+import { exportUserData, deleteUserAccount } from "@/lib/actions/auth-actions";
+import { useNotification } from "@/hooks/useNotification";
+import { Notification } from "@/components/ui/Notification";
 
 export const PrivacySection: React.FC = () => {
+  const { notifications, showSuccess, showError, removeNotification } =
+    useNotification();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
+  const [isExporting, setIsExporting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [privacySettings, setPrivacySettings] = useState([
     {
       title: "Perfil público",
@@ -52,16 +60,76 @@ export const PrivacySection: React.FC = () => {
     );
   };
 
-  const handleDataExport = () => {
-    // Aquí iría la lógica para exportar datos
-    alert("Se iniciará la descarga de tus datos en unos momentos.");
+  const handleDataExport = async () => {
+    setIsExporting(true);
+    try {
+      const result = await exportUserData();
+
+      if (result.success && result.data) {
+        // Crear y descargar el archivo JSON
+        const dataStr = JSON.stringify(result.data, null, 2);
+        const dataBlob = new Blob([dataStr], { type: "application/json" });
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `cvitapilot-data-${
+          new Date().toISOString().split("T")[0]
+        }.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        showSuccess(
+          "Exportación exitosa",
+          "Los datos se han exportado y descargado correctamente."
+        );
+      } else {
+        showError(
+          "Error al exportar",
+          result.error || "Error desconocido al exportar datos."
+        );
+      }
+    } catch (error) {
+      console.error("Error exportando datos:", error);
+      showError(
+        "Error al exportar",
+        "Error interno al exportar datos. Inténtalo de nuevo."
+      );
+    } finally {
+      setIsExporting(false);
+    }
   };
 
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async () => {
     if (deleteConfirmation === "ELIMINAR") {
-      // Aquí iría la lógica para eliminar la cuenta
-      alert("Cuenta eliminada exitosamente.");
-      setShowDeleteModal(false);
+      setIsDeleting(true);
+      try {
+        const result = await deleteUserAccount();
+
+        if (result.success) {
+          showSuccess(
+            "Cuenta eliminada",
+            "Tu cuenta ha sido eliminada exitosamente."
+          );
+          setShowDeleteModal(false);
+          // Cerrar sesión y redirigir al login
+          await signOut({ callbackUrl: "/auth/login" });
+        } else {
+          showError(
+            "Error al eliminar cuenta",
+            result.error || "Error desconocido al eliminar la cuenta."
+          );
+        }
+      } catch (error) {
+        console.error("Error eliminando cuenta:", error);
+        showError(
+          "Error al eliminar cuenta",
+          "Error interno al eliminar la cuenta. Inténtalo de nuevo."
+        );
+      } finally {
+        setIsDeleting(false);
+      }
     }
   };
 
@@ -140,9 +208,11 @@ export const PrivacySection: React.FC = () => {
             <Button
               variant="secondary"
               onClick={handleDataExport}
+              disabled={isExporting}
+              loading={isExporting}
               className="w-full sm:w-auto"
             >
-              Exportar datos
+              {isExporting ? "Exportando..." : "Exportar datos"}
             </Button>
           </div>
         </Card>
@@ -286,10 +356,11 @@ export const PrivacySection: React.FC = () => {
             <Button
               variant="danger"
               onClick={handleDeleteAccount}
-              disabled={deleteConfirmation !== "ELIMINAR"}
+              disabled={deleteConfirmation !== "ELIMINAR" || isDeleting}
+              loading={isDeleting}
               className="w-full sm:w-auto"
             >
-              Eliminar cuenta definitivamente
+              {isDeleting ? "Eliminando..." : "Eliminar cuenta definitivamente"}
             </Button>
             <Button
               variant="secondary"
@@ -297,6 +368,7 @@ export const PrivacySection: React.FC = () => {
                 setShowDeleteModal(false);
                 setDeleteConfirmation("");
               }}
+              disabled={isDeleting}
               className="w-full sm:w-auto"
             >
               Cancelar
@@ -304,6 +376,15 @@ export const PrivacySection: React.FC = () => {
           </div>
         </div>
       </Modal>
+
+      {/* Notifications */}
+      {notifications.map((notification) => (
+        <Notification
+          key={notification.id}
+          notification={notification}
+          onClose={removeNotification}
+        />
+      ))}
     </section>
   );
 };
