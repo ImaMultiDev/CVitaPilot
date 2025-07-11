@@ -2,7 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getSavedCVs, loadCV, deleteSavedCV } from "@/lib/actions/cv-actions";
+import {
+  getSavedCVs,
+  loadCV,
+  deleteSavedCV,
+  getCurrentCV,
+} from "@/lib/actions/cv-actions";
+import type { CVData } from "@/types/cv";
 import {
   LoadingState,
   EmptyState,
@@ -24,6 +30,7 @@ interface SavedCV {
 export const MyCVsPage: React.FC = () => {
   const [savedCVs, setSavedCVs] = useState<SavedCV[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeCVData, setActiveCVData] = useState<CVData | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -35,6 +42,15 @@ export const MyCVsPage: React.FC = () => {
       setIsLoading(true);
       const cvs = await getSavedCVs();
       setSavedCVs(cvs);
+
+      // Solo cargar el CV activo inmediatamente
+      const active = cvs.find((cv) => cv.isActive);
+      if (active) {
+        const cvData = await getCurrentCV();
+        setActiveCVData(cvData);
+      } else {
+        setActiveCVData(null);
+      }
     } catch (error) {
       console.error("Error loading saved CVs:", error);
     } finally {
@@ -88,7 +104,12 @@ export const MyCVsPage: React.FC = () => {
         ) : (
           <>
             {/* CV Activo Destacado */}
-            {activeCV && <ActiveCVSection activeCV={activeCV} />}
+            {activeCV && (
+              <ActiveCVSection
+                activeCV={activeCV}
+                activeCVData={activeCVData}
+              />
+            )}
 
             {/* Lista de CVs Guardados */}
             <SavedCVsGrid

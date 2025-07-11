@@ -353,7 +353,7 @@ export async function initializeDefaultCV(): Promise<string> {
         {
           cvId: cv.id,
           position: "FullStack Next.js Developer",
-          company: "SYNKROSS",
+          company: "Empresa Ejemplo",
           location: "Madrid (Comunidad de Madrid)",
           startDate: "2025-06",
           contractType: "Contrato en prácticas",
@@ -383,7 +383,7 @@ export async function initializeDefaultCV(): Promise<string> {
           cvId: cv.id,
           title:
             "Técnico Superior en Desarrollo de Aplicaciones Multiplataforma",
-          institution: "U-TAD",
+          institution: "Centro Ejemplo",
           location: "Madrid, España",
           startYear: "2023",
           endYear: "2025",
@@ -428,7 +428,7 @@ export async function initializeDefaultCV(): Promise<string> {
           ],
           metrics:
             "Aplicación utilizada por más de 100 usuarios con 95% de satisfacción",
-          url: "https://github.com/kodebidean/cv-gestor",
+          url: "https://github.com/anagarcia/cv-gestor",
           selected: true,
         },
       ],
@@ -441,10 +441,10 @@ export async function initializeDefaultCV(): Promise<string> {
           cvId: cv.id,
           name: "Carlos Martínez López",
           position: "Lead Developer",
-          company: "SYNKROSS",
+          company: "Empresa Ejemplo",
           relationship: "Supervisor técnico",
           phone: "+34 915 789 012",
-          email: "carlos.martinez@synkross.com",
+          email: "carlos.martinez@empresa-ejemplo.com",
           yearsWorking: "6 meses colaborando",
           selected: true,
         },
@@ -1901,13 +1901,16 @@ export async function cleanupDuplicateCVs() {
     }
 
     // Encontrar CVs con el mismo nombre
-    const cvsByName = allCVs.reduce((acc, cv) => {
-      if (!acc[cv.name]) {
-        acc[cv.name] = [];
-      }
-      acc[cv.name].push(cv);
-      return acc;
-    }, {} as Record<string, typeof allCVs>);
+    const cvsByName = allCVs.reduce(
+      (acc, cv) => {
+        if (!acc[cv.name]) {
+          acc[cv.name] = [];
+        }
+        acc[cv.name].push(cv);
+        return acc;
+      },
+      {} as Record<string, typeof allCVs>
+    );
 
     let deletedCount = 0;
 
@@ -2331,5 +2334,149 @@ export async function createNewCV(
   } catch (error) {
     console.error("Error creating new CV:", error);
     return { success: false, error: "Error al crear el nuevo CV" };
+  }
+}
+
+export async function getCVById(cvId: string): Promise<CVData | null> {
+  try {
+    const cv = await prisma.cV.findUnique({
+      where: { id: cvId },
+      include: {
+        languages: true,
+        skills: { include: { category: true } },
+        skillCategories: { include: { skills: true } },
+        competences: true,
+        interests: true,
+        softSkills: true,
+        experiences: true,
+        education: true,
+        certifications: true,
+        achievements: true,
+        references: true,
+        socialNetworks: true,
+        otherInformation: true,
+      },
+    });
+    if (!cv) return null;
+    return {
+      personalInfo: {
+        name: cv.personalName,
+        position: cv.position,
+        phone: cv.phone,
+        email: cv.email,
+        linkedin: cv.linkedin || "",
+        website: cv.website || "",
+        location: cv.location,
+        socialNetworks: cv.socialNetworks.map((sn: any) => ({
+          id: sn.id,
+          name: sn.name,
+          url: sn.url,
+        })),
+      },
+      aboutMe: cv.aboutMe || "",
+      languages: cv.languages.map((lang) => ({
+        id: lang.id,
+        name: lang.name,
+        level: lang.level as "A1" | "A2" | "B1" | "B2" | "C1" | "C2" | "Nativo",
+      })),
+      skills: cv.skills.map((skill: any) => ({
+        id: skill.id,
+        name: skill.name,
+        categoryId: skill.categoryId,
+        categoryName: skill.category.name,
+        selected: skill.selected,
+      })),
+      skillCategories: cv.skillCategories.map((category: any) => ({
+        id: category.id,
+        name: category.name,
+      })),
+      competences: cv.competences.map((comp: any) => ({
+        id: comp.id,
+        name: comp.name,
+        selected: comp.selected,
+      })),
+      interests: cv.interests.map((interest: any) => ({
+        id: interest.id,
+        name: interest.name,
+        selected: interest.selected,
+      })),
+      softSkills:
+        cv.softSkills?.map((softSkill: any) => ({
+          id: softSkill.id,
+          name: softSkill.name,
+          selected: softSkill.selected,
+        })) || [],
+      experiences: cv.experiences.map((exp: any) => ({
+        id: exp.id,
+        position: exp.position,
+        company: exp.company,
+        location: exp.location,
+        startDate: exp.startDate,
+        endDate: exp.endDate || undefined,
+        contractType: exp.contractType,
+        workSchedule: exp.workSchedule,
+        workModality: exp.workModality,
+        description: exp.description,
+        technologies: exp.technologies,
+        selected: exp.selected,
+      })),
+      education: cv.education.map((edu: any) => ({
+        id: edu.id,
+        title: edu.title,
+        institution: edu.institution,
+        location: edu.location,
+        startYear: edu.startYear,
+        endYear: edu.endYear,
+        selected: edu.selected,
+      })),
+      certifications:
+        cv.certifications?.map((cert: any) => ({
+          id: cert.id,
+          name: cert.name,
+          issuer: cert.issuer,
+          date: cert.date,
+          expiryDate: cert.expiryDate || undefined,
+          credentialId: cert.credentialId || undefined,
+          url: cert.url || undefined,
+          selected: cert.selected,
+        })) || [],
+      achievements:
+        cv.achievements?.map((achievement: any) => ({
+          id: achievement.id,
+          title: achievement.title,
+          type: achievement.type as "achievement" | "project",
+          description: achievement.description,
+          date: achievement.date,
+          company: achievement.company || undefined,
+          technologies: achievement.technologies,
+          metrics: achievement.metrics || undefined,
+          url: achievement.url || undefined,
+          selected: achievement.selected,
+        })) || [],
+      references:
+        cv.references?.map((reference: any) => ({
+          id: reference.id,
+          name: reference.name,
+          position: reference.position,
+          company: reference.company,
+          relationship: reference.relationship,
+          phone: reference.phone,
+          email: reference.email,
+          yearsWorking: reference.yearsWorking || undefined,
+          selected: reference.selected,
+        })) || [],
+      otherInformation:
+        cv.otherInformation?.map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          icon: item.icon || undefined,
+          selected: item.selected,
+        })) || [],
+      drivingLicense: cv.drivingLicense,
+      ownVehicle: cv.ownVehicle,
+    };
+  } catch (error) {
+    console.error("Error getting CV by id:", error);
+    return null;
   }
 }
