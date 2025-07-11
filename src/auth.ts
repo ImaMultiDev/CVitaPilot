@@ -118,16 +118,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       return true;
     },
-    async session({ session, user: _user }) {
-      return session;
-    },
   },
 });
 
 // Función helper para obtener la sesión del usuario
 export async function getCurrentUser() {
   const session = await auth();
-  return session?.user;
+  return session?.user || null;
 }
 
 // Función helper para crear hash de contraseña

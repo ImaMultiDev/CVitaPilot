@@ -7,14 +7,14 @@ import { revalidatePath } from "next/cache";
 
 // Función auxiliar para obtener el ID del usuario actual
 async function getCurrentUserId(): Promise<string> {
-  const { auth } = await import("@/auth");
-  const session = await auth();
+  const { getCurrentUser } = await import("@/auth");
+  const user = await getCurrentUser();
 
-  if (!session?.user?.id) {
+  if (!user?.id) {
     throw new Error("Usuario no autenticado");
   }
 
-  return session.user.id;
+  return user.id;
 }
 
 // Regex para validación de email más estricta

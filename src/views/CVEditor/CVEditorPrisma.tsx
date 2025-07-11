@@ -139,7 +139,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
   return (
     <div className="relative">
       {/* Sidebar Desktop - Solo visible en xl+ (1280px+) */}
-      <div className="hidden xl:block fixed left-0 top-16 h-[calc(100vh-4rem)] z-[1100]">
+      <div className="hidden fixed left-0 top-16 h-[calc(100vh-4rem)] z-[1100]">
         <Sidebar cvData={initialData} />
       </div>
 
@@ -148,12 +148,12 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         <>
           {/* Overlay */}
           <div
-            className="xl:hidden fixed inset-0 bg-black/50 z-[1000] transition-opacity duration-300"
+            className="fixed inset-0 bg-black/50 z-[1000] transition-opacity duration-300"
             onClick={closeSidebar}
           />
 
           {/* Sidebar Panel */}
-          <div className="xl:hidden fixed left-0 top-0 h-full w-72 md:w-80 z-[1100] transform transition-transform duration-300 ease-out animate-in slide-in-from-left">
+          <div className="fixed left-0 top-0 h-full w-72 md:w-80 z-[1100] transform transition-transform duration-300 ease-out animate-in slide-in-from-left">
             <div className="h-full pt-16">
               <Sidebar
                 cvData={initialData}
@@ -168,7 +168,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
       {/* Botón flotante para abrir sidebar en mobile/tablet */}
       <button
         onClick={toggleSidebar}
-        className={`xl:hidden fixed top-20 left-4 z-[60] p-2 md:p-3 text-white rounded-full border-2 transition-all duration-300 hover:scale-110 active:scale-95 backdrop-blur-sm ${
+        className={`fixed top-20 left-4 z-[60] p-2 md:p-3 text-white rounded-full border-2 transition-all duration-300 hover:scale-110 active:scale-95 backdrop-blur-sm ${
           isSidebarOpen
             ? "opacity-0 pointer-events-none"
             : "border-white/30 dark:border-white/20 shadow-xl hover:shadow-2xl hover:border-white/50 dark:hover:border-white/40 ring-4 ring-indigo-500/20 hover:ring-indigo-500/40 animate-pulse hover:animate-none"
@@ -197,7 +197,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
       </button>
 
       {/* Contenido principal */}
-      <div className="xl:ml-80 max-w-6xl mx-auto p-4 lg:p-6 pt-4 lg:pt-6 space-y-6 lg:space-y-8">
+      <div className=" max-w-6xl mx-auto p-4 lg:p-6 pt-4 lg:pt-6 space-y-6 lg:space-y-8">
         <div className="text-center mb-6 lg:mb-8">
           <div className="flex flex-col lg:flex-row items-center justify-center gap-2 lg:gap-4 mb-2">
             <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">

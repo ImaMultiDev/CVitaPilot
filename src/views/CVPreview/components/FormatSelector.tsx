@@ -55,7 +55,7 @@ export const FormatSelector: React.FC<FormatSelectorProps> = ({
           {/* Botón Formato ATS */}
           <button
             onClick={() => setCvFormat("ats")}
-            className={`px-3 py-2 rounded-xl font-semibold transition-all duration-300 ${
+            className={`px-3 py-2 rounded-xl font-semibold text-start transition-all duration-300 ${
               cvFormat === "ats"
                 ? "bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/25 ring-2 ring-green-300"
                 : "bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 hover:border-green-300"
