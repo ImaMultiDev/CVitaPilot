@@ -29,39 +29,39 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variants = {
     primary: {
-      base: "linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%)",
-      shadow: "0 4px 14px 0 rgba(59, 130, 246, 0.3)",
-      hoverShadow: "0 6px 20px 0 rgba(59, 130, 246, 0.4)",
-      text: "#ffffff",
-      border: "1px solid rgba(255, 255, 255, 0.2)",
+      base: "var(--primary)",
+      shadow: "0 4px 14px 0 rgba(99, 102, 241, 0.3)",
+      hoverShadow: "0 6px 20px 0 rgba(99, 102, 241, 0.4)",
+      text: "var(--primary-foreground)",
+      border: "1px solid var(--primary)",
     },
     secondary: {
-      base: "linear-gradient(135deg, #9ca3af 0%, #6b7280 50%, #4b5563 100%)",
-      shadow: "0 4px 14px 0 rgba(107, 114, 128, 0.25)",
-      hoverShadow: "0 6px 20px 0 rgba(107, 114, 128, 0.35)",
-      text: "#ffffff",
-      border: "1px solid rgba(255, 255, 255, 0.2)",
+      base: "var(--secondary)",
+      shadow: "0 4px 14px 0 rgba(0, 0, 0, 0.1)",
+      hoverShadow: "0 6px 20px 0 rgba(0, 0, 0, 0.15)",
+      text: "var(--secondary-foreground)",
+      border: "1px solid var(--border)",
     },
     danger: {
-      base: "linear-gradient(135deg, #f87171 0%, #ef4444 50%, #dc2626 100%)",
+      base: "var(--color-error)",
       shadow: "0 4px 14px 0 rgba(239, 68, 68, 0.3)",
       hoverShadow: "0 6px 20px 0 rgba(239, 68, 68, 0.4)",
       text: "#ffffff",
-      border: "1px solid rgba(255, 255, 255, 0.2)",
+      border: "1px solid var(--color-error)",
     },
     success: {
-      base: "linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%)",
+      base: "var(--success)",
       shadow: "0 4px 14px 0 rgba(16, 185, 129, 0.3)",
       hoverShadow: "0 6px 20px 0 rgba(16, 185, 129, 0.4)",
       text: "#ffffff",
-      border: "1px solid rgba(255, 255, 255, 0.2)",
+      border: "1px solid var(--success)",
     },
     ghost: {
-      base: "rgba(255, 255, 255, 0.05)",
-      shadow: "0 2px 8px 0 rgba(0, 0, 0, 0.1)",
-      hoverShadow: "0 4px 14px 0 rgba(0, 0, 0, 0.15)",
-      text: "#374151",
-      border: "1px solid rgba(156, 163, 175, 0.3)",
+      base: "transparent",
+      shadow: "none",
+      hoverShadow: "0 4px 14px 0 rgba(0, 0, 0, 0.1)",
+      text: "var(--foreground)",
+      border: "1px solid transparent",
     },
   };
 
@@ -109,8 +109,8 @@ export const Button: React.FC<ButtonProps> = ({
     boxShadow: isPressed
       ? "0 2px 8px 0 rgba(0, 0, 0, 0.15)"
       : isHovered
-      ? currentVariant.hoverShadow
-      : currentVariant.shadow,
+        ? currentVariant.hoverShadow
+        : currentVariant.shadow,
     transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
     opacity: isDisabled ? 0.6 : 1,
     filter: isDisabled ? "grayscale(100%)" : "none",
@@ -121,8 +121,8 @@ export const Button: React.FC<ButtonProps> = ({
     userSelect: "none" as const,
     ...(isHovered &&
       !isDisabled && {
-        transform: "translateY(-1px) scale(1.02)",
-        filter: "brightness(1.1)",
+        transform: "translateY(-1px)",
+        filter: "brightness(1.05)",
       }),
   };
 
@@ -156,23 +156,6 @@ export const Button: React.FC<ButtonProps> = ({
         disabled={isDisabled}
         {...props}
       >
-        {/* Shine overlay effect */}
-        {isHovered && !isDisabled && (
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: "-100%",
-              width: "100%",
-              height: "100%",
-              background:
-                "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)",
-              animation: "shine 0.6s ease-out",
-              pointerEvents: "none",
-            }}
-          />
-        )}
-
         {/* Content */}
         <div
           style={{
@@ -213,15 +196,6 @@ export const Button: React.FC<ButtonProps> = ({
           }
           100% {
             transform: rotate(360deg);
-          }
-        }
-
-        @keyframes shine {
-          0% {
-            left: -100%;
-          }
-          100% {
-            left: 100%;
           }
         }
       `}</style>

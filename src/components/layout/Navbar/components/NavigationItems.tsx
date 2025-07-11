@@ -4,6 +4,8 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NavbarIcons } from "@/components/ui";
+import { TutorialHighlight } from "@/components/TutorialOverlay";
+import { useTutorial } from "@/contexts/TutorialContext";
 
 const navigation = [
   {
@@ -68,48 +70,56 @@ const getActiveClasses = (color: string) => {
 export const NavigationItems: React.FC<NavigationItemsProps> = React.memo(
   ({ className = "" }) => {
     const pathname = usePathname();
+    const { completeStepAction, state, currentStep } = useTutorial();
+    const isTutorialActive = state.isActive;
+    const isNavStep =
+      isTutorialActive &&
+      currentStep.action === "click" &&
+      currentStep.elementId?.startsWith("nav-");
+    const allowedElementId = isNavStep ? currentStep.elementId : null;
 
     return (
       <div className={`hidden md:flex items-center gap-6 ${className}`}>
         {navigation.map((item) => {
           const isActive = pathname === item.href;
+          const elementId = `nav-${item.name.toLowerCase().replace(/\s+/g, "")}`;
+          const isAllowed = !isNavStep || elementId === allowedElementId;
           return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={`
-              group relative px-6 py-3 rounded-2xl font-semibold text-sm
-              transition-all duration-300 ease-out min-w-32
-              ${
-                isActive
-                  ? `text-gray-900 dark:text-white ${getActiveClasses(
-                      item.color
-                    )}`
-                  : "text-white/90 hover:text-white bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 hover:border-white/30 hover:shadow-lg hover:shadow-white/10"
-              }
-              transform hover:brightness-125 transition ease-in active:scale-95 
-            `}
-            >
-              <div className="flex items-center space-x-2">
-                {React.createElement(
-                  NavbarIcons[item.icon as keyof typeof NavbarIcons],
-                  {
-                    className: "w-4 h-4",
+            <TutorialHighlight key={item.name} elementId={elementId}>
+              <Link
+                href={item.href}
+                onClick={() => isAllowed && completeStepAction()}
+                className={`
+                  group relative px-6 py-3 rounded-2xl font-semibold text-sm
+                  transition-all duration-300 ease-out min-w-32
+                  ${
+                    isActive
+                      ? `text-gray-900 dark:text-white ${getActiveClasses(item.color)}`
+                      : "text-white/90 hover:text-white bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 hover:border-white/30 hover:shadow-lg hover:shadow-white/10"
                   }
+                  transform hover:brightness-125 transition ease-in active:scale-95
+                  ${!isAllowed ? "pointer-events-none opacity-50 cursor-not-allowed" : ""}
+                `}
+                tabIndex={!isAllowed ? -1 : 0}
+                aria-disabled={!isAllowed}
+              >
+                <div className="flex items-center space-x-2">
+                  {React.createElement(
+                    NavbarIcons[item.icon as keyof typeof NavbarIcons],
+                    {
+                      className: "w-4 h-4",
+                    }
+                  )}
+                  <span>{item.name}</span>
+                </div>
+                {isActive && (
+                  <div
+                    className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${item.color} opacity-20 blur-sm`}
+                  />
                 )}
-                <span>{item.name}</span>
-              </div>
-
-              {/* Gradient overlay para estado activo */}
-              {isActive && (
-                <div
-                  className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${item.color} opacity-20 blur-sm`}
-                />
-              )}
-
-              {/* Hover effect */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </Link>
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </Link>
+            </TutorialHighlight>
           );
         })}
       </div>

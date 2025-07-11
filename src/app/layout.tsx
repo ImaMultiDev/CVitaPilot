@@ -2,7 +2,7 @@
 
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { CVProvider, ThemeProvider } from "@/contexts";
+import { CVProvider, ThemeProvider, TutorialProvider } from "@/contexts";
 import { SessionProvider } from "@/components/providers/SessionProvider";
 import { auth } from "@/auth";
 import "./globals.css";
@@ -132,7 +132,9 @@ export default async function RootLayout({
       >
         <SessionProvider session={session}>
           <ThemeProvider>
-            <CVProvider>{children}</CVProvider>
+            <TutorialProvider>
+              <CVProvider>{children}</CVProvider>
+            </TutorialProvider>
           </ThemeProvider>
         </SessionProvider>
       </body>

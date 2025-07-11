@@ -49,6 +49,8 @@
   --primary-foreground: #ffffff;
   --secondary: #f1f5f9;
   --secondary-foreground: #0f172a;
+  --muted-foreground: #64748b;
+  --success: #10b981;
 
   /* Gradientes Premium */
   --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -78,6 +80,8 @@
   --primary-foreground: #ffffff;
   --secondary: #1e293b;
   --secondary-foreground: #f8fafc;
+  --muted-foreground: #94a3b8;
+  --success: #10b981;
 }
 
 /* Estilos de transición para cambios suaves */

@@ -1,10 +1,12 @@
 import { MainLayout } from "@/components/layout";
 import { CVGuidePage } from "@/views/CVGuide";
+import { TutorialOverlay } from "@/components/TutorialOverlay";
 
 export default function GuiaCVPageRoute() {
   return (
     <MainLayout showSidebar={false}>
       <CVGuidePage />
+      <TutorialOverlay />
     </MainLayout>
   );
 }

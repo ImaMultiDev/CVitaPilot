@@ -3,10 +3,12 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { CreateCVModal } from "@/components/ui";
 import { HomeIcons } from "@/components/ui";
+import { useTutorial } from "@/contexts/TutorialContext";
 
 export const QuickActionsSection: React.FC = () => {
   const router = useRouter();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const { resetTutorial, startTutorial } = useTutorial();
 
   const steps = [
     {
@@ -73,13 +75,26 @@ export const QuickActionsSection: React.FC = () => {
             })}
           </div>
 
-          <div className="text-center mt-12">
+          <div className="text-center mt-12 space-y-4">
             <Button
               onClick={() => setIsCreateModalOpen(true)}
               className="bg-white text-purple-600 hover:bg-gray-100 text-xl px-12 py-4 rounded-2xl font-bold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-3 mx-auto"
             >
               Empezar Ahora - Es Gratis
             </Button>
+
+            <div className="flex justify-center">
+              <Button
+                onClick={() => {
+                  resetTutorial();
+                  startTutorial();
+                }}
+                variant="ghost"
+                className="text-white/80 hover:text-white text-sm underline"
+              >
+                ¿Nuevo aquí? Ver tutorial
+              </Button>
+            </div>
           </div>
         </div>
       </section>

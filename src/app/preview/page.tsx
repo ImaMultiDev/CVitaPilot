@@ -7,6 +7,7 @@ import {
 } from "@/lib/actions/cv-actions";
 import { CVPreviewPrisma } from "@/views/CVPreview/CVPreviewPrisma";
 import { MainLayout } from "@/components/layout/MainLayout";
+import { TutorialOverlay } from "@/components/TutorialOverlay";
 
 // Forzar renderizado dinámico porque usa autenticación
 export const dynamic = "force-dynamic";
@@ -66,6 +67,7 @@ export default async function PreviewPage() {
       <div className="bg-gray-50 dark:bg-gray-900 min-h-screen py-8">
         <CVPreviewPrisma cvData={currentCV} currentCVName={currentCVName} />
       </div>
+      <TutorialOverlay />
     </MainLayout>
   );
 }

@@ -14,7 +14,8 @@ interface CardProps {
     | "bordered"
     | "glass"
     | "gradient"
-    | "modern";
+    | "modern"
+    | "tutorial";
   interactive?: boolean;
   onClick?: () => void;
   hover?: boolean;
@@ -127,6 +128,17 @@ export const Card: React.FC<CardProps> = ({
         : "",
       interactive:
         interactive || onClick ? "cursor-pointer active:shadow-lg" : "",
+    },
+    tutorial: {
+      base: `
+        bg-white dark:bg-gray-800
+        border border-gray-200 dark:border-gray-700
+        rounded-xl transition-all duration-300
+        shadow-2xl
+        z-[1201]
+      `,
+      hover: "",
+      interactive: "",
     },
   };
 

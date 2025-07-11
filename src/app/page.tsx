@@ -3,6 +3,7 @@
 import { getCurrentUser } from "@/auth";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { HomePage } from "@/views/Home";
+import { TutorialStarter } from "@/components/TutorialStarter";
 
 // Forzar renderizado dinámico porque usa autenticación
 export const dynamic = "force-dynamic";
@@ -40,6 +41,7 @@ export default async function Page() {
   return (
     <MainLayout showSidebar={true}>
       <HomePage />
+      <TutorialStarter />
     </MainLayout>
   );
 }

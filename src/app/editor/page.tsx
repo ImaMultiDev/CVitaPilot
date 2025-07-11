@@ -3,6 +3,7 @@ import { initializeDefaultCVForUser } from "@/lib/actions/auth-actions";
 import { CVEditorPrisma } from "@/views/CVEditor/CVEditorPrisma";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { getCurrentUser } from "@/auth";
+import { TutorialOverlay } from "@/components/TutorialOverlay";
 
 // Forzar renderizado dinámico porque usa autenticación
 export const dynamic = "force-dynamic";
@@ -81,6 +82,7 @@ export default async function EditorPage() {
   return (
     <MainLayout showSidebar={false}>
       <CVEditorPrisma initialData={currentCV} currentCVName={currentCVName} />
+      <TutorialOverlay />
     </MainLayout>
   );
 }

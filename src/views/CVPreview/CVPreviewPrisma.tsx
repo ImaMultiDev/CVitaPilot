@@ -68,8 +68,8 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
       const newType = newIsMobile
         ? "mobile"
         : newIsTablet
-        ? "tablet"
-        : "desktop";
+          ? "tablet"
+          : "desktop";
 
       if (currentType !== newType) {
         const newZoom = newIsMobile ? 0.4 : newIsTablet ? 0.75 : 1.0; // Valores optimizados por dispositivo
@@ -131,6 +131,19 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [isSidebarOpen, handleZoomIn, handleZoomOut, handleZoomReset]); // Agregar dependencias de funciones
+
+  useEffect(() => {
+    const handleTutorialOpenSidebar = () => {
+      setIsSidebarOpen(true);
+    };
+    window.addEventListener("tutorial-open-sidebar", handleTutorialOpenSidebar);
+    return () => {
+      window.removeEventListener(
+        "tutorial-open-sidebar",
+        handleTutorialOpenSidebar
+      );
+    };
+  }, []);
 
   const renderCV = () => {
     if (cvFormat === "visual") {
