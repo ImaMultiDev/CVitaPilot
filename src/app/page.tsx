@@ -3,8 +3,6 @@
 import { getCurrentUser } from "@/auth";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { HomePage } from "@/views/Home";
-import { initializeDefaultCVForUser } from "@/lib/actions/auth-actions";
-import { prisma } from "@/lib/prisma";
 
 // Forzar renderizado dinámico porque usa autenticación
 export const dynamic = "force-dynamic";
@@ -37,26 +35,6 @@ export default async function Page() {
         </div>
       </MainLayout>
     );
-  }
-
-  // Verificar si el usuario tiene un CV, si no, crear uno por defecto
-  if (user) {
-    try {
-      // Verificar directamente en la base de datos si el usuario tiene algún CV
-      const existingCV = await prisma.cV.findFirst({
-        where: { userId: user.id },
-      });
-
-      if (!existingCV) {
-        console.log("Usuario sin CV, creando CV por defecto...");
-        await initializeDefaultCVForUser(user.id);
-        console.log("CV por defecto creado exitosamente");
-      } else {
-        console.log("Usuario ya tiene CV:", existingCV.name);
-      }
-    } catch (error) {
-      console.error("Error verificando/creando CV por defecto:", error);
-    }
   }
 
   return (

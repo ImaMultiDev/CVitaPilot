@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { HomeIcons } from "@/components/ui";
 import { getSavedCVs, loadCV } from "@/lib/actions/cv-actions";
-import { useEnsureDefaultCV } from "@/hooks/useEnsureDefaultCV";
 import {
   HeroSection,
   UserCVsSection,
@@ -27,9 +26,6 @@ export const HomePage: React.FC = () => {
   const { theme } = useTheme();
   const [savedCVs, setSavedCVs] = useState<SavedCV[]>([]);
 
-  // Asegurar que el usuario tenga un CV por defecto
-  const { isLoading: isEnsuringCV, error: cvError } = useEnsureDefaultCV();
-
   // Cargar CVs del usuario
   useEffect(() => {
     const loadUserCVs = async () => {
@@ -42,21 +38,6 @@ export const HomePage: React.FC = () => {
     };
     loadUserCVs();
   }, []);
-
-  // Recargar CVs cuando se asegura el CV por defecto
-  useEffect(() => {
-    if (!isEnsuringCV && !cvError) {
-      const loadUserCVs = async () => {
-        try {
-          const cvs = await getSavedCVs();
-          setSavedCVs(cvs);
-        } catch (error) {
-          console.error("Error reloading user CVs:", error);
-        }
-      };
-      loadUserCVs();
-    }
-  }, [isEnsuringCV, cvError]);
 
   const handleLoadCV = async (cvId: string) => {
     try {
@@ -125,14 +106,6 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
-      {/* Indicador de carga para CV por defecto */}
-      {isEnsuringCV && (
-        <div className="fixed top-4 right-4 z-50 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
-          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-          <span className="text-sm">Preparando tu CV...</span>
-        </div>
-      )}
-
       {/* Hero Section con Logo, Título, Botones, Stats y CV Gallery */}
       <section className="relative overflow-hidden">
         {/* Animated Background Pattern */}

@@ -19,7 +19,11 @@
     "auth:migrate-cvs": "node scripts/migrate-cvs.js",
     "auth:seed-cv": "node scripts/seed-default-cv.js",
     "auth:setup": "prisma db push && node scripts/create-admin.js",
-    "cleanup:unverified": "node scripts/cleanup-unverified-users.js"
+    "cleanup:unverified": "node scripts/cleanup-unverified-users.js",
+    "db:diagnose": "node scripts/deploy-db.js",
+    "db:setup": "node scripts/deploy-db.js setup",
+    "db:check-env": "node scripts/check-env.js",
+    "db:setup-prod": "node scripts/setup-production.js"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.9.1",

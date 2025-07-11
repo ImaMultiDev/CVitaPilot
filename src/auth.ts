@@ -118,33 +118,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       return true;
     },
-    async session({ session, user }) {
-      // Para usuarios OAuth, verificar si necesitan CV por defecto
-      if (session?.user?.email && user?.id) {
-        try {
-          // Verificar si el usuario tiene algún CV
-          const existingCV = await prisma.cV.findFirst({
-            where: { userId: user.id },
-          });
-
-          if (!existingCV) {
-            // Importar y ejecutar la función de inicialización
-            const { initializeDefaultCVForUser } = await import(
-              "@/lib/actions/auth-actions"
-            );
-
-            await initializeDefaultCVForUser(user.id);
-            console.log(
-              `CV por defecto creado para usuario OAuth: ${session.user.email}`
-            );
-          } else {
-            console.log(`Usuario OAuth ya tiene CV: ${existingCV.name}`);
-          }
-        } catch (error) {
-          console.error("Error creando CV por defecto para OAuth:", error);
-        }
-      }
-
+    async session({ session, user: _user }) {
       return session;
     },
   },
