@@ -103,31 +103,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           });
 
           if (!existingUser) {
-            // Crear CV inicial para usuario de Google (vacío)
-            const { initializeDefaultCVForUser } = await import(
-              "@/lib/actions/auth-actions"
-            );
-
             // El usuario se creará automáticamente por el adapter
-            // Esperamos a que se cree y luego inicializamos su CV vacío
-            setTimeout(async () => {
-              try {
-                const newUser = await prisma.user.findUnique({
-                  where: { email: user.email! },
-                });
-                if (newUser) {
-                  await initializeDefaultCVForUser(newUser.id);
-                  console.log(
-                    `CV inicial creado para usuario OAuth: ${newUser.email}`
-                  );
-                }
-              } catch (error) {
-                console.error(
-                  "Error creando CV inicial para usuario OAuth:",
-                  error
-                );
-              }
-            }, 1000);
+            // No podemos crear el CV aquí porque el usuario aún no existe
+            // Lo manejaremos en el callback de session
+            console.log(`Usuario OAuth nuevo detectado: ${user.email}`);
           }
 
           return true;
@@ -138,6 +117,35 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
 
       return true;
+    },
+    async session({ session, user }) {
+      // Para usuarios OAuth, verificar si necesitan CV por defecto
+      if (session?.user?.email && user?.id) {
+        try {
+          // Verificar si el usuario tiene algún CV
+          const existingCV = await prisma.cV.findFirst({
+            where: { userId: user.id },
+          });
+
+          if (!existingCV) {
+            // Importar y ejecutar la función de inicialización
+            const { initializeDefaultCVForUser } = await import(
+              "@/lib/actions/auth-actions"
+            );
+
+            await initializeDefaultCVForUser(user.id);
+            console.log(
+              `CV por defecto creado para usuario OAuth: ${session.user.email}`
+            );
+          } else {
+            console.log(`Usuario OAuth ya tiene CV: ${existingCV.name}`);
+          }
+        } catch (error) {
+          console.error("Error creando CV por defecto para OAuth:", error);
+        }
+      }
+
+      return session;
     },
   },
 });
