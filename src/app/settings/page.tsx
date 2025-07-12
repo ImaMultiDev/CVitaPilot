@@ -2,6 +2,7 @@
 
 import { MainLayout } from "@/components/layout/MainLayout";
 import { SettingsPage } from "@/views/Settings";
+import { TutorialOverlay } from "@/components/TutorialOverlay";
 import { Metadata } from "next";
 
 // Forzar renderizado dinámico porque usa funciones de autenticación
@@ -16,6 +17,7 @@ export default function Settings() {
   return (
     <MainLayout>
       <SettingsPage />
+      <TutorialOverlay />
     </MainLayout>
   );
 }

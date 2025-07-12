@@ -14,6 +14,18 @@ export interface TutorialStep {
   position?: "top" | "bottom" | "left" | "right" | "center";
   buttonLabel?: string; // Para botones
   sidebarAction?: "open" | "close"; // Para acciones de sidebar
+  disableNavbarBlur?: boolean; // Para desactivar blur del navbar
+  disableContentBlur?: boolean; // Para desactivar blur del contenido
+  sidebarOutsideBlur?: boolean; // Para indicar que el sidebar debe estar fuera del blur del contenido
+  overlayPosition?:
+    | "top-left"
+    | "top-right"
+    | "bottom-left"
+    | "bottom-right"
+    | "center"
+    | "left"
+    | "right";
+  characterImage?: string; // Ruta de la imagen del personaje para este paso
 }
 
 export interface TutorialState {
@@ -43,104 +55,131 @@ export const tutorialSteps: TutorialStep[] = [
       "Te guiaremos en un breve tutorial para que conozcas todas las funcionalidades de la aplicación. ¿Estás listo para empezar?",
     action: "next",
     position: "center",
+    overlayPosition: "center",
+    characterImage: "/characters/tutorial/character-welcome.png",
+  },
+  {
+    id: "navbar-explanation",
+    title: "Navegador",
+    content:
+      "Aquí puedes ver la barra de navegación principal. Te permite acceder a todas las secciones de la aplicación de forma rápida y fácil. Ahora estamos en la página inicial.",
+    action: "next",
+    position: "center",
+    disableNavbarBlur: true,
+    disableContentBlur: false,
+    overlayPosition: "top-right",
+    characterImage: "/characters/tutorial/character-navbar.png",
   },
   {
     id: "home-explanation",
     title: "Página Principal",
     content:
-      "Esta es tu página principal. Aquí puedes ver un resumen de tus CVs y acceder rápidamente a las funciones más importantes.",
-    action: "next",
-    position: "center",
-  },
-  {
-    id: "navigate-to-editor",
-    title: "Editor de CV",
-    content:
-      "Ahora vamos al editor donde podrás crear y editar tu CV. Pulsa el botón para continuar.",
+      "Esta es tu página principal. Aquí puedes ver un resumen de tus CVs y acceder rápidamente a las funciones más importantes. A continuación accedemos al editor donde podrás crear y editar tu CV.",
     action: "button",
     buttonLabel: "Ir al Editor",
     target: "/editor",
     position: "center",
+    disableNavbarBlur: false,
+    disableContentBlur: true,
+    overlayPosition: "top-right",
+    characterImage: "/characters/tutorial/character-home.png",
   },
   {
     id: "editor-intro",
     title: "Editor de CV",
     content:
-      "Aquí es donde crearás y editarás tu CV. El editor te permite personalizar cada sección de tu currículum.",
-    action: "next",
-    position: "center",
-  },
-  {
-    id: "sidebar-explanation",
-    title: "Barra Lateral",
-    content:
-      "La barra lateral contiene todas las secciones de tu CV. Pulsa el botón para abrirla y explorar las opciones disponibles.",
+      "Aquí es donde crearás y editarás tu CV. El editor te permite personalizar cada sección de tu currículum. A continuación vamos a proceder a ver la barra lateral para explorar las opciones disponibles.",
     action: "button",
     buttonLabel: "Abrir Sidebar",
     sidebarAction: "open",
     position: "left",
+    disableNavbarBlur: false,
+    disableContentBlur: true,
+    overlayPosition: "top-right",
+    characterImage: "/characters/tutorial/character-editor.png",
   },
   {
     id: "sidebar-sections",
-    title: "Secciones del CV",
+    title: "Barra Lateral",
     content:
-      "Aquí puedes ver todas las secciones disponibles: Información Personal, Experiencia, Educación, Habilidades, y más. Cada sección se puede expandir para editar.",
-    action: "next",
-    position: "left",
-  },
-  {
-    id: "navigate-to-mycvs",
-    title: "Mis CVs",
-    content:
-      "Ahora vamos a la sección 'Mis CVs' donde podrás ver y gestionar todos tus currículums guardados. Pulsa el botón para continuar.",
+      "Aquí puedes ver todas las secciones disponibles: Información Personal, Experiencia, Educación, Habilidades, y más. Cada sección se puede expandir para editar. Ahora vamos a la sección 'Mis CVs' donde podrás ver y gestionar todos tus currículums guardados.",
     action: "button",
     buttonLabel: "Ir a Mis CVs",
     target: "/saved-cvs",
-    position: "center",
+    position: "left",
+    disableNavbarBlur: false,
+    disableContentBlur: false,
+    overlayPosition: "center",
+    characterImage: "/characters/tutorial/character-fly.png",
   },
   {
     id: "mycvs-explanation",
     title: "Gestión de CVs",
     content:
-      "Aquí puedes ver todos tus CVs guardados, crear nuevos, duplicar existentes y gestionar cuál está activo. También puedes eliminar los que ya no necesites.",
-    action: "next",
-    position: "center",
-  },
-  {
-    id: "navigate-to-preview",
-    title: "Vista Previa",
-    content:
-      "Ahora vamos a la vista previa donde podrás ver cómo se ve tu CV y exportarlo en diferentes formatos. Pulsa el botón para continuar.",
+      "Aquí puedes ver todos tus CVs guardados, crear nuevos, duplicar existentes y gestionar cuál está activo. También puedes eliminar los que ya no necesites. Ahora vamos a la vista previa donde podrás ver cómo se ve tu CV y exportarlo en diferentes formatos.",
     action: "button",
     buttonLabel: "Ir a Vista Previa",
     target: "/preview",
     position: "center",
+    disableNavbarBlur: false,
+    disableContentBlur: true,
+    overlayPosition: "top-right",
+    characterImage: "/characters/tutorial/character-mycvs.png",
   },
   {
     id: "preview-explanation",
     title: "Vista Previa",
     content:
-      "En esta vista puedes ver exactamente cómo se verá tu CV. Puedes cambiar entre diferentes formatos y exportar tu CV en PDF.",
-    action: "next",
-    position: "center",
+      "En esta vista puedes ver exactamente cómo se verá tu CV. Puedes cambiar entre diferentes formatos y exportar tu CV en PDF. A continuación vamos a ver la barra lateral para explorar las opciones de formato y exportación.",
+    action: "button",
+    buttonLabel: "Abrir Sidebar",
+    sidebarAction: "open",
+    position: "right",
+    disableNavbarBlur: false,
+    disableContentBlur: true,
+    overlayPosition: "top-right",
+    characterImage: "/characters/tutorial/character-cvpreview.png",
   },
   {
-    id: "navigate-to-guide",
-    title: "Guía de CV",
+    id: "preview-sidebar",
+    title: "Barra Lateral",
     content:
-      "Finalmente, vamos a la guía donde encontrarás consejos y mejores prácticas para crear un CV profesional. Pulsa el botón para continuar.",
+      "En la barra lateral puedes encontrar: Formatos Visual y ATS, controles de Acercar y Alejar, y la función de Imprimir. Cada formato está optimizado para diferentes tipos de aplicaciones. Ahora vamos a la guía donde encontrarás consejos y mejores prácticas para crear un CV profesional.",
     action: "button",
     buttonLabel: "Ir a Guía CV",
     target: "/guia-cv",
-    position: "center",
+    position: "right",
+    disableNavbarBlur: false,
+    disableContentBlur: false,
+    sidebarOutsideBlur: true,
+    overlayPosition: "center",
+    characterImage: "/characters/tutorial/character-content.png",
   },
   {
     id: "guide-explanation",
     title: "Guía de CV",
     content:
-      "Aquí encontrarás consejos profesionales, mejores prácticas y ejemplos para crear un CV que destaque. Te recomendamos revisarla regularmente.",
+      "Aquí encontrarás consejos profesionales, mejores prácticas y ejemplos para crear un CV que destaque. Te recomendamos revisarla regularmente. Finalmente, vamos a ver la configuración donde puedes personalizar tu perfil, ajustar notificaciones y gestionar las preferencias de la aplicación.",
+    action: "button",
+    buttonLabel: "Ir a Configuración",
+    target: "/settings",
+    position: "center",
+    disableNavbarBlur: false,
+    disableContentBlur: true,
+    overlayPosition: "top-right",
+    characterImage: "/characters/tutorial/character-guide.png",
+  },
+  {
+    id: "settings-explanation",
+    title: "Configuración",
+    content:
+      "En la configuración puedes personalizar tu perfil, ajustar notificaciones, gestionar la privacidad y configurar las preferencias de la aplicación. Aquí tienes control total sobre tu experiencia.",
     action: "next",
     position: "center",
+    disableNavbarBlur: false,
+    disableContentBlur: true,
+    overlayPosition: "top-right",
+    characterImage: "/characters/tutorial/character-config.png",
   },
   {
     id: "completion",
@@ -149,6 +188,8 @@ export const tutorialSteps: TutorialStep[] = [
       "¡Felicidades! Ya conoces todas las funciones principales de CVitaPilot. Ya puedes empezar a crear tu CV profesional. ¡Que tengas mucho éxito!",
     action: "complete",
     position: "center",
+    overlayPosition: "center",
+    characterImage: "/characters/tutorial/character-final.png",
   },
 ];
 

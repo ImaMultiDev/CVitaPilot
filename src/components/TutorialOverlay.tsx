@@ -5,16 +5,11 @@ import { useTutorial, tutorialSteps } from "@/contexts/TutorialContext";
 import { Button } from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
 import { TutorialCard } from "./TutorialCard";
+import Image from "next/image";
 
 export function TutorialOverlay() {
-  const {
-    state,
-    currentStep,
-    nextStep,
-    previousStep,
-    completeTutorial,
-    skipTutorial,
-  } = useTutorial();
+  const { state, currentStep, nextStep, completeTutorial, skipTutorial } =
+    useTutorial();
   const [isVisible, setIsVisible] = useState(false);
   const router = useRouter();
 
@@ -39,15 +34,35 @@ export function TutorialOverlay() {
   const isButtonStep = currentStep.action === "button";
   const canAdvance = !isClickStep || state.stepActionCompleted;
 
-  // Pasos donde se debe desactivar el blur (0-indexed)
-  // Estos pasos presentan páginas específicas donde queremos que el usuario vea claramente el contenido
-  // Paso 2 (1): Página principal - mostrar claramente la home
-  // Paso 4 (3): Editor de CV - mostrar claramente el editor
-  // Paso 8 (7): Mis CVs - mostrar claramente la gestión de CVs
-  // Paso 10 (9): Vista previa - mostrar claramente la vista previa
-  // Paso 12 (11): Guía de CV - mostrar claramente la guía
-  const stepsWithoutBlur = [1, 3, 7, 9, 11]; // Pasos 2, 4, 8, 10, 12 (1-indexed)
-  const shouldDisableBlur = stepsWithoutBlur.includes(state.currentStep);
+  // Control de blur basado en las propiedades del paso actual
+  const shouldDisableNavbarBlur = currentStep.disableNavbarBlur || false;
+  const shouldDisableContentBlur = currentStep.disableContentBlur || false;
+  const sidebarOutsideBlur = currentStep.sidebarOutsideBlur || false;
+
+  // Posición del overlay basada en el paso actual
+  const overlayPosition = currentStep.overlayPosition || "bottom-right";
+
+  // Clases de posición para el overlay
+  const getOverlayPositionClasses = () => {
+    switch (overlayPosition) {
+      case "top-left":
+        return "items-start justify-start py-16";
+      case "top-right":
+        return "items-start justify-end py-16";
+      case "bottom-left":
+        return "items-end justify-start p-4";
+      case "bottom-right":
+        return "items-end justify-end p-4";
+      case "center":
+        return "items-center justify-center p-4";
+      case "left":
+        return "items-center justify-start p-4";
+      case "right":
+        return "items-center justify-end p-4";
+      default:
+        return "items-end justify-end p-4";
+    }
+  };
 
   // Acción personalizada para pasos tipo 'button'
   const handleButtonAction = async () => {
@@ -64,20 +79,43 @@ export function TutorialOverlay() {
     }, 300);
   };
 
+  // Función para cancelar el tutorial y redirigir al editor
+  const handleCancelTutorial = () => {
+    skipTutorial();
+    router.push("/editor");
+  };
+
+  // Función para completar el tutorial y redirigir a home
+  const handleCompleteTutorial = () => {
+    completeTutorial();
+    router.push("/");
+  };
+
   return (
     <>
       {/* Overlay de fondo que bloquea la interfaz (oscuro + blur) */}
       <div
         className={`fixed inset-0 z-[1000] transition-all duration-300 ${
           isVisible ? "opacity-100" : "opacity-0"
-        } ${shouldDisableBlur ? "bg-black/40" : "bg-black/60 backdrop-blur-sm"}`}
+        } ${shouldDisableContentBlur ? "bg-black/40" : "bg-black/60 backdrop-blur-sm"}`}
         onClick={(e) => e.stopPropagation()}
+        style={{
+          // Si el sidebar debe estar fuera del blur, excluimos el área del sidebar
+          ...(sidebarOutsideBlur && {
+            clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+            // Excluir el área del sidebar (aproximadamente 256px desde la izquierda)
+            maskImage:
+              "linear-gradient(to right, transparent 0%, transparent 285px, black 285px, black 100%)",
+            WebkitMaskImage:
+              "linear-gradient(to right, transparent 0%, transparent 285px, black 285px, black 100%)",
+          }),
+        }}
       />
 
       {/* Overlay extra para bloquear el navbar (ajusta height si tu navbar es diferente) */}
       <div
         className={`fixed top-0 left-0 right-0 h-20 z-[1100] cursor-not-allowed transition-all duration-300 ${
-          shouldDisableBlur
+          shouldDisableNavbarBlur
             ? "bg-transparent"
             : "backdrop-blur-xs bg-transparent"
         }`}
@@ -93,13 +131,26 @@ export function TutorialOverlay() {
           pointerEvents: "none", // Permitir que los clics pasen al overlay
         }}
       >
-        {/* Contenedor responsivo para el modal */}
+        {/* Contenedor responsivo para el modal con posición dinámica */}
         <div
-          className="flex items-center justify-center p-4 h-full md:items-end md:justify-end md:p-6"
+          className={`flex h-full ${getOverlayPositionClasses()}`}
           style={{
             pointerEvents: "auto", // Restaurar eventos de clic solo para el modal
           }}
         >
+          {/* Personaje del tutorial - Fuera del modal */}
+          {currentStep.characterImage && (
+            <div className="flex items-center z-50 -mr-25">
+              <Image
+                src={currentStep.characterImage}
+                alt="Personaje del tutorial"
+                className="w-32 h-32 md:w-80 md:h-80 object-contain drop-shadow-2xl"
+                width={320}
+                height={320}
+              />
+            </div>
+          )}
+
           <div
             className={`transition-all duration-500 ${
               isVisible
@@ -115,12 +166,12 @@ export function TutorialOverlay() {
               isolation: "isolate",
             }}
           >
-            <TutorialCard className="w-full max-w-md mx-auto shadow-2xl border-0 md:max-w-sm">
-              <div className="p-6 md:p-4">
+            <TutorialCard className="w-full max-w-lg mx-auto shadow-2xl border-0 md:max-w-xl">
+              <div className="p-8 md:p-6">
                 {/* Barra de progreso */}
-                <div className="mb-4 md:mb-3">
+                <div className="mb-8 md:mb-6">
                   <div
-                    className="flex justify-between text-sm mb-2"
+                    className="flex justify-between text-lg mb-2"
                     style={{ color: "var(--muted-foreground)" }}
                   >
                     <span>
@@ -143,15 +194,15 @@ export function TutorialOverlay() {
                 </div>
 
                 {/* Contenido del paso */}
-                <div className="text-center mb-6 md:mb-4">
+                <div className="text-center mb-8 md:mb-6">
                   <h3
-                    className="text-xl font-semibold mb-3 md:text-lg md:mb-2"
+                    className="text-xl font-semibold mb-3 md:text-4xl md:mb-2"
                     style={{ color: "var(--foreground)" }}
                   >
                     {currentStep.title}
                   </h3>
                   <p
-                    className="leading-relaxed md:text-sm"
+                    className="leading-relaxed text-lg md:text-xl"
                     style={{ color: "var(--muted-foreground)" }}
                   >
                     {currentStep.content}
@@ -161,22 +212,19 @@ export function TutorialOverlay() {
                 {/* Botones de navegación */}
                 <div className="flex justify-between items-center">
                   <div className="flex gap-2">
-                    {!isFirstStep && (
+                    {/* Mostrar Cancelar Tutorial solo en el primer paso */}
+                    {isFirstStep && (
                       <Button
-                        variant="ghost"
-                        onClick={previousStep}
-                        className="text-sm"
+                        variant="danger"
+                        onClick={handleCancelTutorial}
+                        size="lg"
                       >
-                        Anterior
+                        Cancelar
                       </Button>
                     )}
-                    {/* Mostrar Saltar Tutorial solo antes del editor */}
+                    {/* Mostrar Saltar Tutorial solo después del paso 2 */}
                     {state.currentStep > 2 && (
-                      <Button
-                        variant="ghost"
-                        onClick={skipTutorial}
-                        className="text-sm"
-                      >
+                      <Button variant="danger" onClick={skipTutorial} size="lg">
                         Saltar Tutorial
                       </Button>
                     )}
@@ -184,20 +232,28 @@ export function TutorialOverlay() {
 
                   <div className="flex gap-2">
                     {isLastStep ? (
-                      <Button variant="success" onClick={completeTutorial}>
+                      <Button
+                        size="lg"
+                        variant="success"
+                        onClick={handleCompleteTutorial}
+                      >
                         ¡Completar!
                       </Button>
                     ) : isButtonStep ? (
-                      <Button variant="primary" onClick={handleButtonAction}>
+                      <Button
+                        size="lg"
+                        variant="primary"
+                        onClick={handleButtonAction}
+                      >
                         {currentStep.buttonLabel || "Continuar"}
                       </Button>
                     ) : canAdvance ? (
-                      <Button variant="primary" onClick={nextStep}>
+                      <Button size="lg" variant="primary" onClick={nextStep}>
                         Siguiente
                       </Button>
                     ) : (
                       <span
-                        className="text-xs italic px-2"
+                        className="text-lg italic px-2"
                         style={{ color: "var(--muted-foreground)" }}
                       >
                         Realiza la acción indicada para continuar

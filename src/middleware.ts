@@ -10,8 +10,9 @@ export const config = {
      * - Rutas de Auth.js (/api/auth/*)
      * - Rutas públicas (/auth/*)
      * - API de salud (/api/health)
+     * - Páginas legales (/legal/*)
      * - Archivos estáticos
      */
-    "/((?!api/auth|api/health|auth|_next/static|_next/image|favicon.ico|manifest.json|robots.txt|sitemap.xml|.*\\.png$|.*\\.jpg$|.*\\.jpeg$|.*\\.gif$|.*\\.svg$).*)",
+    "/((?!api/auth|api/health|auth|legal|_next/static|_next/image|favicon.ico|manifest.json|robots.txt|sitemap.xml|.*\\.png$|.*\\.jpg$|.*\\.jpeg$|.*\\.gif$|.*\\.svg$).*)",
   ],
 };
