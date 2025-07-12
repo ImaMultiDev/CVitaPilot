@@ -3,8 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
-import { NavbarIcons } from "@/components/ui";
-import { UserAvatar } from "./UserAvatar";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 interface UserDropdownProps {
   className?: string;
@@ -67,26 +66,15 @@ export const UserDropdown: React.FC<UserDropdownProps> = React.memo(
           className="flex items-center space-x-2 sm:space-x-3 px-2 sm:px-4 py-2 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 hover:border-white/30 transition-all duration-300 text-white group max-w-[200px] sm:max-w-none"
           disabled={isLoggingOut}
         >
-          <UserAvatar session={session} size="sm" showStatus={true} />
-
-          <div className="flex items-center space-x-2 min-w-0">
-            <span className="font-medium text-sm truncate">
-              {session.user.name || session.user.email?.split("@")[0]}
-            </span>
-            <svg
-              className={`w-4 h-4 transition-transform duration-200 ${
-                isUserDropdownOpen ? "rotate-180" : ""
-              }`}
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
+          {/* Eliminamos el UserAvatar y el círculo */}
+          <span className="font-medium text-sm truncate">
+            {session.user.name || session.user.email?.split("@")[0]}
+          </span>
+          <ConfiguredIcon
+            name="chevron-down"
+            size={16}
+            className={`transition-transform duration-200 ${isUserDropdownOpen ? "rotate-180" : ""}`}
+          />
         </button>
 
         {/* Dropdown Menu */}
@@ -103,7 +91,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = React.memo(
             {/* Header del dropdown */}
             <div className="p-6 bg-white/10 backdrop-blur-sm border-b border-white/20 text-white">
               <div className="flex items-center space-x-4">
-                <UserAvatar session={session} size="lg" showStatus={true} />
+                {/* Eliminamos el UserAvatar grande */}
                 <div className="flex-1 min-w-0">
                   <p className="font-bold text-lg truncate">
                     {session.user.name || "Usuario"}
@@ -130,10 +118,11 @@ export const UserDropdown: React.FC<UserDropdownProps> = React.memo(
                 onClick={() => setIsUserDropdownOpen(false)}
                 className="flex items-center space-x-3 w-full px-4 py-3 text-white hover:bg-white/15 rounded-2xl transition-all duration-200 group"
               >
-                {React.createElement(NavbarIcons.Settings, {
-                  className:
-                    "w-5 h-5 text-white/80 group-hover:text-white transition-colors",
-                })}
+                <ConfiguredIcon
+                  name="settings"
+                  size={20}
+                  className="text-white/80 group-hover:text-white transition-colors"
+                />
                 <span className="font-medium">Configuración</span>
               </Link>
 
@@ -142,11 +131,11 @@ export const UserDropdown: React.FC<UserDropdownProps> = React.memo(
                 disabled={isLoggingOut}
                 className="flex items-center space-x-3 w-full px-4 py-3 text-red-200 hover:bg-red-500/20 rounded-2xl transition-all duration-200 group disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {React.createElement(NavbarIcons.Logout, {
-                  className: `w-5 h-5 text-red-200 ${
-                    isLoggingOut ? "animate-spin" : ""
-                  } group-hover:text-white transition-colors`,
-                })}
+                <ConfiguredIcon
+                  name="log-out"
+                  size={20}
+                  className={`text-red-200 ${isLoggingOut ? "animate-spin" : ""} group-hover:text-white transition-colors`}
+                />
                 <span className="font-medium">
                   {isLoggingOut ? "Cerrando sesión..." : "Cerrar sesión"}
                 </span>

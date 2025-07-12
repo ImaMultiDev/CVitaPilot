@@ -5,35 +5,34 @@ import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "@/contexts/ThemeContext";
 import { usePathname } from "next/navigation";
-import { NavbarIcons } from "@/components/ui";
-import { FooterIcons } from "@/components/ui";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 // Configuración de navegación (igual que en Navbar)
 const navigation = [
   {
     name: "Home",
     href: "/",
-    icon: "Home",
+    icon: "home", // Usamos 'home' para la página principal
   },
   {
     name: "Editor",
     href: "/editor",
-    icon: "Editor",
+    icon: "edit", // Usamos 'edit' para el editor
   },
   {
     name: "Mis CVs",
     href: "/saved-cvs",
-    icon: "Files",
+    icon: "book-user", // Usamos 'archive' para mis CVs
   },
   {
     name: "Vista Previa",
     href: "/preview",
-    icon: "Preview",
+    icon: "eye", // Usamos 'eye' para vista previa
   },
   {
     name: "Guía CV",
     href: "/guia-cv",
-    icon: "Guide",
+    icon: "documentation", // Usamos 'documentation' para la guía
   },
 ] as const;
 
@@ -42,17 +41,17 @@ const socialLinks = [
   {
     name: "Portfolio",
     href: "https://imamultidev.dev",
-    icon: "Portfolio",
+    icon: "user", // Usamos 'user' como portfolio personal
   },
   {
     name: "GitHub",
     href: "https://github.com/kodebidean",
-    icon: "Github",
+    icon: "github", // Usamos 'code' como icono representativo de GitHub
   },
   {
     name: "LinkedIn",
     href: "https://linkedin.com/in/imanol-mugueta-unsain",
-    icon: "Linkedin",
+    icon: "linkedin", // Usamos 'analytics' como icono representativo de LinkedIn
   },
 ] as const;
 
@@ -61,22 +60,22 @@ const legalLinks = [
   {
     name: "Política de Privacidad",
     href: "/legal/privacy-policy",
-    icon: "Privacy",
+    icon: "shield", // Usamos 'shield' para privacidad
   },
   {
     name: "Términos de Uso",
     href: "/legal/terms-of-service",
-    icon: "Terms",
+    icon: "documentation", // Usamos 'file-text' para términos
   },
   {
     name: "Licencia",
     href: "/legal/license",
-    icon: "License",
+    icon: "contract", // Usamos 'archive' para licencia
   },
   {
     name: "Cookies",
     href: "/legal/cookies",
-    icon: "Cookies",
+    icon: "cookie", // Usamos 'cookie' para cookies
   },
 ] as const;
 
@@ -139,24 +138,21 @@ export const Footer: React.FC = () => {
 
             {/* Redes Sociales */}
             <div className="flex space-x-4">
-              {socialLinks.map((social) => {
-                const IconComponent =
-                  FooterIcons[social.icon as keyof typeof FooterIcons];
-                return (
-                  <a
-                    key={social.name}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group p-2 rounded-lg bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200 dark:border-gray-700 hover:bg-white/80 dark:hover:bg-gray-800/80 transition-all duration-300 hover:shadow-lg hover:scale-105"
-                  >
-                    <IconComponent
-                      size={20}
-                      className="text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300"
-                    />
-                  </a>
-                );
-              })}
+              {socialLinks.map((social) => (
+                <a
+                  key={social.name}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group p-2 rounded-lg bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200 dark:border-gray-700 hover:bg-white/80 dark:hover:bg-gray-800/80 transition-all duration-300 hover:shadow-lg hover:scale-105"
+                >
+                  <ConfiguredIcon
+                    name={social.icon}
+                    size={20}
+                    className="transition-colors duration-300"
+                  />
+                </a>
+              ))}
             </div>
           </div>
 
@@ -166,23 +162,20 @@ export const Footer: React.FC = () => {
               Navegación
             </h4>
             <div className="grid grid-cols-1 gap-2">
-              {navigation.map((item) => {
-                const IconComponent =
-                  NavbarIcons[item.icon as keyof typeof NavbarIcons];
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className={`flex items-center space-x-2 p-2 rounded-lg transition-all duration-300 hover:bg-white/50 dark:hover:bg-gray-800/50 ${getActiveLinkClasses(item.href)}`}
-                  >
-                    <IconComponent
-                      size={16}
-                      className="transition-colors duration-300"
-                    />
-                    <span className="text-sm font-medium">{item.name}</span>
-                  </Link>
-                );
-              })}
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`flex items-center space-x-2 p-2 rounded-lg transition-all duration-300 hover:bg-white/50 dark:hover:bg-gray-800/50 ${getActiveLinkClasses(item.href)}`}
+                >
+                  <ConfiguredIcon
+                    name={item.icon}
+                    size={16}
+                    className="transition-colors duration-300"
+                  />
+                  <span className="text-sm font-medium">{item.name}</span>
+                </Link>
+              ))}
             </div>
           </div>
 
@@ -192,25 +185,22 @@ export const Footer: React.FC = () => {
               Legal
             </h4>
             <div className="grid grid-cols-1 gap-2">
-              {legalLinks.map((link) => {
-                const IconComponent =
-                  FooterIcons[link.icon as keyof typeof FooterIcons];
-                return (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center space-x-2 p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-gray-800/50 transition-all duration-300"
-                  >
-                    <IconComponent
-                      size={16}
-                      className="transition-colors duration-300"
-                    />
-                    <span className="text-sm font-medium">{link.name}</span>
-                  </Link>
-                );
-              })}
+              {legalLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-2 p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-gray-800/50 transition-all duration-300"
+                >
+                  <ConfiguredIcon
+                    name={link.icon}
+                    size={16}
+                    className="transition-colors duration-300"
+                  />
+                  <span className="text-sm font-medium">{link.name}</span>
+                </Link>
+              ))}
             </div>
           </div>
         </div>

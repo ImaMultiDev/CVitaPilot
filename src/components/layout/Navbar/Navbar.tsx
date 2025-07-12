@@ -109,32 +109,41 @@ export const Navbar: React.FC = () => {
                 href="/"
                 className="flex items-center space-x-3 group transition-transform duration-300 hover:brightness-125"
               >
-                <div className="relative w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 shadow-xl overflow-hidden group-hover:shadow-2xl transition-all duration-300">
+                <div className="relative px-2 w-auto h-auto items-center justify-center flex rounded-2xl bg-white/20 backdrop-blur-sm shadow-[0_0_10px_rgba(0,0,10,0.5)] overflow-hidden group-hover:shadow-[0_0_20px_rgba(0,0,10,0.5)] active:scale-95 active:shadow-[0_0_5px_rgba(0,0,10,0.5)] transition-all duration-300">
                   <Image
                     src={getLogoSrc("64x64")}
                     alt="CVitaPilot Logo"
-                    width={40}
-                    height={40}
+                    width={56}
+                    height={56}
                     className="rounded-2xl transition-all duration-500 group-hover:brightness-125"
                     priority
                     key={`logo-${theme}`} // Force re-render cuando cambia el tema
                   />
+                  <div className="hidden mx-2 sm:block ">
+                    <h1 className="text-xl font-bold text-white drop-shadow-lg">
+                      CVitaPilot
+                    </h1>
+                    <p className="text-xs text-white/80 font-medium">
+                      Crea tu CV perfecto
+                    </p>
+                  </div>
                   <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </div>
-                <div className="hidden sm:block">
-                  <h1 className="text-xl font-bold text-white drop-shadow-lg">
-                    CVitaPilot
-                  </h1>
-                  <p className="text-xs text-white/80 font-medium">
-                    Crea tu CV perfecto
-                  </p>
                 </div>
               </Link>
             </div>
 
             {/* Navegación principal - Solo desktop */}
-            <NavigationItems />
-
+            <div className="hidden lg:flex">
+              <NavigationItems />
+            </div>
+            {/* Botón móvil - Solo mobile */}
+            <div className="flex lg:hidden">
+              <MobileMenu
+                isOpen={isMobileMenuOpen}
+                onToggle={toggleMobileMenu}
+                onClose={closeMobileMenu}
+              />
+            </div>
             {/* Controles de usuario */}
             <div className="flex items-center space-x-3">
               {/* Toggle de tema */}
@@ -142,13 +151,6 @@ export const Navbar: React.FC = () => {
 
               {/* Dropdown de usuario */}
               <UserDropdown />
-
-              {/* Botón móvil */}
-              <MobileMenu
-                isOpen={isMobileMenuOpen}
-                onToggle={toggleMobileMenu}
-                onClose={closeMobileMenu}
-              />
             </div>
           </div>
         </div>
