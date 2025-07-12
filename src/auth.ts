@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import LinkedInProvider from "next-auth/providers/linkedin";
 import { authConfig } from "./auth.config";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
@@ -26,6 +27,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           prompt: "consent",
           access_type: "offline",
           response_type: "code",
+        },
+      },
+    }),
+    LinkedInProvider({
+      clientId: process.env.LINKEDIN_CLIENT_ID!,
+      clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          scope: "openid profile email",
         },
       },
     }),
@@ -95,7 +105,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     ...authConfig.callbacks,
     async signIn({ user, account, profile: _profile }) {
-      if (account?.provider === "google") {
+      if (account?.provider === "google" || account?.provider === "linkedin") {
         try {
           // Verificar si el usuario ya existe
           const existingUser = await prisma.user.findUnique({
@@ -106,7 +116,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             // El usuario se creará automáticamente por el adapter
             // No podemos crear el CV aquí porque el usuario aún no existe
             // Lo manejaremos en el callback de session
-            console.log(`Usuario OAuth nuevo detectado: ${user.email}`);
+            console.log(
+              `Usuario OAuth nuevo detectado: ${user.email} (${account.provider})`
+            );
           }
 
           return true;

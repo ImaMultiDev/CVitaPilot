@@ -153,7 +153,7 @@ export const tutorialSteps: TutorialStep[] = [
     disableContentBlur: false,
     sidebarOutsideBlur: true,
     overlayPosition: "center",
-    characterImage: "/characters/tutorial/character-content.png",
+    characterImage: "/characters/tutorial/character-fly.png",
   },
   {
     id: "guide-explanation",
