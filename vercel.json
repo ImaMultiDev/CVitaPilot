@@ -38,6 +38,12 @@
       "source": "/github",
       "destination": "https://github.com/ImaMultiDev/cv-gestor",
       "permanent": false
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.cvitapilot.com" }],
+      "destination": "https://cvitapilot.com/:path*",
+      "permanent": true
     }
   ],
   "rewrites": [

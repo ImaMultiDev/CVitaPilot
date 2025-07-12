@@ -1,6 +1,8 @@
 import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
+  // Configurar la URL base para NextAuth
+  basePath: "/api/auth",
   pages: {
     signIn: "/auth/login",
     error: "/auth/error",
