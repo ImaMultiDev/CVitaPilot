@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { CreateCVModal } from "@/components/ui";
-import { MyCVsIcons } from "@/components/ui";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 interface MyCVsHeaderProps {
   totalCVs: number;
@@ -26,7 +26,8 @@ export const MyCVsHeader: React.FC<MyCVsHeaderProps> = ({ totalCVs }) => {
           {/* Estadísticas */}
           <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl px-6 py-4 border border-white/20 dark:border-gray-700/20 shadow-lg">
             <div className="flex items-center gap-3">
-              <MyCVsIcons.CountIcon
+              <ConfiguredIcon
+                name="bar-chart"
                 size={24}
                 className="text-blue-600 dark:text-blue-400"
               />
@@ -47,7 +48,7 @@ export const MyCVsHeader: React.FC<MyCVsHeaderProps> = ({ totalCVs }) => {
             className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
           >
             <span className="flex items-center gap-2">
-              <MyCVsIcons.EditCVIcon size={20} />
+              <ConfiguredIcon name="plus" size={20} />
               Crear Nuevo CV
             </span>
           </Button>

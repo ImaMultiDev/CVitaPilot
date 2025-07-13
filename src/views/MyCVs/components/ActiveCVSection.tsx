@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { MyCVsIcons } from "@/components/ui";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 import { CVMiniPreview } from "./CVMiniPreview";
 import { getCVById } from "@/lib/actions/cv-actions";
 import type { CVData } from "@/types/cv";
@@ -86,7 +86,8 @@ export const ActiveCVSection: React.FC<ActiveCVSectionProps> = ({
   return (
     <div className="mb-8 lg:w-1/2">
       <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-3">
-        <MyCVsIcons.ActiveCVIcon
+        <ConfiguredIcon
+          name="check-circle"
           size={24}
           className="text-yellow-600 dark:text-yellow-400"
         />
@@ -124,16 +125,16 @@ export const ActiveCVSection: React.FC<ActiveCVSectionProps> = ({
                 </p>
                 <div className="flex flex-wrap items-center gap-4 text-sm text-green-600 dark:text-green-400">
                   <span className="flex items-center gap-1">
-                    <MyCVsIcons.CalendarIcon size={16} />
+                    <ConfiguredIcon name="calendar" size={16} />
                     Creado: {formatDate(activeCV.createdAt)}
                   </span>
                   <span className="flex items-center gap-1">
-                    <MyCVsIcons.EditCVIcon size={16} />
+                    <ConfiguredIcon name="edit" size={16} />
                     Actualizado: {formatDate(activeCV.updatedAt)}
                   </span>
                   {activeCV.deliveryCount > 0 && (
                     <span className="flex items-center gap-1">
-                      <MyCVsIcons.DeliveryIcon size={16} />
+                      <ConfiguredIcon name="send" size={16} />
                       {activeCV.deliveryCount} entregas
                     </span>
                   )}
@@ -150,7 +151,7 @@ export const ActiveCVSection: React.FC<ActiveCVSectionProps> = ({
                   className="shadow-md hover:shadow-lg transition-shadow duration-300"
                 >
                   <span className="flex items-center gap-2">
-                    <MyCVsIcons.EditCVIcon size={16} />
+                    <ConfiguredIcon name="edit" size={16} />
                     Ir al Editor
                   </span>
                 </Button>

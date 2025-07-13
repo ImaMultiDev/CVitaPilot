@@ -1,5 +1,5 @@
 import React from "react";
-import { MyCVsIcons } from "@/components/ui";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 export const LoadingState: React.FC = () => {
   return (
@@ -7,9 +7,10 @@ export const LoadingState: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-center items-center h-64">
           <div className="text-center">
-            <MyCVsIcons.LoadingDocsIcon
+            <ConfiguredIcon
+              name="loader"
               size={48}
-              className="text-blue-600 dark:text-blue-400 mx-auto mb-4"
+              className="text-blue-600 dark:text-blue-400 mx-auto mb-4 animate-spin"
             />
             <div className="text-lg font-medium text-gray-900 dark:text-white">
               Cargando CVs guardados...

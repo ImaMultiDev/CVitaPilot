@@ -2,9 +2,10 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { MyCVsIcons } from "@/components/ui";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 import { CVMiniPreview } from "./CVMiniPreview";
 import { getCVById } from "@/lib/actions/cv-actions";
+import type { CVData } from "@/types/cv";
 import Image from "next/image";
 
 interface SavedCV {
@@ -21,14 +22,11 @@ interface SavedCVsGridProps {
   savedCVs: SavedCV[];
   onLoadCV: (cvId: string, cvName: string) => void;
   onDeleteCV: (cvId: string, cvName: string) => void;
-  cvDataMap?: Record<string, import("@/types/cv").CVData>;
+  cvDataMap?: Record<string, CVData>;
 }
 
 // Caché para datos de CVs
-const cvDataCache = new Map<
-  string,
-  { data: import("@/types/cv").CVData; timestamp: number }
->();
+const cvDataCache = new Map<string, { data: CVData; timestamp: number }>();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
 
 export const SavedCVsGrid: React.FC<SavedCVsGridProps> = ({
@@ -52,7 +50,7 @@ export const SavedCVsGrid: React.FC<SavedCVsGridProps> = ({
 
   // Función para obtener datos de CV con caché
   const getCVDataWithCache = useCallback(
-    async (cvId: string): Promise<import("@/types/cv").CVData | null> => {
+    async (cvId: string): Promise<CVData | null> => {
       const now = Date.now();
       const cached = cvDataCache.get(cvId);
 
@@ -136,7 +134,8 @@ export const SavedCVsGrid: React.FC<SavedCVsGridProps> = ({
   return (
     <div className="mb-8">
       <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
-        <MyCVsIcons.SavedCVIcon
+        <ConfiguredIcon
+          name="files"
           size={24}
           className="text-blue-600 dark:text-blue-400"
         />
@@ -145,7 +144,8 @@ export const SavedCVsGrid: React.FC<SavedCVsGridProps> = ({
 
       {inactiveCVs.length === 0 ? (
         <Card className="text-center py-12 bg-gray-50/60 dark:bg-gray-800/60 backdrop-blur-sm border-gray-200/20 dark:border-gray-700/20">
-          <MyCVsIcons.SavedCVIcon
+          <ConfiguredIcon
+            name="files"
             size={48}
             className="text-gray-400 dark:text-gray-500 mx-auto mb-4"
           />
@@ -210,7 +210,7 @@ export const SavedCVsGrid: React.FC<SavedCVsGridProps> = ({
                           variant="info"
                           className="text-xs flex items-center gap-1"
                         >
-                          <MyCVsIcons.DeliveryIcon size={12} />
+                          <ConfiguredIcon name="send" size={12} />
                           {savedCV.deliveryCount}
                         </Badge>
                       </div>
@@ -223,14 +223,16 @@ export const SavedCVsGrid: React.FC<SavedCVsGridProps> = ({
                     </h3>
                     <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                       <div className="flex items-center gap-2">
-                        <MyCVsIcons.CalendarIcon
+                        <ConfiguredIcon
+                          name="calendar"
                           size={14}
                           className="text-gray-500"
                         />
                         <span>{formatDate(savedCV.updatedAt)}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <MyCVsIcons.CountIcon
+                        <ConfiguredIcon
+                          name="clock"
                           size={14}
                           className="text-gray-500"
                         />
@@ -246,7 +248,7 @@ export const SavedCVsGrid: React.FC<SavedCVsGridProps> = ({
                       className="bg-green-600 hover:bg-green-700 text-white shadow-lg"
                     >
                       <span className="flex items-center gap-1">
-                        <MyCVsIcons.ActiveCVIcon size={14} />
+                        <ConfiguredIcon name="check-circle" size={14} />
                         Activar
                       </span>
                     </Button>
@@ -257,7 +259,7 @@ export const SavedCVsGrid: React.FC<SavedCVsGridProps> = ({
                       className="shadow-lg"
                     >
                       <span className="flex items-center gap-1">
-                        <MyCVsIcons.DeleteCVIcon size={14} />
+                        <ConfiguredIcon name="trash" size={14} />
                         Eliminar
                       </span>
                     </Button>

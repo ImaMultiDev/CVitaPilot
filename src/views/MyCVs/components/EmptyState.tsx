@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { CreateCVModal } from "@/components/ui";
-import { MyCVsIcons } from "@/components/ui";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 export const EmptyState: React.FC = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -10,7 +10,8 @@ export const EmptyState: React.FC = () => {
   return (
     <>
       <Card className="text-center py-16 bg-white dark:bg-gray-800 backdrop-blur-sm border-white/20 dark:border-gray-700">
-        <MyCVsIcons.EmptyStateIcon
+        <ConfiguredIcon
+          name="folder-open"
           size={64}
           className="text-gray-400 dark:text-gray-500 mx-auto mb-6"
         />
@@ -26,7 +27,7 @@ export const EmptyState: React.FC = () => {
           className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
         >
           <span className="flex items-center gap-2">
-            <MyCVsIcons.EditCVIcon size={20} />
+            <ConfiguredIcon name="plus" size={20} />
             Crear Nuevo CV
           </span>
         </Button>

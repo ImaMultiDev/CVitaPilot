@@ -1,12 +1,13 @@
 import React from "react";
 import { Card } from "@/components/ui/Card";
-import { MyCVsIcons } from "@/components/ui";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 export const InfoSection: React.FC = () => {
   return (
     <Card className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border-blue-200 dark:border-blue-800 backdrop-blur-sm">
       <div className="flex flex-col items-start gap-4">
-        <MyCVsIcons.InfoIcon
+        <ConfiguredIcon
+          name="badge-question-mark"
           size={32}
           className="text-blue-600 dark:text-blue-400 flex-shrink-0 mt-1"
         />
@@ -17,7 +18,8 @@ export const InfoSection: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-blue-800 dark:text-blue-300">
             <div className="space-y-2">
               <div className="flex items-start gap-2">
-                <MyCVsIcons.ActiveCVIcon
+                <ConfiguredIcon
+                  name="check-circle"
                   size={16}
                   className="mt-0.5 text-green-600 dark:text-green-400"
                 />
@@ -27,7 +29,8 @@ export const InfoSection: React.FC = () => {
                 </div>
               </div>
               <div className="flex items-start gap-2">
-                <MyCVsIcons.DeleteCVIcon
+                <ConfiguredIcon
+                  name="trash"
                   size={16}
                   className="mt-0.5 text-red-600 dark:text-red-400"
                 />
@@ -39,7 +42,8 @@ export const InfoSection: React.FC = () => {
             </div>
             <div className="space-y-2">
               <div className="flex items-start gap-2">
-                <MyCVsIcons.SavedCVIcon
+                <ConfiguredIcon
+                  name="files"
                   size={16}
                   className="mt-0.5 text-blue-600 dark:text-blue-400"
                 />
@@ -49,7 +53,8 @@ export const InfoSection: React.FC = () => {
                 </div>
               </div>
               <div className="flex items-start gap-2">
-                <MyCVsIcons.DeliveryIcon
+                <ConfiguredIcon
+                  name="send"
                   size={16}
                   className="mt-0.5 text-purple-600 dark:text-purple-400"
                 />
