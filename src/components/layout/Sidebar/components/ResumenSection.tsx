@@ -147,6 +147,9 @@ export const ResumenSection: React.FC<ResumenSectionProps> = ({ cvData }) => {
           </span>
         </div>
       </div>
+
+      {/* Espacio adicional para asegurar que todo el contenido sea visible */}
+      <div className="h-8"></div>
     </Card>
   );
 };

@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Toggle } from "@/components/ui/Toggle";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 import {
   addReference,
   deleteReference,
   toggleReference,
 } from "@/lib/actions/cv-actions";
-import { CVEditorIcons } from "@/components/ui/icons/CVEditorIcons";
 
 interface Reference {
   id: string;
@@ -180,7 +180,7 @@ export const ReferencesSection: React.FC<ReferencesSectionProps> = ({
           disabled={isUpdating}
         >
           <span className="inline-flex items-center gap-2">
-            <CVEditorIcons.Add size={16} />
+            <ConfiguredIcon name="plus" size={16} />
             Añadir referencia
           </span>
         </Button>
@@ -203,9 +203,19 @@ export const ReferencesSection: React.FC<ReferencesSectionProps> = ({
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">
                 {reference.relationship}
               </p>
-              <div className="flex flex-col flex-wrap gap-4 text-xs text-gray-500 dark:text-gray-400">
-                {reference.phone && <span>📞 {reference.phone}</span>}
-                {reference.email && <span>✉️ {reference.email}</span>}
+              <div className="flex flex-col flex-wrap gap-1 text-xs text-gray-500 dark:text-gray-400">
+                {reference.phone && (
+                  <span className="flex items-center gap-1">
+                    <ConfiguredIcon name="phone" size={12} />
+                    {reference.phone}
+                  </span>
+                )}
+                {reference.email && (
+                  <span className="flex items-center gap-1">
+                    <ConfiguredIcon name="mail" size={12} />
+                    {reference.email}
+                  </span>
+                )}
               </div>
             </div>
             <div className="flex items-center justify-end md:justify-center space-x-3 md:space-x-2 md:ml-4 flex-shrink-0">
@@ -221,7 +231,7 @@ export const ReferencesSection: React.FC<ReferencesSectionProps> = ({
                 className="text-red-600 hover:text-red-700"
                 disabled={isUpdating}
               >
-                <CVEditorIcons.Delete size={16} />
+                <ConfiguredIcon name="trash" size={16} />
               </Button>
             </div>
           </div>

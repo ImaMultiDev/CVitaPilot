@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Toggle } from "@/components/ui/Toggle";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 import {
   addEducation,
   deleteEducation,
   toggleEducation,
 } from "@/lib/actions/cv-actions";
-import { CVEditorIcons } from "@/components/ui/icons/CVEditorIcons";
 
 interface Education {
   id: string;
@@ -153,8 +153,8 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
           disabled={isUpdating}
         >
           <span className="inline-flex items-center gap-2">
-            <CVEditorIcons.Add size={16} />
-            Añadir formación académica
+            <ConfiguredIcon name="plus" size={16} />
+            Añadir formación
           </span>
         </Button>
       </div>
@@ -190,7 +190,7 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
                 className="text-red-600 hover:text-red-700"
                 disabled={isUpdating}
               >
-                <CVEditorIcons.Delete size={16} />
+                <ConfiguredIcon name="trash" size={16} />
               </Button>
             </div>
           </div>

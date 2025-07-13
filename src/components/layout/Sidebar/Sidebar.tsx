@@ -170,7 +170,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       />
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar p-4">
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-4 pb-12">
         <SectionRenderer
           activeSection={activeSection}
           cvData={cvData}
@@ -209,13 +209,38 @@ export const Sidebar: React.FC<SidebarProps> = ({
           width: 320px;
           background: var(--sidebar-bg);
           border-right: 1px solid var(--sidebar-border);
-          height: 100vh;
+          height: calc(100vh - 4rem);
+          max-height: calc(100vh - 4rem);
           overflow: hidden;
           display: flex;
           flex-direction: column;
           box-shadow: 4px 0 20px var(--sidebar-shadow);
           position: relative;
           z-index: 10;
+        }
+
+        .sidebar-container .flex-1 {
+          min-height: 0;
+          max-height: calc(100vh - 4rem - 120px);
+          overflow-y: auto;
+          scroll-behavior: smooth;
+        }
+
+        .sidebar-container .flex-1::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        .sidebar-container .flex-1::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        .sidebar-container .flex-1::-webkit-scrollbar-thumb {
+          background: rgba(99, 102, 241, 0.3);
+          border-radius: 3px;
+        }
+
+        .sidebar-container .flex-1::-webkit-scrollbar-thumb:hover {
+          background: rgba(99, 102, 241, 0.5);
         }
 
         .sidebar-container::before {

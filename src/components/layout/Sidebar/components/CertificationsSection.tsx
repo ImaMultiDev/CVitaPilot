@@ -52,6 +52,7 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({
               <Toggle
                 checked={cert.selected}
                 onChange={() => onToggleCertification(cert.id)}
+                size="sm"
               />
             </div>
           </div>

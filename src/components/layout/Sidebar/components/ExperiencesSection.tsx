@@ -50,6 +50,7 @@ export const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
               <Toggle
                 checked={experience.selected}
                 onChange={() => onToggleExperience(experience.id)}
+                size="sm"
               />
             </div>
           </div>

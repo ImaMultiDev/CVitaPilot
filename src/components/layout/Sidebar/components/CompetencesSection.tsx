@@ -43,6 +43,7 @@ export const CompetencesSection: React.FC<CompetencesSectionProps> = ({
             <Toggle
               checked={competence.selected}
               onChange={() => onToggleCompetence(competence.id)}
+              size="sm"
             />
           </div>
         ))}

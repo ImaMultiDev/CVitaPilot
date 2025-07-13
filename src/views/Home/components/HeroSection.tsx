@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { CreateCVModal } from "@/components/ui";
-import { HomeIcons } from "@/components/ui";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 interface HeroSectionProps {
   theme: string | undefined;
   statsData: Array<{
-    icon: React.ComponentType<{ size?: number; className?: string }>;
+    icon: string;
     number: string;
     label: string;
     description: string;
@@ -77,7 +77,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-lg px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
           >
             <span className="flex items-center gap-2">
-              <HomeIcons.Rocket size={20} />
+              <ConfiguredIcon name="plus" size={20} />
               Crear CV Ahora
             </span>
           </Button>
@@ -91,7 +91,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             className="bg-white/20 backdrop-blur-sm border-white/30 text-gray-700 dark:text-gray-300 text-lg px-8 py-4 rounded-2xl hover:bg-white/30 transition-all duration-300"
           >
             <span className="flex items-center gap-2">
-              <HomeIcons.Play size={20} />
+              <ConfiguredIcon name="play" size={20} />
               Ver Tutorial
             </span>
           </Button>
@@ -99,28 +99,26 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {statsData.map((stat, index) => {
-            const IconComponent = stat.icon;
-            return (
-              <div
-                key={index}
-                className="text-center group cursor-pointer transform hover:scale-105 transition-all duration-300"
-              >
-                <div className="flex justify-center mb-2">
-                  <IconComponent
-                    size={28}
-                    className="text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors"
-                  />
-                </div>
-                <div className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
-                  {stat.number}
-                </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  {stat.label}
-                </div>
+          {statsData.map((stat, index) => (
+            <div
+              key={index}
+              className="text-center group cursor-pointer transform hover:scale-105 transition-all duration-300"
+            >
+              <div className="flex justify-center mb-2">
+                <ConfiguredIcon
+                  name={stat.icon}
+                  size={28}
+                  className="text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors"
+                />
               </div>
-            );
-          })}
+              <div className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                {stat.number}
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                {stat.label}
+              </div>
+            </div>
+          ))}
         </div>
         <div className="hidden lg:block absolute top-10 right-0 opacity-90 ">
           <Image

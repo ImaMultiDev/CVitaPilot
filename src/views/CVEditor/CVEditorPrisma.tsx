@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 import { PersonalInfoFormPrisma } from "@/components/forms/PersonalInfoFormPrisma";
 import { Sidebar } from "@/components/layout/Sidebar/Sidebar";
 import {
@@ -188,7 +189,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
             toggleSidebar();
             completeStepAction();
           }}
-          className={`fixed top-20 left-4 z-[60] p-2 md:p-3 text-white rounded-full border-2 transition-all duration-300 hover:scale-110 active:scale-95 backdrop-blur-sm ${
+          className={`fixed top-20 left-4 z-[60] p-2 md:p-3 text-white justify-center items-center flex rounded-full border-2 transition-all duration-300 hover:scale-110 active:scale-95 backdrop-blur-sm ${
             isSidebarOpen
               ? "opacity-0 pointer-events-none"
               : "border-white/30 dark:border-white/20 shadow-xl hover:shadow-2xl hover:border-white/50 dark:hover:border-white/40 ring-4 ring-indigo-500/20 hover:ring-indigo-500/40 animate-pulse hover:animate-none"
@@ -201,19 +202,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
               "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
           }}
         >
-          <svg
-            className="w-5 h-5 md:w-6 md:h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
+          <ConfiguredIcon name="menu" size={20} className="text-white" />
         </button>
       </TutorialHighlight>
 
@@ -249,7 +238,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
             className="bg-green-600 hover:bg-green-700 text-white text-sm lg:text-base px-4 lg:px-6"
           >
             <span className="inline-flex items-center gap-2">
-              <span className="text-lg">💾</span>
+              <ConfiguredIcon name="save" size={20} className="text-white" />
               Guardar CV
             </span>
           </Button>
@@ -363,7 +352,7 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
               className="bg-green-600 hover:bg-green-700 text-white text-sm lg:text-base px-4 lg:px-6"
             >
               <span className="inline-flex items-center gap-2">
-                <span className="text-lg">💾</span>
+                <ConfiguredIcon name="save" size={20} className="text-white" />
                 Guardar CV
               </span>
             </Button>

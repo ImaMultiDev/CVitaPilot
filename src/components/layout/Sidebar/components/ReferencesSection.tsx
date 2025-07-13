@@ -50,6 +50,7 @@ export const ReferencesSection: React.FC<ReferencesSectionProps> = ({
               <Toggle
                 checked={reference.selected}
                 onChange={() => onToggleReference(reference.id)}
+                size="sm"
               />
             </div>
           </div>

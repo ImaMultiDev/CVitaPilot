@@ -1,18 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
 import { Toggle } from "@/components/ui/Toggle";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 import {
   addAchievement,
   deleteAchievement,
   toggleAchievement,
 } from "@/lib/actions/cv-actions";
-import { CVEditorIcons } from "@/components/ui/icons/CVEditorIcons";
 
 interface Achievement {
   id: string;
@@ -223,7 +223,7 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
             disabled={isUpdating}
           >
             <span className="inline-flex items-center gap-2">
-              <CVEditorIcons.Add size={16} />
+              <ConfiguredIcon name="plus" size={16} />
               Añadir logro/proyecto
             </span>
           </Button>
@@ -260,7 +260,7 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
               )}
               {achievement.url && (
                 <p className="text-sm md:text-xs text-purple-600 dark:text-purple-400 flex items-center gap-1">
-                  <CVEditorIcons.Link size={12} />
+                  <ConfiguredIcon name="external-link" size={12} />
                   <a
                     href={achievement.url || ""}
                     target="_blank"
@@ -272,7 +272,7 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
                 </p>
               )}
               <p className="text-sm md:text-xs text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-1">
-                <CVEditorIcons.Calendar size={14} />
+                <ConfiguredIcon name="calendar" size={14} />
                 {achievement.date}
               </p>
               <div className="text-sm md:text-sm text-gray-700 dark:text-gray-300 mb-2 leading-relaxed whitespace-pre-line">
@@ -280,19 +280,19 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
               </div>
               {achievement.technologies.length > 0 && (
                 <p className="text-xs md:text-xs text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1">
-                  <CVEditorIcons.Tech size={12} />
+                  <ConfiguredIcon name="wrench" size={12} />
                   {achievement.technologies.join(", ")}
                 </p>
               )}
               {achievement.metrics && (
                 <p className="text-xs md:text-xs text-green-600 dark:text-green-400 mb-1 flex items-center gap-1">
-                  <CVEditorIcons.Metrics size={12} />
+                  <ConfiguredIcon name="bar-chart" size={12} />
                   {achievement.metrics}
                 </p>
               )}
               {achievement.url && (
                 <p className="text-xs md:text-xs text-purple-600 dark:text-purple-400 flex items-center gap-1">
-                  <CVEditorIcons.Link size={12} />
+                  <ConfiguredIcon name="external-link" size={12} />
                   <a
                     href={achievement.url}
                     target="_blank"
@@ -317,7 +317,7 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
                 className="text-red-600 hover:text-red-700 p-2 md:p-1 min-w-[44px] min-h-[44px] md:min-w-[auto] md:min-h-[auto]"
                 disabled={isUpdating}
               >
-                <CVEditorIcons.Delete size={16} />
+                <ConfiguredIcon name="trash" size={16} />
               </Button>
             </div>
           </div>

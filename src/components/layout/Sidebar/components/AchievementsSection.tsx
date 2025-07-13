@@ -57,6 +57,7 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
               <Toggle
                 checked={achievement.selected}
                 onChange={() => onToggleAchievement(achievement.id)}
+                size="sm"
               />
             </div>
           </div>

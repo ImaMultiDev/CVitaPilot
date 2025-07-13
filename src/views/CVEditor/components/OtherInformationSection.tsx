@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { OtherInformation } from "@/types/cv";
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Toggle } from "@/components/ui/Toggle";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 interface OtherInformationSectionProps {
   otherInformation: OtherInformation[];
@@ -13,19 +15,16 @@ export const OtherInformationSection: React.FC<
   OtherInformationSectionProps
 > = ({ otherInformation, onChange }) => {
   const [newItemName, setNewItemName] = useState("");
-  const [newItemIcon, setNewItemIcon] = useState("");
 
   const addOtherInformation = () => {
     if (newItemName.trim()) {
       const newItem: OtherInformation = {
         id: crypto.randomUUID(),
         name: newItemName.trim(),
-        icon: newItemIcon.trim() || undefined,
         selected: true,
       };
       onChange([...otherInformation, newItem]);
       setNewItemName("");
-      setNewItemIcon("");
     }
   };
 
@@ -41,18 +40,6 @@ export const OtherInformationSection: React.FC<
     );
   };
 
-  const updateOtherInformation = (
-    id: string,
-    field: keyof OtherInformation,
-    value: string
-  ) => {
-    onChange(
-      otherInformation.map((item) =>
-        item.id === id ? { ...item, [field]: value } : item
-      )
-    );
-  };
-
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       addOtherInformation();
@@ -60,106 +47,65 @@ export const OtherInformationSection: React.FC<
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-          Otra Información
-        </h2>
-        <span className="text-sm text-gray-500 dark:text-gray-400">
-          {otherInformation.filter((item) => item.selected).length} elementos
-          activos
-        </span>
-      </div>
+    <Card>
+      <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-4 md:mb-6">
+        Otra Información
+      </h3>
 
-      {/* Formulario para añadir nueva información */}
-      <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg space-y-4">
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-          Añadir Nueva Información
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="md:col-span-2">
-            <Input
-              placeholder="Ej: Carnet de conducir, Vehículo propio, Disponibilidad inmediata..."
-              value={newItemName}
-              onChange={(e) => setNewItemName(e.target.value)}
-              onKeyPress={handleKeyPress}
-            />
-          </div>
-          <div>
-            <Input
-              placeholder="Icono (emoji)"
-              value={newItemIcon}
-              onChange={(e) => setNewItemIcon(e.target.value)}
-              onKeyPress={handleKeyPress}
-              maxLength={2}
-            />
-          </div>
+      {/* Add new information */}
+      <div className="bg-gray-50 dark:bg-gray-800 p-4 md:p-6 rounded-lg mb-4 md:mb-6">
+        <h4 className="font-medium text-gray-900 dark:text-white mb-3 md:mb-4 text-sm md:text-base">
+          Añadir nueva información
+        </h4>
+        <div className="flex flex-col space-y-3 md:flex-row md:space-y-0 md:space-x-2">
+          <Input
+            value={newItemName}
+            onChange={(e) => setNewItemName(e.target.value)}
+            placeholder="Ej: Carnet de conducir, Vehículo propio, Disponibilidad inmediata..."
+            className="flex-1 h-12 md:h-10 text-base md:text-sm"
+            onKeyPress={handleKeyPress}
+          />
+          <Button
+            onClick={addOtherInformation}
+            size="sm"
+            disabled={!newItemName.trim()}
+            className="h-12 md:h-10 px-4 md:px-3 text-base md:text-sm font-medium whitespace-nowrap"
+          >
+            <span className="inline-flex items-center gap-2">
+              <ConfiguredIcon name="plus" size={16} />
+              Añadir información
+            </span>
+          </Button>
         </div>
-        <Button
-          onClick={addOtherInformation}
-          disabled={!newItemName.trim()}
-          className="w-full"
-        >
-          Añadir Información
-        </Button>
       </div>
 
-      {/* Lista de información existente */}
-      {otherInformation.length > 0 && (
-        <div className="space-y-3">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-            Información Añadida
-          </h3>
-          {otherInformation.map((item) => (
-            <div
-              key={item.id}
-              className={`p-4 border rounded-lg ${
-                item.selected
-                  ? "border-blue-200 bg-blue-50 dark:border-blue-700 dark:bg-blue-900/20"
-                  : "border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="md:col-span-2">
-                    <Input
-                      value={item.name}
-                      onChange={(e) =>
-                        updateOtherInformation(item.id, "name", e.target.value)
-                      }
-                      placeholder="Nombre de la información"
-                    />
-                  </div>
-                  <div>
-                    <Input
-                      value={item.icon || ""}
-                      onChange={(e) =>
-                        updateOtherInformation(item.id, "icon", e.target.value)
-                      }
-                      placeholder="Icono"
-                      maxLength={2}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 ml-4">
-                  <Toggle
-                    checked={item.selected}
-                    onChange={() => toggleOtherInformation(item.id)}
-                  />
-                  <Button
-                    onClick={() => removeOtherInformation(item.id)}
-                    variant="danger"
-                    size="sm"
-                  >
-                    Eliminar
-                  </Button>
-                </div>
-              </div>
+      {/* Existing information */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+        {otherInformation.map((item) => (
+          <div
+            key={item.id}
+            className="flex items-center justify-between border rounded-lg p-3 md:p-2 min-h-[56px] md:min-h-[auto]"
+          >
+            <span className="text-base md:text-sm text-gray-900 dark:text-white flex-1 min-w-0 truncate pr-2">
+              {item.name}
+            </span>
+            <div className="flex items-center space-x-2 md:space-x-1 flex-shrink-0">
+              <Toggle
+                checked={item.selected}
+                onChange={() => toggleOtherInformation(item.id)}
+              />
+              <Button
+                onClick={() => removeOtherInformation(item.id)}
+                size="sm"
+                variant="secondary"
+                className="text-red-600 hover:text-red-700 p-2 md:p-1 min-w-[44px] min-h-[44px] md:min-w-[auto] md:min-h-[auto]"
+              >
+                <ConfiguredIcon name="trash" size={16} />
+              </Button>
             </div>
-          ))}
-        </div>
-      )}
+          </div>
+        ))}
+      </div>
 
       {otherInformation.length === 0 && (
         <div className="text-center py-8 text-gray-500 dark:text-gray-400">
@@ -170,6 +116,6 @@ export const OtherInformationSection: React.FC<
           </p>
         </div>
       )}
-    </div>
+    </Card>
   );
 };

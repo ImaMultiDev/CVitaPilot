@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { CreateCVModal } from "@/components/ui";
-import { HomeIcons } from "@/components/ui";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 import { useTutorial } from "@/contexts/TutorialContext";
 
 export const QuickActionsSection: React.FC = () => {
@@ -15,21 +15,21 @@ export const QuickActionsSection: React.FC = () => {
       step: "1",
       title: "Crea tu CV",
       description: "Completa la información de forma sencilla e intuitiva",
-      icon: HomeIcons.Pen,
+      icon: "book-user",
       action: () => setIsCreateModalOpen(true),
     },
     {
       step: "2",
       title: "Descarga PDF",
       description: "Obtén tu CV optimizado listo para enviar",
-      icon: HomeIcons.Document,
+      icon: "download",
       action: () => router.push("/preview"),
     },
     {
       step: "3",
       title: "Consigue el trabajo",
       description: "Destaca entre otros candidatos con tu CV profesional",
-      icon: HomeIcons.Bullseye,
+      icon: "award",
       action: () => router.push("/guia-cv"),
     },
   ];
@@ -40,7 +40,7 @@ export const QuickActionsSection: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center text-white mb-12">
             <h2 className="text-3xl lg:text-4xl font-bold mb-4 flex items-center justify-center gap-3">
-              <HomeIcons.Rocket size={36} />
+              <ConfiguredIcon name="gem" size={36} />
               ¿Listo para destacar?
             </h2>
             <p className="text-lg text-indigo-100">
@@ -51,7 +51,6 @@ export const QuickActionsSection: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {steps.map((item, index) => {
-              const IconComponent = item.icon;
               return (
                 <div
                   key={index}
@@ -60,7 +59,11 @@ export const QuickActionsSection: React.FC = () => {
                 >
                   <div className="p-8 text-center text-white">
                     <div className="w-16 h-16 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <IconComponent size={28} className="text-white" />
+                      <ConfiguredIcon
+                        name={item.icon}
+                        size={42}
+                        className="text-white"
+                      />
                     </div>
                     <div className="w-8 h-8 mx-auto mb-4 bg-yellow-400 text-yellow-900 rounded-full flex items-center justify-center font-bold">
                       {item.step}

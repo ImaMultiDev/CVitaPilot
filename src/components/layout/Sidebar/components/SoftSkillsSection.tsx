@@ -43,6 +43,7 @@ export const SoftSkillsSection: React.FC<SoftSkillsSectionProps> = ({
             <Toggle
               checked={softSkill.selected}
               onChange={() => onToggleSoftSkill(softSkill.id)}
+              size="sm"
             />
           </div>
         ))}

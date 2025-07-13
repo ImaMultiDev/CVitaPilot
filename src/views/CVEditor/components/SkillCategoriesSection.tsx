@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 import {
   addSkillCategory,
   deleteSkillCategory,
 } from "@/lib/actions/cv-actions";
-import { CVEditorIcons } from "@/components/ui/icons/CVEditorIcons";
 
 interface SkillCategory {
   id: string;
@@ -98,7 +98,7 @@ Esta acción no se puede deshacer.`;
       {/* Add new category */}
       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 p-4 md:p-6 rounded-lg mb-4 md:mb-6">
         <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-3 md:mb-4 text-sm md:text-base flex items-center gap-2">
-          <CVEditorIcons.Add size={18} />
+          <ConfiguredIcon name="plus" size={18} />
           Crear nueva categoría
         </h4>
         <div className="flex flex-col space-y-3 md:flex-row md:space-y-0 md:space-x-2">
@@ -116,7 +116,7 @@ Esta acción no se puede deshacer.`;
             disabled={isUpdating}
           >
             <span className="inline-flex items-center gap-2">
-              <CVEditorIcons.Add size={16} />
+              <ConfiguredIcon name="plus" size={16} />
               Crear Categoría
             </span>
           </Button>
@@ -136,7 +136,7 @@ Esta acción no se puede deshacer.`;
             >
               <div className="flex items-center space-x-2 flex-1 min-w-0">
                 <span className="text-base md:text-sm font-medium text-gray-900 dark:text-white truncate flex items-center gap-1">
-                  <CVEditorIcons.Skills size={16} />
+                  <ConfiguredIcon name="code" size={16} />
                   {category.name}
                 </span>
                 <span
@@ -163,7 +163,7 @@ Esta acción no se puede deshacer.`;
                     : "Eliminar categoría vacía"
                 }
               >
-                <CVEditorIcons.Delete size={16} />
+                <ConfiguredIcon name="trash" size={16} />
               </Button>
             </div>
           );

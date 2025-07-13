@@ -50,6 +50,7 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
               <Toggle
                 checked={edu.selected}
                 onChange={() => onToggleEducation(edu.id)}
+                size="sm"
               />
             </div>
           </div>

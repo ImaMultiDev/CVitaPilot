@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
-import { HomeIcons } from "@/components/ui";
 import { getSavedCVs, loadCV } from "@/lib/actions/cv-actions";
 import {
   HeroSection,
@@ -51,25 +50,25 @@ export const HomePage: React.FC = () => {
   // Datos de estadísticas
   const statsData = [
     {
-      icon: HomeIcons.Rocket,
+      icon: "badge-check",
       number: "98%",
       label: "Tasa de aprobación ATS",
       description: "CVs optimizados para sistemas automatizados",
     },
     {
-      icon: HomeIcons.Lightning,
+      icon: "lightning",
       number: "<2min",
       label: "Tiempo de creación",
       description: "Crea tu CV profesional en menos de 2 minutos",
     },
     {
-      icon: HomeIcons.Target,
+      icon: "layout-panel-left",
       number: "15+",
       label: "Secciones personalizables",
       description: "Adapta tu CV a cualquier industria",
     },
     {
-      icon: HomeIcons.Chart,
+      icon: "responsive",
       number: "100%",
       label: "Responsive design",
       description: "Perfecto en cualquier dispositivo",
@@ -79,25 +78,25 @@ export const HomePage: React.FC = () => {
   // Datos de características
   const features = [
     {
-      icon: HomeIcons.Robot,
+      icon: "bookmark-check",
       title: "Optimización ATS",
       description: "Tu CV será leído por sistemas automatizados sin problemas",
       color: "from-blue-500 to-cyan-500",
     },
     {
-      icon: HomeIcons.Paintbrush,
+      icon: "figma",
       title: "Diseño Profesional",
       description: "Plantillas modernas que destacan tu perfil profesional",
       color: "from-purple-500 to-pink-500",
     },
     {
-      icon: HomeIcons.Smartphone,
+      icon: "responsive",
       title: "Multi-dispositivo",
       description: "Edita desde cualquier lugar, en cualquier momento",
       color: "from-green-500 to-emerald-500",
     },
     {
-      icon: HomeIcons.Refresh,
+      icon: "files",
       title: "Versionado Inteligente",
       description: "Guarda múltiples versiones para diferentes puestos",
       color: "from-orange-500 to-red-500",

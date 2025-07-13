@@ -4,8 +4,8 @@ import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { HomeIcons } from "@/components/ui";
 import Image from "next/image";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 export const ATSInfoSection: React.FC = () => {
   const router = useRouter();
@@ -16,10 +16,7 @@ export const ATSInfoSection: React.FC = () => {
         <div className="flex flex-col lg:flex-row gap-12 items-center">
           <Card className="w-full lg:w-4/6">
             <h2 className="text-3xl lg:text-4xl opacity-90 font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
-              <HomeIcons.Robot
-                size={36}
-                className="text-blue-600 dark:text-blue-400"
-              />
+              <ConfiguredIcon name="badge-question-mark" size={36} />
               ¿Qué son los ATS?
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
@@ -31,7 +28,7 @@ export const ATSInfoSection: React.FC = () => {
             <div className="space-y-4 mb-8">
               <div className="flex items-start gap-3">
                 <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-sm font-bold mt-1">
-                  ✗
+                  <ConfiguredIcon name="ban" size={24} />
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-white">
@@ -45,7 +42,7 @@ export const ATSInfoSection: React.FC = () => {
 
               <div className="flex items-start gap-3">
                 <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold mt-1">
-                  ✓
+                  <ConfiguredIcon name="check-circle" size={24} />
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-white">

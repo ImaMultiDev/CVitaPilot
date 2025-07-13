@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Toggle } from "@/components/ui/Toggle";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 import { addSkill, deleteSkill, toggleSkill } from "@/lib/actions/cv-actions";
-import { CVEditorIcons } from "@/components/ui/icons/CVEditorIcons";
 
 interface SkillCategory {
   id: string;
@@ -42,14 +42,17 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({
   });
 
   // Group skills by category using categoryId
-  const skillsByCategory = skills.reduce((acc, skill) => {
-    const categoryId = skill.categoryId;
-    if (!acc[categoryId]) {
-      acc[categoryId] = [];
-    }
-    acc[categoryId].push(skill);
-    return acc;
-  }, {} as Record<string, typeof skills>);
+  const skillsByCategory = skills.reduce(
+    (acc, skill) => {
+      const categoryId = skill.categoryId;
+      if (!acc[categoryId]) {
+        acc[categoryId] = [];
+      }
+      acc[categoryId].push(skill);
+      return acc;
+    },
+    {} as Record<string, typeof skills>
+  );
 
   // Create category options for the select
   const categoryOptions = skillCategories.map((cat) => ({
@@ -127,7 +130,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({
               disabled={isUpdating}
             >
               <span className="inline-flex items-center gap-2">
-                <CVEditorIcons.Add size={16} />
+                <ConfiguredIcon name="plus" size={16} />
                 Añadir habilidad
               </span>
             </Button>
@@ -164,7 +167,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({
                     className="text-red-600 hover:text-red-700 p-2 md:p-1 min-w-[44px] min-h-[44px] md:min-w-[auto] md:min-h-[auto]"
                     disabled={isUpdating}
                   >
-                    <CVEditorIcons.Delete size={16} />
+                    <ConfiguredIcon name="trash" size={16} />
                   </Button>
                 </div>
               </div>

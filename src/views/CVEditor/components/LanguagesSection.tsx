@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 import { addLanguage, deleteLanguage } from "@/lib/actions/cv-actions";
-import { CVEditorIcons } from "@/components/ui/icons/CVEditorIcons";
 
 interface Language {
   id: string;
@@ -109,7 +109,7 @@ export const LanguagesSection: React.FC<LanguagesSectionProps> = ({
               disabled={isUpdating}
             >
               <span className="inline-flex items-center gap-2">
-                <CVEditorIcons.Add size={16} />
+                <ConfiguredIcon name="plus" size={16} />
                 Añadir idioma
               </span>
             </Button>
@@ -139,7 +139,7 @@ export const LanguagesSection: React.FC<LanguagesSectionProps> = ({
               className="text-red-600 hover:text-red-700"
               disabled={isUpdating}
             >
-              <CVEditorIcons.Delete size={16} />
+              <ConfiguredIcon name="trash" size={16} />
             </Button>
           </div>
         ))}

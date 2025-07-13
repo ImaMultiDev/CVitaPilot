@@ -54,6 +54,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({
                 <Toggle
                   checked={skill.selected}
                   onChange={() => onToggleSkill(skill.id)}
+                  size="sm"
                 />
               </div>
             ))}

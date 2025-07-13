@@ -3,8 +3,7 @@ import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { CreateCVModal } from "@/components/ui";
-import { HomeIcons } from "@/components/ui";
-import { NewCV } from "@/components/ui/icons/NewCV";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 import Image from "next/image";
 import { getCVById } from "@/lib/actions/cv-actions";
 import type { CVData } from "@/types/cv";
@@ -151,7 +150,8 @@ export const UserCVsSection: React.FC<UserCVsSectionProps> = ({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4 flex items-center justify-center gap-3">
-              <HomeIcons.Folder
+              <ConfiguredIcon
+                name="folder"
                 size={36}
                 className="text-blue-600 dark:text-blue-400"
               />
@@ -173,15 +173,13 @@ export const UserCVsSection: React.FC<UserCVsSectionProps> = ({
                     onClick={() => setIsCreateModalOpen(true)}
                   >
                     <div className="p-6 text-center flex flex-col items-center justify-center h-full">
-                      {/* SVG Folio en blanco */}
+                      {/* Icono plus SVGStorm */}
                       <div className="relative w-32 h-40 mx-auto mb-4 flex items-center justify-center">
-                        <NewCV />
-                        {/* Icono + solo en hover */}
-                        <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-                          <span className="text-3xl text-purple-500 font-bold select-none">
-                            +
-                          </span>
-                        </span>
+                        <ConfiguredIcon
+                          name="plus"
+                          size={48}
+                          className="text-purple-500 group-hover:text-purple-700 transition-colors"
+                        />
                       </div>
                       <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
                         Crear Nuevo CV
@@ -278,7 +276,11 @@ export const UserCVsSection: React.FC<UserCVsSectionProps> = ({
                       </p>
                       {cv.deliveryCount > 0 && (
                         <p className="text-xs text-green-600 dark:text-green-400 mt-1 flex items-center gap-1">
-                          <HomeIcons.Document size={12} />
+                          <ConfiguredIcon
+                            name="contract"
+                            size={36}
+                            className="text-blue-600 dark:text-blue-400"
+                          />{" "}
                           {cv.deliveryCount} entregas
                         </p>
                       )}
@@ -322,7 +324,11 @@ export const UserCVsSection: React.FC<UserCVsSectionProps> = ({
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg"
               >
                 <span className="flex items-center gap-2">
-                  <HomeIcons.Folder size={20} />
+                  <ConfiguredIcon
+                    name="folder"
+                    size={36}
+                    className="text-blue-600 dark:text-blue-400"
+                  />{" "}
                   Ver Todos los CVs ({savedCVs.length})
                 </span>
               </Button>
