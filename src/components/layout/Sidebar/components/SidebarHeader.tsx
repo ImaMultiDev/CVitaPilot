@@ -1,5 +1,6 @@
 import React from "react";
 import { Select } from "@/components/ui/Select";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 interface SidebarHeaderProps {
   activeSection: string;
@@ -16,7 +17,6 @@ export const SidebarHeader: React.FC<SidebarHeaderProps> = ({
   currentSectionDescription,
   isUpdating,
   onClose,
-  isMobile = false,
 }) => {
   const sections = [
     {
@@ -99,26 +99,18 @@ export const SidebarHeader: React.FC<SidebarHeaderProps> = ({
             </div>
           )}
 
-          {/* Botón de cerrar integrado solo para mobile */}
-          {isMobile && onClose && (
+          {/* Botón de cerrar integrado */}
+          {onClose && (
             <button
               onClick={onClose}
-              className="p-2 text-gray-500 hover:text-white dark:text-gray-400 dark:hover:text-white hover:bg-red-500 dark:hover:bg-red-600 rounded-full transition-all duration-200 group"
-              aria-label="Cerrar panel"
+              className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+              aria-label="Cerrar panel de personalización"
+              title="Cerrar"
             >
-              <svg
-                className="w-4 h-4 transition-transform duration-200 group-hover:scale-110"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              <ConfiguredIcon
+                name="x"
+                className="w-5 h-5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+              />
             </button>
           )}
         </div>

@@ -33,6 +33,7 @@ model CV {
   github           String?
   website          String?
   location         String
+  photo            String? // Foto opcional para formato Europass
   
   // Descripción
   aboutMe          String?

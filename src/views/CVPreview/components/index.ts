@@ -8,6 +8,7 @@ export * from "./CVPreviewIcons";
 // Nuevos componentes modulares
 export { CVVisualFormat } from "./CVVisualFormat";
 export { CVATSFormat } from "./CVATSFormat";
+export { CVEuropassFormat } from "./CVEuropassFormat";
 export { ResponsiveStyles } from "./ResponsiveStyles";
 export { useResponsiveCV } from "./useResponsiveCV";
 export { ZoomControls } from "./ZoomControls";

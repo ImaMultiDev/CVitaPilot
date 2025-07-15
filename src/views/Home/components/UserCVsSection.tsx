@@ -275,14 +275,14 @@ export const UserCVsSection: React.FC<UserCVsSectionProps> = ({
                         {new Date(cv.updatedAt).toLocaleDateString()}
                       </p>
                       {cv.deliveryCount > 0 && (
-                        <p className="text-xs text-green-600 dark:text-green-400 mt-1 flex items-center gap-1">
+                        <div className="text-xs text-green-600 dark:text-green-400 mt-1 flex items-center gap-1">
                           <ConfiguredIcon
                             name="contract"
                             size={36}
                             className="text-blue-600 dark:text-blue-400"
                           />{" "}
                           {cv.deliveryCount} entregas
-                        </p>
+                        </div>
                       )}
                     </div>
                   </div>

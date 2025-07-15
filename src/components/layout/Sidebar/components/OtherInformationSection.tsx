@@ -18,11 +18,11 @@ export const OtherInformationSection: React.FC<
       <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-3">
         Otra Información
       </h3>
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         {otherInformation.map((item) => (
           <div
             key={item.id}
-            className={`flex items-center gap-2 text-sm transition-colors ${
+            className={`flex items-center gap-2 text-xs transition-colors ${
               item.selected
                 ? "text-gray-900 dark:text-gray-100"
                 : "text-gray-400 dark:text-gray-500"

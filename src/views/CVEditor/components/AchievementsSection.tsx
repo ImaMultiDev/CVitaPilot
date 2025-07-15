@@ -259,7 +259,7 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
                 </p>
               )}
               {achievement.url && (
-                <p className="text-sm md:text-xs text-purple-600 dark:text-purple-400 flex items-center gap-1">
+                <div className="text-sm md:text-xs text-purple-600 dark:text-purple-400 flex items-center gap-1">
                   <ConfiguredIcon name="external-link" size={12} />
                   <a
                     href={achievement.url || ""}
@@ -269,29 +269,29 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
                   >
                     {achievement.url || ""}
                   </a>
-                </p>
+                </div>
               )}
-              <p className="text-sm md:text-xs text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-1">
+              <div className="text-sm md:text-xs text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-1">
                 <ConfiguredIcon name="calendar" size={14} />
                 {achievement.date}
-              </p>
+              </div>
               <div className="text-sm md:text-sm text-gray-700 dark:text-gray-300 mb-2 leading-relaxed whitespace-pre-line">
                 {achievement.description}
               </div>
               {achievement.technologies.length > 0 && (
-                <p className="text-xs md:text-xs text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1">
+                <div className="text-xs md:text-xs text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1">
                   <ConfiguredIcon name="wrench" size={12} />
                   {achievement.technologies.join(", ")}
-                </p>
+                </div>
               )}
               {achievement.metrics && (
-                <p className="text-xs md:text-xs text-green-600 dark:text-green-400 mb-1 flex items-center gap-1">
+                <div className="text-xs md:text-xs text-green-600 dark:text-green-400 mb-1 flex items-center gap-1">
                   <ConfiguredIcon name="bar-chart" size={12} />
                   {achievement.metrics}
-                </p>
+                </div>
               )}
               {achievement.url && (
-                <p className="text-xs md:text-xs text-purple-600 dark:text-purple-400 flex items-center gap-1">
+                <div className="text-xs md:text-xs text-purple-600 dark:text-purple-400 flex items-center gap-1">
                   <ConfiguredIcon name="external-link" size={12} />
                   <a
                     href={achievement.url}
@@ -301,7 +301,7 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
                   >
                     Ver proyecto
                   </a>
-                </p>
+                </div>
               )}
             </div>
             <div className="flex items-center justify-end md:justify-center space-x-3 md:space-x-2 md:ml-4 flex-shrink-0">

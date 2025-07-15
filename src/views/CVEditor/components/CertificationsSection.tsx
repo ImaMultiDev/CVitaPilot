@@ -194,18 +194,18 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({
               <p className="text-gray-600 dark:text-gray-300">
                 {certification.issuer}
               </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
+              <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
                 <ConfiguredIcon name="calendar" size={14} />
                 Obtenida: {certification.date}
-              </p>
+              </div>
               {certification.credentialId && (
-                <p className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
+                <div className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
                   <ConfiguredIcon name="key" size={12} />
                   ID: {certification.credentialId}
-                </p>
+                </div>
               )}
               {certification.url && (
-                <p className="text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                <div className="text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1">
                   <ConfiguredIcon name="external-link" size={12} />
                   <a
                     href={certification.url}
@@ -215,7 +215,7 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({
                   >
                     Verificar certificado
                   </a>
-                </p>
+                </div>
               )}
             </div>
             <div className="flex items-center justify-end md:justify-center space-x-3 md:space-x-2 md:ml-4 flex-shrink-0">

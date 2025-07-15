@@ -1,9 +1,10 @@
 import React from "react";
-import { Achievement } from "@/types/cv";
+import { Achievement, CVFormat } from "@/types/cv";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 interface AchievementsSectionProps {
   achievements: Achievement[];
-  format: "visual" | "ats";
+  format: CVFormat;
   className?: string;
 }
 
@@ -23,22 +24,7 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
   if (format === "visual") {
     return (
       <div className={className} style={{ marginBottom: "2rem" }}>
-        <h2
-          style={{
-            fontSize: "1.25rem",
-            fontWeight: "bold",
-            marginBottom: "1.5rem",
-            paddingBottom: "0.5rem",
-            color: "#374151",
-            borderBottom: "2px solid #14b8a6",
-            lineHeight: "1.75rem",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
-          }}
-        >
-          Logros y Proyectos Destacados
-        </h2>
+        <h2 className="cv-section-title">Logros y Proyectos Destacados</h2>
         {selectedAchievements.map((achievement, index) => (
           <div key={index} style={{ marginBottom: "1.5rem" }}>
             <div
@@ -60,7 +46,11 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
                   gap: "0.5rem",
                 }}
               >
-                {achievement.type === "project" ? "🔧" : "🎯"}{" "}
+                {achievement.type === "project" ? (
+                  <ConfiguredIcon name="wrench" className="w-4 h-4" />
+                ) : (
+                  <ConfiguredIcon name="target" className="w-4 h-4" />
+                )}
                 {achievement.title}
               </h3>
               <span
@@ -126,6 +116,112 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
 
             {achievement.url && (
               <p style={{ fontSize: "0.75rem", color: "#0891b2" }}>
+                <strong>URL:</strong> {achievement.url}
+              </p>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (format === "europass") {
+    return (
+      <div className={className} style={{ marginBottom: "2rem" }}>
+        <h2 className="cv-section-title europass">
+          Logros y Proyectos Destacados
+        </h2>
+        {selectedAchievements.map((achievement, index) => (
+          <div key={index} style={{ marginBottom: "1.5rem" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                marginBottom: "0.5rem",
+              }}
+            >
+              <h3
+                style={{
+                  fontSize: "1rem",
+                  fontWeight: "600",
+                  color: achievement.type === "project" ? "#7c3aed" : "#dc2626",
+                  lineHeight: "1.5rem",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                }}
+              >
+                {achievement.type === "project" ? (
+                  <ConfiguredIcon name="wrench" className="w-4 h-4" />
+                ) : (
+                  <ConfiguredIcon name="target" className="w-4 h-4" />
+                )}
+                {achievement.title}
+              </h3>
+              <span
+                style={{
+                  fontSize: "0.875rem",
+                  color: "#6b7280",
+                  fontWeight: "500",
+                }}
+              >
+                {achievement.date}
+              </span>
+            </div>
+
+            {achievement.company && (
+              <p
+                style={{
+                  fontSize: "0.875rem",
+                  color: "#374151",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                <strong>{achievement.company}</strong>
+              </p>
+            )}
+
+            <p
+              style={{
+                fontSize: "0.875rem",
+                color: "#374151",
+                marginBottom: "0.5rem",
+                lineHeight: "1.4",
+              }}
+            >
+              {achievement.description}
+            </p>
+
+            {achievement.technologies &&
+              achievement.technologies.length > 0 && (
+                <p
+                  style={{
+                    fontSize: "0.875rem",
+                    color: "#374151",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  <strong>Tecnologías:</strong>{" "}
+                  {achievement.technologies.join(", ")}
+                </p>
+              )}
+
+            {achievement.metrics && (
+              <p
+                style={{
+                  fontSize: "0.875rem",
+                  color: "#059669",
+                  fontWeight: "600",
+                  marginBottom: "0.25rem",
+                }}
+              >
+                <strong>Impacto:</strong> {achievement.metrics}
+              </p>
+            )}
+
+            {achievement.url && (
+              <p style={{ fontSize: "0.75rem", color: "#003399" }}>
                 <strong>URL:</strong> {achievement.url}
               </p>
             )}

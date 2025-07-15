@@ -24,11 +24,11 @@ export const LanguagesSection: React.FC<LanguagesSectionProps> = ({
         </Badge>
       </div>
 
-      <div className="space-y-2 max-h-64 overflow-y-auto custom-scrollbar">
+      <div className="space-y-1.5 max-h-64 overflow-y-auto custom-scrollbar">
         {cvData.languages.map((language) => (
           <div
             key={language.id}
-            className="flex items-center justify-between p-2 rounded-lg bg-gradient-to-r from-emerald-50/50 to-green-50/50 dark:from-emerald-900/20 dark:to-green-900/20 border border-emerald-200/50 dark:border-emerald-800/50 hover:shadow-sm transition-all duration-200"
+            className="flex items-center justify-between p-1.5 rounded-lg bg-gradient-to-r from-emerald-50/50 to-green-50/50 dark:from-emerald-900/20 dark:to-green-900/20 border border-emerald-200/50 dark:border-emerald-800/50 hover:shadow-sm transition-all duration-200"
           >
             <span className="text-xs font-medium text-gray-700 dark:text-gray-300 mr-2">
               {language.name}

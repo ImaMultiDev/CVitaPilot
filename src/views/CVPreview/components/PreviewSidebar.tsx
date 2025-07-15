@@ -11,10 +11,12 @@ import {
   PrintIcon,
   ZoomInIcon,
 } from "./CVPreviewIcons";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
+import { CVFormat, CVData } from "@/types/cv";
 
 interface PreviewSidebarProps {
-  currentFormat: "visual" | "ats";
-  onFormatChange: (format: "visual" | "ats") => void;
+  currentFormat: CVFormat;
+  onFormatChange: (format: CVFormat) => void;
   currentCVName?: string;
   zoomLevel: number;
   onZoomIn: () => void;
@@ -22,6 +24,8 @@ interface PreviewSidebarProps {
   onZoomReset: () => void;
   isMobile?: boolean;
   isTablet?: boolean;
+  onClose?: () => void;
+  cvData?: CVData; // Nuevo prop para datos del CV
 }
 
 export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
@@ -34,6 +38,8 @@ export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
   onZoomReset,
   isMobile = false,
   isTablet = false,
+  onClose,
+  cvData,
 }) => {
   const [activeSection, setActiveSection] = useState<string>("formato");
 
@@ -52,8 +58,8 @@ export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
     },
     {
       id: "impresion",
-      name: "Controles de Impresión",
-      description: "Opciones para imprimir y descargar",
+      name: "Exportar PDF",
+      description: "Opciones para exportar CV como PDF",
       icon: PrintIcon,
     },
     {
@@ -76,8 +82,9 @@ export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
               setCvFormat={onFormatChange}
             />
             <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
-              <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">
-                💡 Consejo
+              <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2 flex items-center gap-2">
+                <ConfiguredIcon name="lightbulb" className="w-4 h-4" />
+                Consejo
               </h4>
               <p className="text-sm text-blue-700 dark:text-blue-300">
                 {currentFormat === "visual"
@@ -105,14 +112,15 @@ export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
       case "impresion":
         return (
           <div className="space-y-2">
-            <PrintControls />
+            <PrintControls cvData={cvData} currentFormat={currentFormat} />
             <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-700">
-              <h4 className="font-medium text-green-900 dark:text-green-100 mb-2">
-                📄 Formato de Impresión
+              <h4 className="font-medium text-green-900 dark:text-green-100 mb-2 flex items-center gap-2">
+                <ConfiguredIcon name="info" className="w-4 h-4" />
+                Formato de PDF
               </h4>
               <p className="text-sm text-green-700 dark:text-green-300">
-                El CV está optimizado para papel A4. Asegúrate de seleccionar
-                &quot;A4&quot; en las opciones de impresión de tu navegador.
+                El CV se exporta como PDF optimizado para A4 con layout
+                profesional de dos páginas.
               </p>
             </div>
           </div>
@@ -123,8 +131,9 @@ export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
           <div className="space-y-2">
             <ActiveCVIndicator currentCVName={currentCVName} />
             <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-              <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">
-                🔧 Configuración Adicional
+              <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+                <ConfiguredIcon name="settings" className="w-4 h-4" />
+                Configuración Adicional
               </h4>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -157,8 +166,9 @@ export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
 
   return (
     <div
-      className="w-full h-screen overflow-hidden flex flex-col"
+      className="w-full overflow-hidden flex flex-col"
       style={{
+        height: "calc(100vh - 64px)", // Restar la altura del navbar
         backgroundColor: "var(--sidebar-bg, #ffffff)",
         color: "var(--sidebar-text, #111827)",
       }}
@@ -198,9 +208,9 @@ export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
         }
       `}</style>
 
-      {/* Header */}
+      {/* Header - Altura fija */}
       <div
-        className="p-2 border-b"
+        className="p-2 border-b flex-shrink-0"
         style={{
           backgroundColor: "var(--sidebar-bg)",
           borderBottomColor: "var(--sidebar-border)",
@@ -224,6 +234,20 @@ export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
               {currentSection?.description}
             </p>
           </div>
+          {/* Botón de cerrar */}
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+              aria-label="Cerrar panel de vista previa"
+              title="Cerrar"
+            >
+              <ConfiguredIcon
+                name="x"
+                className="w-5 h-5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+              />
+            </button>
+          )}
         </div>
 
         {/* Información del CV */}
@@ -258,8 +282,9 @@ export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
               const initialZoom = isMobile ? 0.4 : isTablet ? 0.75 : 1.0; // Valores actualizados
               return (
                 Math.abs(zoomLevel - initialZoom) > 0.01 && (
-                  <div className="px-2 py-1 bg-purple-100 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700 rounded text-xs font-mono text-purple-700 dark:text-purple-300">
-                    🔍 {Math.round(zoomLevel * 100)}%
+                  <div className="px-2 py-1 bg-purple-100 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700 rounded text-xs font-mono text-purple-700 dark:text-purple-300 flex items-center gap-1">
+                    <ConfiguredIcon name="search" className="w-3 h-3" />
+                    {Math.round(zoomLevel * 100)}%
                   </div>
                 )
               );
@@ -316,17 +341,20 @@ export const PreviewSidebar: React.FC<PreviewSidebarProps> = ({
         </div>
       </div>
 
-      {/* Content */}
+      {/* Content - Área de scroll */}
       <div
         className="flex-1 overflow-y-auto p-2 custom-scrollbar"
-        style={{ backgroundColor: "var(--sidebar-bg)" }}
+        style={{
+          backgroundColor: "var(--sidebar-bg)",
+          minHeight: 0, // Importante para que flex-1 funcione correctamente
+        }}
       >
         {renderSectionContent()}
       </div>
 
-      {/* Footer */}
+      {/* Footer - Altura fija */}
       <div
-        className="p-2 border-t"
+        className="p-2 border-t flex-shrink-0"
         style={{
           backgroundColor: "var(--sidebar-bg)",
           borderTopColor: "var(--sidebar-border)",

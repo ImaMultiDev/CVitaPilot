@@ -1,5 +1,6 @@
 import React from "react";
 import { CVData } from "@/types/cv";
+import Image from "next/image";
 import {
   PersonalInfoSection,
   ExperienceSection,
@@ -14,13 +15,15 @@ import {
   ReferencesSection,
 } from "./CVSections";
 
-interface CVVisualFormatProps {
+interface CVEuropassFormatProps {
   cvData: CVData;
 }
 
-export const CVVisualFormat: React.FC<CVVisualFormatProps> = ({ cvData }) => {
+export const CVEuropassFormat: React.FC<CVEuropassFormatProps> = ({
+  cvData,
+}) => {
   return (
-    <div className="cv-container visual-format">
+    <div className="cv-container europass-format">
       <style jsx>{`
         .cv-container {
           color-scheme: light !important;
@@ -35,7 +38,7 @@ export const CVVisualFormat: React.FC<CVVisualFormatProps> = ({ cvData }) => {
         }
       `}</style>
 
-      {/* Página 1 - Visual con sidebar */}
+      {/* Página 1 - Europass con sidebar */}
       <div
         id="cv-page-1"
         className="cv-page mx-auto mb-8 overflow-hidden"
@@ -48,40 +51,58 @@ export const CVVisualFormat: React.FC<CVVisualFormatProps> = ({ cvData }) => {
           boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
         }}
       >
-        <div className="flex h-full visual-page-layout">
-          {/* Sidebar */}
+        <div style={{ display: "flex", height: "100%" }}>
+          {/* Sidebar Europass - Azul europeo */}
           <div
             style={{
               background:
-                "linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #14b8a6 100%)",
-              width: "35%",
+                "linear-gradient(135deg, #003399 0%, #0066cc 50%, #0099ff 100%)",
+              width: "30%",
               padding: "1.5rem",
               color: "#ffffff",
               flexShrink: 0,
             }}
           >
+            {/* Foto opcional */}
+            {cvData.personalInfo?.photo && (
+              <div style={{ marginBottom: "1.5rem", textAlign: "center" }}>
+                <Image
+                  src={cvData.personalInfo.photo}
+                  alt="Foto de perfil"
+                  style={{
+                    width: "120px",
+                    height: "120px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    border: "3px solid #ffffff",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                  }}
+                />
+              </div>
+            )}
+
             {/* Información Personal */}
             <PersonalInfoSection
               personalInfo={cvData.personalInfo}
-              format="visual"
+              format="europass"
             />
 
             {/* Competencias */}
             <CompetencesSection
               competences={cvData.competences}
-              format="visual"
+              format="europass"
             />
 
             {/* Idiomas */}
-            <LanguagesSection languages={cvData.languages} format="visual" />
+            <LanguagesSection languages={cvData.languages} format="europass" />
 
             {/* Especialización - Habilidades organizadas */}
-            <SpecializationSection skills={cvData.skills} format="visual" />
+            <SpecializationSection skills={cvData.skills} format="europass" />
 
             {/* Otra información */}
             <OtherInformationSection
               otherInformation={cvData.otherInformation}
-              format="visual"
+              format="europass"
             />
           </div>
 
@@ -112,7 +133,7 @@ export const CVVisualFormat: React.FC<CVVisualFormatProps> = ({ cvData }) => {
                   fontSize: "1.25rem",
                   fontWeight: "500",
                   marginBottom: "1rem",
-                  color: "#0f766e",
+                  color: "#003399",
                   lineHeight: "1.75rem",
                 }}
               >
@@ -122,7 +143,17 @@ export const CVVisualFormat: React.FC<CVVisualFormatProps> = ({ cvData }) => {
               {/* About me section */}
               {cvData.aboutMe && (
                 <div style={{ marginBottom: "1.5rem" }}>
-                  <h2 className="cv-section-title">Perfil Profesional</h2>
+                  <h3
+                    style={{
+                      fontSize: "1.125rem",
+                      fontWeight: "600",
+                      marginBottom: "0.75rem",
+                      color: "#1f2937",
+                      lineHeight: "1.75rem",
+                    }}
+                  >
+                    Perfil Profesional
+                  </h3>
                   <p
                     style={{
                       fontSize: "0.875rem",
@@ -139,14 +170,14 @@ export const CVVisualFormat: React.FC<CVVisualFormatProps> = ({ cvData }) => {
             {/* Experiencia Laboral */}
             <ExperienceSection
               experiences={cvData.experiences}
-              format="visual"
+              format="europass"
               maxItems={2}
             />
           </div>
         </div>
       </div>
 
-      {/* Página 2 - Visual */}
+      {/* Página 2 - Europass sin sidebar */}
       <div
         id="cv-page-2"
         className="cv-page mx-auto overflow-hidden"
@@ -171,26 +202,29 @@ export const CVVisualFormat: React.FC<CVVisualFormatProps> = ({ cvData }) => {
             }}
           >
             {/* Formación Académica */}
-            <EducationSection education={cvData.education} format="visual" />
+            <EducationSection education={cvData.education} format="europass" />
 
             {/* Certificaciones */}
             <CertificationsSection
               certifications={cvData.certifications}
-              format="visual"
+              format="europass"
             />
 
             {/* Logros y Proyectos Destacados */}
             <AchievementsSection
               achievements={cvData.achievements}
-              format="visual"
+              format="europass"
             />
 
             {/* Referencias */}
-            <ReferencesSection references={cvData.references} format="visual" />
+            <ReferencesSection
+              references={cvData.references}
+              format="europass"
+            />
 
-            {/* Habilidades Técnicas Detalladas - Solo si hay espacio y habilidades extra */}
-            {cvData.skills && cvData.skills.length > 9 && (
-              <SkillsSection skills={cvData.skills} format="visual" />
+            {/* Habilidades Técnicas Detalladas - Solo si hay espacio */}
+            {cvData.skills && cvData.skills.length > 6 && (
+              <SkillsSection skills={cvData.skills} format="europass" />
             )}
           </div>
         </div>

@@ -1,9 +1,9 @@
 import React from "react";
-import { Language } from "@/types/cv";
+import { Language, CVFormat } from "@/types/cv";
 
 interface LanguagesSectionProps {
   languages: Language[];
-  format: "visual" | "ats";
+  format: CVFormat;
   className?: string;
 }
 
@@ -32,7 +32,7 @@ export const LanguagesSection: React.FC<LanguagesSectionProps> = ({
               fontSize: "1.125rem",
               fontWeight: "bold",
               color: "#ffffff",
-              lineHeight: "1.75rem",
+              lineHeight: "0.2rem",
             }}
           >
             Idiomas
@@ -40,7 +40,7 @@ export const LanguagesSection: React.FC<LanguagesSectionProps> = ({
         </div>
 
         <div
-          style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}
+          style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
         >
           {languages.map((language, index) => (
             <div
@@ -54,7 +54,7 @@ export const LanguagesSection: React.FC<LanguagesSectionProps> = ({
               <span
                 style={{
                   color: "#ffffff",
-                  fontSize: "0.875rem",
+                  fontSize: "0.75rem",
                   fontWeight: "500",
                 }}
               >
@@ -63,9 +63,71 @@ export const LanguagesSection: React.FC<LanguagesSectionProps> = ({
               <span
                 style={{
                   color: "#ffffff",
-                  fontSize: "0.75rem",
+                  fontSize: "0.65rem",
                   background: "rgba(255, 255, 255, 0.2)",
-                  padding: "0.25rem 0.5rem",
+                  padding: "0.2rem 0.4rem",
+                  borderRadius: "0.375rem",
+                }}
+              >
+                {language.level}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (format === "europass") {
+    return (
+      <div className={className} style={{ marginBottom: "0.75rem" }}>
+        {/* Header con fondo azul europeo */}
+        <div
+          style={{
+            background: "#003399",
+            margin: "0 -1.5rem 1rem -1.5rem",
+            padding: "1rem",
+          }}
+        >
+          <h3
+            style={{
+              fontSize: "1.125rem",
+              fontWeight: "bold",
+              color: "#ffffff",
+              lineHeight: "1.75rem",
+            }}
+          >
+            Idiomas
+          </h3>
+        </div>
+
+        <div
+          style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
+        >
+          {languages.map((language, index) => (
+            <div
+              key={index}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <span
+                style={{
+                  color: "#ffffff",
+                  fontSize: "0.75rem",
+                  fontWeight: "500",
+                }}
+              >
+                {language.name}
+              </span>
+              <span
+                style={{
+                  color: "#ffffff",
+                  fontSize: "0.65rem",
+                  background: "rgba(255, 255, 255, 0.2)",
+                  padding: "0.2rem 0.4rem",
                   borderRadius: "0.375rem",
                 }}
               >

@@ -310,10 +310,10 @@ export const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
               )}
               {experience.technologies &&
                 experience.technologies.length > 0 && (
-                  <p className="text-sm md:text-sm text-blue-600 dark:text-blue-400 mt-1 flex items-center gap-1">
+                  <div className="text-sm md:text-sm text-blue-600 dark:text-blue-400 mt-1 flex items-center gap-1">
                     <ConfiguredIcon name="wrench" size={14} />
                     {experience.technologies.join(", ")}
-                  </p>
+                  </div>
                 )}
             </div>
             <div className="flex items-center justify-end md:justify-center space-x-3 md:space-x-2 md:ml-4 flex-shrink-0">

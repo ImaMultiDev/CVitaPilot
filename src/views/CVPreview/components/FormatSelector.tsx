@@ -1,11 +1,7 @@
 import React from "react";
-import {
-  VisualFormatIcon,
-  ATSFormatIcon,
-  CVFormatIcon,
-} from "./CVPreviewIcons";
-
-type CVFormat = "visual" | "ats";
+import { VisualFormatIcon, ATSFormatIcon } from "./CVPreviewIcons";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
+import { CVFormat } from "@/types/cv";
 
 interface FormatSelectorProps {
   cvFormat: CVFormat;
@@ -17,114 +13,128 @@ export const FormatSelector: React.FC<FormatSelectorProps> = ({
   setCvFormat,
 }) => {
   return (
-    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-2 shadow-lg no-print">
+    <div className="space-y-3">
       <div className="text-center">
-        <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 mb-2 flex items-center justify-center gap-2">
-          <CVFormatIcon
-            size={16}
-            className="text-blue-600 dark:text-blue-400"
-          />
-          <span className="text-sm">Formato del CV</span>
-        </h3>
-        <div className="flex flex-col gap-2 mb-2">
-          {/* Botón Formato Visual */}
-          <button
-            onClick={() => setCvFormat("visual")}
-            className={`px-3 py-2 rounded-xl font-semibold transition-all duration-300 ${
-              cvFormat === "visual"
-                ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/25 ring-2 ring-blue-300"
-                : "bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 hover:border-blue-300"
-            }`}
-          >
-            <div className="flex items-center gap-2">
-              <VisualFormatIcon
-                size={14}
-                className={
-                  cvFormat === "visual"
-                    ? "text-white"
-                    : "text-blue-600 dark:text-blue-400"
-                }
-              />
-              <span className="text-sm">Formato Visual</span>
-            </div>
-            <div className="text-xs mt-1 opacity-80">
-              Diseño atractivo con colores
-            </div>
-          </button>
+        <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center justify-center gap-2">
+          <VisualFormatIcon className="text-blue-600 dark:text-blue-400" />
+          <span>Selecciona el Formato</span>
+        </h4>
+      </div>
 
-          {/* Botón Formato ATS */}
-          <button
-            onClick={() => setCvFormat("ats")}
-            className={`px-3 py-2 rounded-xl font-semibold transition-all duration-300 ${
-              cvFormat === "ats"
-                ? "bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/25 ring-2 ring-green-300"
-                : "bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 hover:border-green-300"
-            }`}
-          >
-            <div className="flex items-center gap-2">
-              <ATSFormatIcon
-                size={14}
-                className={
-                  cvFormat === "ats"
-                    ? "text-white"
-                    : "text-green-600 dark:text-green-400"
-                }
-              />
-              <span className="text-sm">Formato ATS</span>
-            </div>
-            <div className="text-xs mt-1 opacity-80">
-              Optimizado para sistemas automáticos
-            </div>
-          </button>
-        </div>
+      {/* Botones de formato */}
+      <div className="grid grid-cols-3 gap-3">
+        {/* Formato Visual */}
+        <button
+          onClick={() => setCvFormat("visual")}
+          className={`p-3 rounded-lg border-2 transition-all duration-200 ${
+            cvFormat === "visual"
+              ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300"
+              : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-blue-300 dark:hover:border-blue-600"
+          }`}
+        >
+          <div className="flex flex-col items-center gap-2">
+            <VisualFormatIcon className="text-blue-600 dark:text-blue-400" />
+            <span className="text-xs font-medium">Visual</span>
+          </div>
+        </button>
 
-        {/* Estado del formato seleccionado - Compacto */}
-        <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-2 text-xs text-gray-600 dark:text-gray-400">
-          {cvFormat === "visual" ? (
-            <div className="flex items-center gap-2">
-              <VisualFormatIcon
-                size={14}
-                className="text-blue-600 dark:text-blue-400 flex-shrink-0"
-              />
-              <div>
-                <strong className="text-blue-600 dark:text-blue-400">
-                  ✅ Visual
-                </strong>
-                <span className="ml-1">- Diseño atractivo para humanos</span>
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              <ATSFormatIcon
-                size={14}
-                className="text-green-600 dark:text-green-400 flex-shrink-0"
-              />
-              <div>
-                <strong className="text-green-600 dark:text-green-400">
-                  ✅ ATS
-                </strong>
-                <span className="ml-1">- Optimizado para sistemas</span>
-              </div>
-            </div>
-          )}
-        </div>
+        {/* Formato ATS */}
+        <button
+          onClick={() => setCvFormat("ats")}
+          className={`p-3 rounded-lg border-2 transition-all duration-200 ${
+            cvFormat === "ats"
+              ? "border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300"
+              : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-green-300 dark:hover:border-green-600"
+          }`}
+        >
+          <div className="flex flex-col items-center gap-2">
+            <ATSFormatIcon className="text-green-600 dark:text-green-400" />
+            <span className="text-xs font-medium">ATS</span>
+          </div>
+        </button>
 
-        {/* Indicador visual adicional */}
-        <div className="mt-2 flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-          <div
-            className={`w-2 h-2 rounded-full ${
-              cvFormat === "visual" ? "bg-blue-500" : "bg-gray-300"
-            }`}
-          ></div>
-          <span>Visual</span>
-          <div className="w-6 h-px bg-gray-300 dark:bg-gray-600"></div>
-          <span>ATS</span>
-          <div
-            className={`w-2 h-2 rounded-full ${
-              cvFormat === "ats" ? "bg-green-500" : "bg-gray-300"
-            }`}
-          ></div>
-        </div>
+        {/* Formato Europass */}
+        <button
+          onClick={() => setCvFormat("europass")}
+          className={`p-3 rounded-lg border-2 transition-all duration-200 ${
+            cvFormat === "europass"
+              ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300"
+              : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-blue-400 dark:hover:border-blue-500"
+          }`}
+        >
+          <div className="flex flex-col items-center gap-2">
+            <ConfiguredIcon
+              name="globe"
+              className="text-blue-600 dark:text-blue-400"
+            />
+            <span className="text-xs font-medium">Europass</span>
+          </div>
+        </button>
+      </div>
+
+      {/* Información del formato seleccionado */}
+      <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-2 text-xs text-gray-600 dark:text-gray-400">
+        {cvFormat === "visual" ? (
+          <div className="flex items-center gap-2">
+            <VisualFormatIcon className="text-blue-600 dark:text-blue-400 flex-shrink-0" />
+            <div>
+              <strong className="text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                <ConfiguredIcon name="check" className="w-3 h-3" />
+                Visual
+              </strong>
+              <span className="ml-1">- Diseño atractivo para humanos</span>
+            </div>
+          </div>
+        ) : cvFormat === "europass" ? (
+          <div className="flex items-center gap-2">
+            <ConfiguredIcon
+              name="globe"
+              className="text-blue-600 dark:text-blue-400 flex-shrink-0"
+            />
+            <div>
+              <strong className="text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                <ConfiguredIcon name="check" className="w-3 h-3" />
+                Europass
+              </strong>
+              <span className="ml-1">- Formato europeo estándar</span>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <ATSFormatIcon className="text-green-600 dark:text-green-400 flex-shrink-0" />
+            <div>
+              <strong className="text-green-600 dark:text-green-400 flex items-center gap-1">
+                <ConfiguredIcon name="check" className="w-3 h-3" />
+                ATS
+              </strong>
+              <span className="ml-1">- Optimizado para sistemas</span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Indicador visual adicional */}
+      <div className="mt-2 flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+        <div
+          className={`w-2 h-2 rounded-full ${
+            cvFormat === "visual" ? "bg-blue-500" : "bg-gray-300"
+          }`}
+        ></div>
+        <span>Visual</span>
+        <div className="w-6 h-px bg-gray-300 dark:bg-gray-600"></div>
+        <span>Europass</span>
+        <div
+          className={`w-2 h-2 rounded-full ${
+            cvFormat === "europass" ? "bg-blue-600" : "bg-gray-300"
+          }`}
+        ></div>
+        <div className="w-6 h-px bg-gray-300 dark:bg-gray-600"></div>
+        <span>ATS</span>
+        <div
+          className={`w-2 h-2 rounded-full ${
+            cvFormat === "ats" ? "bg-green-500" : "bg-gray-300"
+          }`}
+        ></div>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@
 
 import React from "react";
 import { ZoomInIcon, ZoomOutIcon, ZoomResetIcon } from "./CVPreviewIcons";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 interface ZoomControlsProps {
   zoomLevel: number;
@@ -92,8 +93,9 @@ export const ZoomControls: React.FC<ZoomControlsProps> = ({
 
       {/* Información adicional */}
       <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-        <h4 className="font-medium text-gray-900 dark:text-gray-100 text-sm mb-1">
-          🔍 Controles de Zoom
+        <h4 className="font-medium text-gray-900 dark:text-gray-100 text-sm mb-1 flex items-center gap-2">
+          <ConfiguredIcon name="search" className="w-4 h-4" />
+          Controles de Zoom
         </h4>
         <div className="space-y-1 text-xs text-gray-600 dark:text-gray-400">
           <div className="flex justify-between">

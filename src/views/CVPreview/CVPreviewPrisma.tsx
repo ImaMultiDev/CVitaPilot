@@ -1,13 +1,15 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { CVData } from "@/types/cv";
+import { CVData, CVFormat } from "@/types/cv";
 import {
   PreviewSidebar,
   CVVisualFormat,
   CVATSFormat,
+  CVEuropassFormat,
   ResponsiveStyles,
 } from "./components";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 interface CVPreviewPrismaProps {
   cvData: CVData;
@@ -18,7 +20,7 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
   cvData,
   currentCVName,
 }) => {
-  const [cvFormat, setCvFormat] = useState<"visual" | "ats">("visual");
+  const [cvFormat, setCvFormat] = useState<CVFormat>("visual");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
@@ -148,6 +150,8 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
   const renderCV = () => {
     if (cvFormat === "visual") {
       return <CVVisualFormat cvData={cvData} />;
+    } else if (cvFormat === "europass") {
+      return <CVEuropassFormat cvData={cvData} />;
     } else {
       return <CVATSFormat cvData={cvData} />;
     }
@@ -205,6 +209,8 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
                 onZoomReset={handleZoomReset}
                 isMobile={isClient ? isMobile : false}
                 isTablet={isClient ? isTablet : false}
+                onClose={closeSidebar}
+                cvData={cvData}
               />
             </div>
           </div>
@@ -214,10 +220,10 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
       {/* Botón flotante para controles - Universal */}
       <button
         onClick={isSidebarOpen ? closeSidebar : toggleSidebar}
-        className={`no-print fixed top-20 left-4 z-[50] p-3 lg:p-4 text-white rounded-full border-2 transition-all duration-300 hover:scale-110 active:scale-95 ${
+        className={`no-print fixed top-20 left-4 z-[60] p-2 md:p-3 text-white justify-center items-center flex rounded-full border-2 transition-all duration-300 hover:scale-110 active:scale-95 backdrop-blur-sm ${
           isSidebarOpen
-            ? "border-red-300/50 shadow-2xl ring-4 ring-red-500/30 hover:ring-red-500/50 opacity-70 hover:opacity-90"
-            : "border-white/30 dark:border-white/20 shadow-xl hover:shadow-2xl hover:border-white/50 dark:hover:border-white/40 ring-4 ring-purple-500/20 hover:ring-purple-500/40 animate-pulse hover:animate-none opacity-80 hover:opacity-100"
+            ? "opacity-0 pointer-events-none"
+            : "border-white/30 dark:border-white/20 shadow-xl hover:shadow-2xl hover:border-white/50 dark:hover:border-white/40 ring-4 ring-indigo-500/20 hover:ring-indigo-500/40 animate-pulse hover:animate-none"
         }`}
         aria-label={
           isSidebarOpen
@@ -225,45 +231,13 @@ export const CVPreviewPrisma: React.FC<CVPreviewPrismaProps> = ({
             : "Abrir controles de vista previa"
         }
         style={{
-          boxShadow: isSidebarOpen
-            ? "0 15px 35px rgba(239, 68, 68, 0.4), 0 6px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)"
-            : "0 10px 25px rgba(147, 51, 234, 0.4), 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
-          background: isSidebarOpen
-            ? "linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%)"
-            : "linear-gradient(135deg, #9333ea 0%, #7c3aed 50%, #6d28d9 100%)",
+          boxShadow:
+            "0 10px 25px rgba(79, 70, 229, 0.4), 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
+          background:
+            "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
         }}
       >
-        {isSidebarOpen ? (
-          // X para cerrar
-          <svg
-            className="w-5 h-5 lg:w-6 lg:h-6 transition-transform duration-300"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        ) : (
-          // Icono de controles
-          <svg
-            className="w-5 h-5 lg:w-6 lg:h-6 transition-transform duration-300"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"
-            />
-          </svg>
-        )}
+        <ConfiguredIcon name="menu" size={20} className="text-white" />
       </button>
 
       {/* Contenido principal - Solo CV Canvas */}

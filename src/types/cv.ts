@@ -6,8 +6,11 @@ export interface PersonalInfo {
   linkedin: string;
   website: string;
   location: string;
+  photo?: string; // Foto opcional para formato Europass
   socialNetworks: SocialNetwork[];
 }
+
+export type CVFormat = "visual" | "ats" | "europass";
 
 export interface SocialNetwork {
   id: string;

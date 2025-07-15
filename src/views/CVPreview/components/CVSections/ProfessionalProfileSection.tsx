@@ -1,8 +1,9 @@
 import React from "react";
+import { CVFormat } from "@/types/cv";
 
 interface ProfessionalProfileSectionProps {
   professionalProfile?: string;
-  format: "visual" | "ats";
+  format: CVFormat;
   className?: string;
 }
 
@@ -41,6 +42,48 @@ export const ProfessionalProfileSection: React.FC<
           >
             {professionalProfile}
           </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (format === "visual") {
+    return (
+      <div className={className} style={{ marginBottom: "2rem" }}>
+        <h2 className="cv-section-title">Perfil Profesional</h2>
+        <div style={{ marginTop: "1rem" }}>
+          <p
+            style={{
+              fontSize: "1rem",
+              color: "#374151",
+              marginTop: "1rem",
+              lineHeight: "1.6",
+              textAlign: "justify",
+            }}
+          >
+            {professionalProfile}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (format === "europass") {
+    return (
+      <div className={className} style={{ marginBottom: "2rem" }}>
+        <h2 className="cv-section-title europass">Perfil Profesional</h2>
+        <div style={{ marginTop: "1rem" }}>
+          <div
+            style={{
+              fontSize: "1rem",
+              color: "#374151",
+              marginTop: "1rem",
+              lineHeight: "1.6",
+              textAlign: "justify",
+            }}
+          >
+            {professionalProfile}
+          </div>
         </div>
       </div>
     );

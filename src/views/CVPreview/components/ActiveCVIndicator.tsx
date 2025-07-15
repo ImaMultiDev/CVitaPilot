@@ -1,8 +1,8 @@
 import React from "react";
-import { ActiveCVIcon } from "./CVPreviewIcons";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 interface ActiveCVIndicatorProps {
-  currentCVName: string | null | undefined;
+  currentCVName?: string;
 }
 
 export const ActiveCVIndicator: React.FC<ActiveCVIndicatorProps> = ({
@@ -16,9 +16,9 @@ export const ActiveCVIndicator: React.FC<ActiveCVIndicatorProps> = ({
         <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2">
           <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
           <div className="flex items-center gap-2">
-            <ActiveCVIcon
-              size={18}
-              className="text-blue-800 dark:text-blue-200"
+            <ConfiguredIcon
+              name="check-circle"
+              className="text-blue-800 dark:text-blue-200 w-6 h-6"
             />
             <span className="font-semibold text-base sm:text-lg text-blue-800 dark:text-blue-200">
               CV Activo

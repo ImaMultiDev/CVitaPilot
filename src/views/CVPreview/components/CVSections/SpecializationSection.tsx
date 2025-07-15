@@ -1,9 +1,9 @@
 import React from "react";
-import { Skill } from "@/types/cv";
+import { Skill, CVFormat } from "@/types/cv";
 
 interface SpecializationSectionProps {
   skills: Skill[];
-  format: "visual" | "ats";
+  format: CVFormat;
   className?: string;
 }
 
@@ -14,7 +14,7 @@ export const SpecializationSection: React.FC<SpecializationSectionProps> = ({
 }) => {
   const selectedSkills = skills?.filter((skill) => skill.selected);
 
-  if (!selectedSkills || selectedSkills.length === 0 || format !== "visual") {
+  if (!selectedSkills || selectedSkills.length === 0) {
     return null;
   }
 
@@ -62,149 +62,305 @@ export const SpecializationSection: React.FC<SpecializationSectionProps> = ({
   const tools = getSkillsByType("tools");
   const libraries = getSkillsByType("libraries");
 
-  return (
-    <div className={className} style={{ marginBottom: "1rem" }}>
-      {/* Header con fondo turquesa */}
-      <div
-        style={{
-          background: "#14b8a6",
-          margin: "0 -1.5rem 1rem -1.5rem",
-          padding: "1rem",
-        }}
-      >
-        <h3
+  if (format === "visual") {
+    return (
+      <div className={className} style={{ marginBottom: "1rem" }}>
+        {/* Header con fondo turquesa */}
+        <div
           style={{
-            fontSize: "0.875rem",
-            fontWeight: "bold",
-            color: "#ffffff",
-            lineHeight: "1.75rem",
+            background: "#14b8a6",
+            margin: "0 -1.5rem 1rem -1.5rem",
+            padding: "1rem",
           }}
         >
-          Specialization
-        </h3>
+          <h3
+            style={{
+              fontSize: "1.125rem",
+              fontWeight: "bold",
+              color: "#ffffff",
+              lineHeight: "0.2rem",
+            }}
+          >
+            Especialización
+          </h3>
+        </div>
+
+        <div
+          style={{ display: "flex", gap: "0.75rem", flexDirection: "column" }}
+        >
+          {programmingLanguages.length > 0 && (
+            <div>
+              <h4
+                style={{
+                  color: "#ffffff",
+                  fontWeight: "600",
+                  marginBottom: "0.5rem",
+                  fontSize: "0.75rem",
+                }}
+              >
+                Lenguajes de Programación:
+              </h4>
+              <p
+                style={{
+                  color: "#e5e7eb",
+                  fontSize: "0.7rem",
+                  lineHeight: "1.4",
+                }}
+              >
+                {programmingLanguages.slice(0, 3).join(", ")}
+              </p>
+            </div>
+          )}
+
+          {frameworks.length > 0 && (
+            <div>
+              <h4
+                style={{
+                  color: "#ffffff",
+                  fontWeight: "600",
+                  marginBottom: "0.5rem",
+                  fontSize: "0.75rem",
+                }}
+              >
+                Frameworks:
+              </h4>
+              <p
+                style={{
+                  color: "#e5e7eb",
+                  fontSize: "0.7rem",
+                  lineHeight: "1.4",
+                }}
+              >
+                {frameworks.slice(0, 5).join(", ")}
+              </p>
+            </div>
+          )}
+
+          {databases.length > 0 && (
+            <div>
+              <h4
+                style={{
+                  color: "#ffffff",
+                  fontWeight: "600",
+                  marginBottom: "0.5rem",
+                  fontSize: "0.75rem",
+                }}
+              >
+                Bases de Datos:
+              </h4>
+              <p
+                style={{
+                  color: "#e5e7eb",
+                  fontSize: "0.7rem",
+                  lineHeight: "1.4",
+                }}
+              >
+                {databases.slice(0, 4).join(", ")}
+              </p>
+            </div>
+          )}
+
+          {tools.length > 0 && (
+            <div>
+              <h4
+                style={{
+                  color: "#ffffff",
+                  fontWeight: "600",
+                  marginBottom: "0.5rem",
+                  fontSize: "0.75rem",
+                }}
+              >
+                Herramientas:
+              </h4>
+              <p
+                style={{
+                  color: "#e5e7eb",
+                  fontSize: "0.7rem",
+                  lineHeight: "1.4",
+                }}
+              >
+                {tools.slice(0, 3).join(", ")}
+              </p>
+            </div>
+          )}
+
+          {libraries.length > 0 && (
+            <div>
+              <h4
+                style={{
+                  color: "#ffffff",
+                  fontWeight: "600",
+                  marginBottom: "0.5rem",
+                  fontSize: "0.75rem",
+                }}
+              >
+                Librerías:
+              </h4>
+              <p
+                style={{
+                  color: "#e5e7eb",
+                  fontSize: "0.7rem",
+                  lineHeight: "1.4",
+                }}
+              >
+                {libraries.slice(0, 4).join(", ")}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
+    );
+  }
 
-      <div style={{ display: "flex", gap: "0.75rem", flexDirection: "column" }}>
-        {programmingLanguages.length > 0 && (
-          <div>
-            <h4
-              style={{
-                color: "#ffffff",
-                fontWeight: "600",
-                marginBottom: "0.5rem",
-                fontSize: "0.875rem",
-              }}
-            >
-              Lenguajes de Programación:
-            </h4>
-            <p
-              style={{
-                color: "#e5e7eb",
-                fontSize: "0.875rem",
-                lineHeight: "1.5",
-              }}
-            >
-              {programmingLanguages.slice(0, 3).join(", ")}
-            </p>
-          </div>
-        )}
+  if (format === "europass") {
+    return (
+      <div className={className} style={{ marginBottom: "1rem" }}>
+        {/* Header con fondo azul europeo */}
+        <div
+          style={{
+            background: "#003399",
+            margin: "0 -1.5rem 1rem -1.5rem",
+            padding: "1rem",
+          }}
+        >
+          <h3
+            style={{
+              fontSize: "0.875rem",
+              fontWeight: "bold",
+              color: "#ffffff",
+              lineHeight: "1.75rem",
+            }}
+          >
+            Specialization
+          </h3>
+        </div>
 
-        {frameworks.length > 0 && (
-          <div>
-            <h4
-              style={{
-                color: "#ffffff",
-                fontWeight: "600",
-                marginBottom: "0.5rem",
-                fontSize: "0.875rem",
-              }}
-            >
-              Frameworks:
-            </h4>
-            <p
-              style={{
-                color: "#e5e7eb",
-                fontSize: "0.875rem",
-                lineHeight: "1.5",
-              }}
-            >
-              {frameworks.slice(0, 5).join(", ")}
-            </p>
-          </div>
-        )}
+        <div
+          style={{ display: "flex", gap: "0.75rem", flexDirection: "column" }}
+        >
+          {programmingLanguages.length > 0 && (
+            <div>
+              <h4
+                style={{
+                  color: "#ffffff",
+                  fontWeight: "600",
+                  marginBottom: "0.5rem",
+                  fontSize: "0.75rem",
+                }}
+              >
+                Lenguajes de Programación:
+              </h4>
+              <p
+                style={{
+                  color: "#e5e7eb",
+                  fontSize: "0.7rem",
+                  lineHeight: "1.4",
+                }}
+              >
+                {programmingLanguages.slice(0, 3).join(", ")}
+              </p>
+            </div>
+          )}
 
-        {databases.length > 0 && (
-          <div>
-            <h4
-              style={{
-                color: "#ffffff",
-                fontWeight: "600",
-                marginBottom: "0.5rem",
-                fontSize: "0.875rem",
-              }}
-            >
-              Bases de Datos:
-            </h4>
-            <p
-              style={{
-                color: "#e5e7eb",
-                fontSize: "0.875rem",
-                lineHeight: "1.5",
-              }}
-            >
-              {databases.slice(0, 4).join(", ")}
-            </p>
-          </div>
-        )}
+          {frameworks.length > 0 && (
+            <div>
+              <h4
+                style={{
+                  color: "#ffffff",
+                  fontWeight: "600",
+                  marginBottom: "0.5rem",
+                  fontSize: "0.75rem",
+                }}
+              >
+                Frameworks:
+              </h4>
+              <p
+                style={{
+                  color: "#e5e7eb",
+                  fontSize: "0.7rem",
+                  lineHeight: "1.4",
+                }}
+              >
+                {frameworks.slice(0, 5).join(", ")}
+              </p>
+            </div>
+          )}
 
-        {tools.length > 0 && (
-          <div>
-            <h4
-              style={{
-                color: "#ffffff",
-                fontWeight: "600",
-                marginBottom: "0.5rem",
-                fontSize: "0.875rem",
-              }}
-            >
-              Herramientas:
-            </h4>
-            <p
-              style={{
-                color: "#e5e7eb",
-                fontSize: "0.875rem",
-                lineHeight: "1.5",
-              }}
-            >
-              {tools.slice(0, 3).join(", ")}
-            </p>
-          </div>
-        )}
+          {databases.length > 0 && (
+            <div>
+              <h4
+                style={{
+                  color: "#ffffff",
+                  fontWeight: "600",
+                  marginBottom: "0.5rem",
+                  fontSize: "0.75rem",
+                }}
+              >
+                Bases de Datos:
+              </h4>
+              <p
+                style={{
+                  color: "#e5e7eb",
+                  fontSize: "0.7rem",
+                  lineHeight: "1.4",
+                }}
+              >
+                {databases.slice(0, 4).join(", ")}
+              </p>
+            </div>
+          )}
 
-        {libraries.length > 0 && (
-          <div>
-            <h4
-              style={{
-                color: "#ffffff",
-                fontWeight: "600",
-                marginBottom: "0.5rem",
-                fontSize: "0.875rem",
-              }}
-            >
-              Librerías:
-            </h4>
-            <p
-              style={{
-                color: "#e5e7eb",
-                fontSize: "0.875rem",
-                lineHeight: "1.5",
-              }}
-            >
-              {libraries.slice(0, 4).join(", ")}
-            </p>
-          </div>
-        )}
+          {tools.length > 0 && (
+            <div>
+              <h4
+                style={{
+                  color: "#ffffff",
+                  fontWeight: "600",
+                  marginBottom: "0.5rem",
+                  fontSize: "0.75rem",
+                }}
+              >
+                Herramientas:
+              </h4>
+              <p
+                style={{
+                  color: "#e5e7eb",
+                  fontSize: "0.7rem",
+                  lineHeight: "1.4",
+                }}
+              >
+                {tools.slice(0, 3).join(", ")}
+              </p>
+            </div>
+          )}
+
+          {libraries.length > 0 && (
+            <div>
+              <h4
+                style={{
+                  color: "#ffffff",
+                  fontWeight: "600",
+                  marginBottom: "0.5rem",
+                  fontSize: "0.75rem",
+                }}
+              >
+                Librerías:
+              </h4>
+              <p
+                style={{
+                  color: "#e5e7eb",
+                  fontSize: "0.7rem",
+                  lineHeight: "1.4",
+                }}
+              >
+                {libraries.slice(0, 4).join(", ")}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  return null;
 };

@@ -11,107 +11,6 @@ export interface PDFExportOptions {
 
 export const pdfUtils = {
   /**
-   * FUNCIÓN MEJORADA: Exporta CV con múltiples opciones de calidad
-   * Esta función usa html2canvas con optimizaciones avanzadas
-   */
-  exportCVAdvanced: async (
-    elementId: string,
-    cvData: CVData,
-    filename?: string
-  ): Promise<void> => {
-    try {
-      // Mostrar indicador de carga
-      const loadingIndicator = document.createElement("div");
-      loadingIndicator.innerHTML = `
-        <div style="
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0,0,0,0.8);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          z-index: 10000;
-          color: white;
-          font-size: 18px;
-        ">
-          <div style="text-align: center;">
-            <div style="margin-bottom: 10px;">🚀 Generando PDF Avanzado...</div>
-            <div style="font-size: 14px; opacity: 0.8;">Optimizando calidad y estilos</div>
-          </div>
-        </div>
-      `;
-      document.body.appendChild(loadingIndicator);
-
-      // Generar nombre de archivo si no se proporciona
-      const finalFilename = filename || pdfUtils.generateFilename(cvData);
-
-      // Preparar elemento para exportación
-      pdfUtils.prepareElementForExport(elementId);
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Más tiempo para renderizado
-
-      // Usar configuración avanzada para html2canvas
-      const element = document.getElementById(elementId);
-      if (!element) {
-        throw new Error(`Elemento con ID "${elementId}" no encontrado`);
-      }
-
-      const canvas = await html2canvas(element, {
-        scale: 2, // Alta resolución
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: "#ffffff",
-        logging: false,
-        removeContainer: true,
-        foreignObjectRendering: false,
-        imageTimeout: 30000,
-        onclone: (clonedDoc) => {
-          // Aplicar estilos específicos al documento clonado
-          const clonedElement = clonedDoc.getElementById(elementId);
-          if (clonedElement) {
-            clonedElement.style.fontFamily = "Arial, sans-serif";
-            clonedElement.style.lineHeight = "1.2";
-          }
-        },
-      });
-
-      // Crear PDF con mejor compresión
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4",
-        compress: true,
-      });
-
-      const imgData = canvas.toDataURL("image/jpeg", 0.95); // JPEG con alta calidad
-      const imgWidth = 210; // A4 width in mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight);
-      pdf.save(finalFilename);
-
-      // Limpiar
-      pdfUtils.cleanupAfterExport(elementId);
-      document.body.removeChild(loadingIndicator);
-    } catch (error) {
-      // Remover indicador de carga si existe
-      const loadingIndicator = document.querySelector(
-        '[style*="z-index: 10000"]'
-      );
-      if (loadingIndicator) {
-        document.body.removeChild(loadingIndicator);
-      }
-
-      console.error("Error al exportar CV avanzado:", error);
-      throw new Error(
-        "Error al generar el PDF avanzado. Intenta con el método básico."
-      );
-    }
-  },
-
-  /**
    * Exporta un elemento HTML a PDF usando html2canvas y jsPDF
    */
   exportToPDF: async (
@@ -269,9 +168,7 @@ export const pdfUtils = {
           '[style*="font-size: 14px"]'
         ) as HTMLElement;
         if (progressDiv) {
-          progressDiv.textContent = `Procesando página ${i + 1} de ${
-            pageElementIds.length
-          }`;
+          progressDiv.textContent = `Procesando página ${i + 1} de ${pageElementIds.length}`;
         }
 
         // Configurar opciones para html2canvas
@@ -336,6 +233,49 @@ export const pdfUtils = {
   },
 
   /**
+   * Exporta CV inteligentemente basado en el formato actual
+   */
+  exportCVIntelligent: async (
+    cvData: CVData,
+    currentFormat: string = "visual"
+  ): Promise<void> => {
+    try {
+      // Buscar el contenedor del CV
+      const cvContainer = document.querySelector(
+        ".cv-container"
+      ) as HTMLElement;
+      if (!cvContainer) {
+        throw new Error("No se encontró el contenedor del CV");
+      }
+
+      // Buscar páginas individuales
+      const page1 = document.getElementById("cv-page-1");
+      const page2 = document.getElementById("cv-page-2");
+
+      if (page1 && page2) {
+        // Exportar múltiples páginas
+        await pdfUtils.exportMultiPageToPDF(["cv-page-1", "cv-page-2"], {
+          filename: `CV_${currentFormat}_${cvData.personalInfo.name.replace(/\s+/g, "_")}.pdf`,
+          quality: 1.0,
+          orientation: "portrait",
+        });
+      } else if (cvContainer) {
+        // Exportar contenedor completo
+        await pdfUtils.exportToPDF("cv-container", {
+          filename: `CV_${currentFormat}_${cvData.personalInfo.name.replace(/\s+/g, "_")}.pdf`,
+          quality: 1.0,
+          orientation: "portrait",
+        });
+      } else {
+        throw new Error("No se encontró ningún elemento para exportar");
+      }
+    } catch (error) {
+      console.error("Error en exportación inteligente:", error);
+      throw error;
+    }
+  },
+
+  /**
    * Genera un nombre de archivo basado en los datos del CV
    */
   generateFilename: (cvData: { personalInfo: { name: string } }): string => {
@@ -354,24 +294,24 @@ export const pdfUtils = {
     const element = document.getElementById(elementId);
     if (!element) return;
 
-    // Añadir clase para exportación que fuerza colores compatibles
+    // Añadir clase para exportación
     element.classList.add("pdf-export");
 
-    // Aplicar estilos inline críticos para evitar problemas con CSS moderno
-    pdfUtils.applyInlineStyles(element);
-
-    // Forzar renderizado de todos los elementos
-    const allElements = element.querySelectorAll("*");
-    allElements.forEach((el) => {
-      const htmlEl = el as HTMLElement;
-      htmlEl.style.opacity = "1";
-      htmlEl.style.visibility = "visible";
-    });
-
-    // Forzar repaint para aplicar estilos CSS
-    element.style.transform = "translateZ(0)";
-    void element.offsetHeight; // Trigger reflow
-    element.style.transform = "";
+    // Aplicar estilos específicos para PDF
+    const style = document.createElement("style");
+    style.textContent = `
+      .pdf-export {
+        background: white !important;
+        color: black !important;
+        font-family: Arial, sans-serif !important;
+        line-height: 1.4 !important;
+      }
+      .pdf-export * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    `;
+    document.head.appendChild(style);
   },
 
   /**
@@ -391,31 +331,11 @@ export const pdfUtils = {
     elementId: string,
     filename: string = "cv-export.pdf"
   ): Promise<void> => {
-    let loadingDiv: HTMLElement | null = null;
-
     try {
       const element = document.getElementById(elementId);
       if (!element) {
         throw new Error(`Elemento con ID "${elementId}" no encontrado`);
       }
-
-      // Crear indicador de carga único con ID
-      const loadingId = `loading-${Date.now()}-${Math.random()
-        .toString(36)
-        .substr(2, 9)}`;
-      loadingDiv = document.createElement("div");
-      loadingDiv.id = loadingId;
-      loadingDiv.innerHTML = `
-        <div style="
-          position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-          background: rgba(0,0,0,0.8); color: white; padding: 20px; border-radius: 8px;
-          z-index: 10000; font-size: 16px; text-align: center;
-        ">
-          📄 Generando PDF...<br>
-          <small>Por favor espera</small>
-        </div>
-      `;
-      document.body.appendChild(loadingDiv);
 
       // Configuración simple para html2canvas
       const canvas = await html2canvas(element, {
@@ -439,23 +359,8 @@ export const pdfUtils = {
 
       pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
       pdf.save(filename);
-
-      // Remover indicador de forma segura
-      if (loadingDiv && loadingDiv.parentNode) {
-        loadingDiv.parentNode.removeChild(loadingDiv);
-      }
     } catch (error) {
       console.error("Error en exportación simple:", error);
-
-      // Remover indicador de forma segura en caso de error
-      if (loadingDiv && loadingDiv.parentNode) {
-        try {
-          loadingDiv.parentNode.removeChild(loadingDiv);
-        } catch (removeError) {
-          console.warn("Error al remover indicador de carga:", removeError);
-        }
-      }
-
       throw new Error("Error al generar el PDF con método simple");
     }
   },

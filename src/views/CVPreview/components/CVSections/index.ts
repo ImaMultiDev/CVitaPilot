@@ -12,3 +12,6 @@ export { CertificationsSection } from "./CertificationsSection";
 export { AchievementsSection } from "./AchievementsSection";
 export { SoftSkillsSection } from "./SoftSkillsSection";
 export { ReferencesSection } from "./ReferencesSection";
+
+// Exportar tipos
+export type { CVFormat } from "@/types/cv";

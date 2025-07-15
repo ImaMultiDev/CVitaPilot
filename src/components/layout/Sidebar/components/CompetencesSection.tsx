@@ -31,11 +31,11 @@ export const CompetencesSection: React.FC<CompetencesSectionProps> = ({
         </Badge>
       </div>
 
-      <div className="space-y-2 max-h-64 overflow-y-auto custom-scrollbar">
+      <div className="space-y-1.5 max-h-64 overflow-y-auto custom-scrollbar">
         {cvData.competences.map((competence) => (
           <div
             key={competence.id}
-            className="flex items-center justify-between p-2 rounded-lg bg-gray-50/50 dark:bg-gray-800/50 border border-transparent hover:border-indigo-200 dark:hover:border-indigo-800 transition-all duration-200 group/item"
+            className="flex items-center justify-between p-1.5 rounded-lg bg-gray-50/50 dark:bg-gray-800/50 border border-transparent hover:border-indigo-200 dark:hover:border-indigo-800 transition-all duration-200 group/item"
           >
             <span className="text-xs font-medium text-gray-700 dark:text-gray-300 mr-2 group-hover/item:text-indigo-600 dark:group-hover/item:text-indigo-400 transition-colors">
               {competence.name}

@@ -1,9 +1,9 @@
 import React from "react";
-import { Competence } from "@/types/cv";
+import { Competence, CVFormat } from "@/types/cv";
 
 interface CompetencesSectionProps {
   competences: Competence[];
-  format: "visual" | "ats";
+  format: CVFormat;
   className?: string;
 }
 
@@ -34,6 +34,54 @@ export const CompetencesSection: React.FC<CompetencesSectionProps> = ({
               fontSize: "1.125rem",
               fontWeight: "bold",
               color: "#ffffff",
+              lineHeight: "0.2rem",
+            }}
+          >
+            Competencias
+          </h3>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "0.5rem",
+            padding: "0 0.5rem",
+          }}
+        >
+          <span
+            style={{
+              color: "#ffffff",
+              fontSize: "0.75rem",
+              lineHeight: "1.4",
+              wordBreak: "break-word",
+            }}
+          >
+            {selectedCompetences
+              .map((competence) => competence.name)
+              .join(", ")}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (format === "europass") {
+    return (
+      <div className={className} style={{ marginBottom: "1rem" }}>
+        {/* Header con fondo azul europeo */}
+        <div
+          style={{
+            background: "#003399",
+            margin: "0 -1.5rem 1rem -1.5rem",
+            padding: "1rem",
+          }}
+        >
+          <h3
+            style={{
+              fontSize: "1.125rem",
+              fontWeight: "bold",
+              color: "#ffffff",
               lineHeight: "1.75rem",
             }}
           >
@@ -42,27 +90,25 @@ export const CompetencesSection: React.FC<CompetencesSectionProps> = ({
         </div>
 
         <div
-          style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "0.5rem",
+            padding: "0 0.5rem",
+          }}
         >
-          {selectedCompetences.map((competence, index) => (
-            <div
-              key={index}
-              style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}
-            >
-              <div
-                style={{
-                  width: "0.5rem",
-                  height: "0.5rem",
-                  background: "#ffffff",
-                  borderRadius: "50%",
-                  flexShrink: 0,
-                }}
-              />
-              <span style={{ color: "#ffffff", fontSize: "0.875rem" }}>
-                {competence.name}
-              </span>
-            </div>
-          ))}
+          <span
+            style={{
+              color: "#ffffff",
+              fontSize: "0.75rem",
+              lineHeight: "1.4",
+              wordBreak: "break-word",
+            }}
+          >
+            {selectedCompetences
+              .map((competence) => competence.name)
+              .join(", ")}
+          </span>
         </div>
       </div>
     );

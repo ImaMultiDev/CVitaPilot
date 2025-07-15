@@ -1,9 +1,10 @@
 import React from "react";
-import { OtherInformation } from "@/types/cv";
+import { OtherInformation, CVFormat } from "@/types/cv";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 interface OtherInformationSectionProps {
   otherInformation: OtherInformation[];
-  format: "visual" | "ats";
+  format: CVFormat;
   className?: string;
 }
 
@@ -35,6 +36,69 @@ export const OtherInformationSection: React.FC<
               fontSize: "1.125rem",
               fontWeight: "bold",
               color: "#ffffff",
+              lineHeight: "0.2rem",
+            }}
+          >
+            Other Information
+          </h3>
+        </div>
+
+        <div
+          style={{ display: "flex", gap: "0.5rem", flexDirection: "column" }}
+        >
+          {allItems.map((item) => (
+            <div
+              key={item.id}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                alignContent: "center",
+                gap: "0.5rem",
+              }}
+            >
+              <div
+                style={{
+                  width: "1.2rem",
+                  height: "1.2rem",
+                  borderRadius: "50%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#ffffff",
+                  flexShrink: 0,
+                }}
+              >
+                <ConfiguredIcon
+                  name="check-circle"
+                  className="w-3 h-3 text-teal-600 opacity-50"
+                />
+              </div>
+              <span style={{ color: "#ffffff", fontSize: "0.75rem" }}>
+                {item.name}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (format === "europass") {
+    return (
+      <div className={className} style={{ marginBottom: "0.75rem" }}>
+        {/* Header con fondo azul europeo */}
+        <div
+          style={{
+            background: "#003399",
+            margin: "0 -1.5rem 1rem -1.5rem",
+            padding: "1rem",
+          }}
+        >
+          <h3
+            style={{
+              fontSize: "1.125rem",
+              fontWeight: "bold",
+              color: "#ffffff",
               lineHeight: "1.75rem",
             }}
           >
@@ -43,30 +107,31 @@ export const OtherInformationSection: React.FC<
         </div>
 
         <div
-          style={{ display: "flex", gap: "0.75rem", flexDirection: "column" }}
+          style={{ display: "flex", gap: "0.5rem", flexDirection: "column" }}
         >
           {allItems.map((item) => (
             <div
               key={item.id}
-              style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}
+              style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
             >
               <div
                 style={{
-                  width: "1.5rem",
-                  height: "1.5rem",
-                  background: "#ffffff",
+                  width: "1.2rem",
+                  height: "1.2rem",
                   borderRadius: "50%",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  color: "#ffffff",
                   flexShrink: 0,
                 }}
               >
-                <span style={{ color: "#0d9488", fontSize: "0.75rem" }}>
-                  {item.icon || "📋"}
-                </span>
+                <ConfiguredIcon
+                  name="check-circle"
+                  className="w-3 h-3 text-blue-600 opacity-50"
+                />
               </div>
-              <span style={{ color: "#ffffff", fontSize: "0.875rem" }}>
+              <span style={{ color: "#ffffff", fontSize: "0.75rem" }}>
                 {item.name}
               </span>
             </div>

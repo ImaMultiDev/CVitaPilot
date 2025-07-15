@@ -1,9 +1,9 @@
 import React from "react";
-import { SoftSkill } from "@/types/cv";
+import { SoftSkill, CVFormat } from "@/types/cv";
 
 interface SoftSkillsSectionProps {
   softSkills: SoftSkill[];
-  format: "visual" | "ats";
+  format: CVFormat;
   className?: string;
 }
 
