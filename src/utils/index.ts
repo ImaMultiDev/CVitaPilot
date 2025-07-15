@@ -8,6 +8,3 @@ export * from "./dateUtils";
 
 // Utilidades de PDF
 export * from "./pdfUtils";
-
-// Utilidades de impresión
-export * from "./printUtils";
