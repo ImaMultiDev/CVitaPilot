@@ -1,10 +1,6 @@
 import React from "react";
 import { Card } from "@/components/ui/Card";
-import {
-  LetterIcon,
-  ProfessionalIcon,
-  ExperienceIcon,
-} from "@/components/ui/icons/CVGuideIcons";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 export const CoverLetterSection: React.FC = () => {
   const letterStructure = [
@@ -71,7 +67,8 @@ export const CoverLetterSection: React.FC = () => {
       <Card className="p-4 sm:p-6 lg:p-8">
         <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 mb-6 sm:mb-8">
           <div className="p-2 sm:p-2.5 lg:p-3 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-lg sm:rounded-xl">
-            <LetterIcon
+            <ConfiguredIcon
+              name="mail"
               size={24}
               className="text-purple-600 dark:text-purple-400 sm:w-7 sm:h-7 lg:w-8 lg:h-8"
             />
@@ -85,7 +82,8 @@ export const CoverLetterSection: React.FC = () => {
           {/* Sobre Eva Porto */}
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-4 sm:p-6 rounded-xl border-l-4 border-blue-500 dark:border-blue-400">
             <div className="flex items-start gap-3 sm:gap-4">
-              <ProfessionalIcon
+              <ConfiguredIcon
+                name="user-check"
                 size={20}
                 className="text-blue-600 dark:text-blue-400 mt-1 flex-shrink-0 sm:w-6 sm:h-6"
               />
@@ -223,7 +221,8 @@ export const CoverLetterSection: React.FC = () => {
             </h3>
             <div className="bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 p-4 sm:p-6 lg:p-8 rounded-xl border border-yellow-200 dark:border-yellow-600">
               <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-                <ExperienceIcon
+                <ConfiguredIcon
+                  name="briefcase"
                   size={20}
                   className="text-yellow-600 dark:text-yellow-400 sm:w-6 sm:h-6"
                 />

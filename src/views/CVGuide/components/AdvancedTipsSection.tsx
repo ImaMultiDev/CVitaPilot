@@ -1,10 +1,6 @@
 import React from "react";
 import { Card } from "@/components/ui/Card";
-import {
-  TipsIcon,
-  ErrorIcon,
-  ToolsIcon,
-} from "@/components/ui/icons/CVGuideIcons";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 export const AdvancedTipsSection: React.FC = () => {
   const contentErrors = [
@@ -27,7 +23,11 @@ export const AdvancedTipsSection: React.FC = () => {
     {
       title: "Análisis ATS",
       icon: (
-        <ToolsIcon size={20} className="text-blue-600 dark:text-blue-400" />
+        <ConfiguredIcon
+          name="wrench"
+          size={20}
+          className="text-blue-600 dark:text-blue-400"
+        />
       ),
       tools: [
         "Jobscan.co",
@@ -40,7 +40,11 @@ export const AdvancedTipsSection: React.FC = () => {
     {
       title: "Revisión Texto",
       icon: (
-        <ToolsIcon size={20} className="text-green-600 dark:text-green-400" />
+        <ConfiguredIcon
+          name="wrench"
+          size={20}
+          className="text-green-600 dark:text-green-400"
+        />
       ),
       tools: ["Grammarly", "Hemingway App", "LanguageTool", "Corrector RAE"],
       color: "green",
@@ -48,7 +52,11 @@ export const AdvancedTipsSection: React.FC = () => {
     {
       title: "Diseño",
       icon: (
-        <ToolsIcon size={20} className="text-purple-600 dark:text-purple-400" />
+        <ConfiguredIcon
+          name="wrench"
+          size={20}
+          className="text-purple-600 dark:text-purple-400"
+        />
       ),
       tools: [
         "Canva (plantillas básicas)",
@@ -65,7 +73,8 @@ export const AdvancedTipsSection: React.FC = () => {
       <Card className="p-4 sm:p-6 lg:p-8">
         <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 mb-6 sm:mb-8">
           <div className="p-2 sm:p-2.5 lg:p-3 bg-gradient-to-br from-orange-100 to-red-100 dark:from-orange-900/30 dark:to-red-900/30 rounded-lg sm:rounded-xl">
-            <TipsIcon
+            <ConfiguredIcon
+              name="lightbulb"
               size={24}
               className="text-orange-600 dark:text-orange-400 sm:w-7 sm:h-7 lg:w-8 lg:h-8"
             />
@@ -79,7 +88,8 @@ export const AdvancedTipsSection: React.FC = () => {
           {/* Errores comunes */}
           <div>
             <h3 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
-              <ErrorIcon
+              <ConfiguredIcon
+                name="alert-circle"
                 size={20}
                 className="text-red-600 dark:text-red-400 sm:w-6 sm:h-6"
               />
@@ -94,9 +104,11 @@ export const AdvancedTipsSection: React.FC = () => {
                 <ul className="text-xs sm:text-sm text-red-700 dark:text-red-400 space-y-2 sm:space-y-3">
                   {contentErrors.map((error, index) => (
                     <li key={index} className="flex items-start gap-2 sm:gap-3">
-                      <div className="w-5 h-5 sm:w-6 sm:h-6 bg-red-600 dark:bg-red-400 text-white dark:text-gray-900 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
-                        ✗
-                      </div>
+                      <ConfiguredIcon
+                        name="x"
+                        size={16}
+                        className="text-red-600 dark:text-red-400 flex-shrink-0"
+                      />
                       <span>{error}</span>
                     </li>
                   ))}
@@ -111,9 +123,11 @@ export const AdvancedTipsSection: React.FC = () => {
                 <ul className="text-xs sm:text-sm text-yellow-700 dark:text-yellow-400 space-y-2 sm:space-y-3">
                   {technicalErrors.map((error, index) => (
                     <li key={index} className="flex items-start gap-2 sm:gap-3">
-                      <div className="w-5 h-5 sm:w-6 sm:h-6 bg-yellow-600 dark:bg-yellow-400 text-white dark:text-gray-900 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
-                        ⚠
-                      </div>
+                      <ConfiguredIcon
+                        name="alert-triangle"
+                        size={16}
+                        className="text-yellow-600 dark:text-yellow-400 flex-shrink-0"
+                      />
                       <span>{error}</span>
                     </li>
                   ))}
@@ -125,7 +139,8 @@ export const AdvancedTipsSection: React.FC = () => {
           {/* Herramientas útiles */}
           <div id="herramientas">
             <h3 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
-              <ToolsIcon
+              <ConfiguredIcon
+                name="wrench"
                 size={20}
                 className="text-gray-600 dark:text-gray-400 sm:w-6 sm:h-6"
               />
@@ -191,7 +206,7 @@ export const AdvancedTipsSection: React.FC = () => {
           {/* Estadísticas importantes */}
           <div className="bg-gradient-to-r from-gray-50 to-slate-50 dark:from-gray-800 dark:to-slate-800 p-4 sm:p-6 lg:p-8 rounded-xl border border-gray-200 dark:border-gray-600">
             <h3 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4 sm:mb-6 text-center">
-              📊 Datos que Debes Conocer
+              Datos que Debes Conocer
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 text-center">
               <div className="bg-white dark:bg-gray-700 p-4 sm:p-6 rounded-lg shadow-sm">

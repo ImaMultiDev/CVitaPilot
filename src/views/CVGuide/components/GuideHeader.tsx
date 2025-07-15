@@ -1,11 +1,12 @@
 import React from "react";
-import { GuideIcon } from "@/components/ui/icons/CVGuideIcons";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 export const GuideHeader: React.FC = () => {
   return (
     <div className="text-center mb-8 sm:mb-12 px-2 sm:px-4">
       <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-2xl mb-4 sm:mb-6">
-        <GuideIcon
+        <ConfiguredIcon
+          name="book"
           size={32}
           className="text-blue-600 dark:text-blue-400 sm:w-10 sm:h-10"
         />

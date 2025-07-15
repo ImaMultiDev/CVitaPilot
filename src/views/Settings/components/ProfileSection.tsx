@@ -1,11 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  UserProfileIcon,
-  EmailIcon,
-  VerificationIcon,
-} from "@/components/ui/icons/SettingsIcons";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
@@ -30,7 +26,8 @@ export const ProfileSection: React.FC = () => {
   return (
     <section id="profile" className="mb-8 sm:mb-12">
       <div className="flex items-center gap-3 mb-4 sm:mb-6">
-        <UserProfileIcon
+        <ConfiguredIcon
+          name="user"
           size={28}
           className="text-blue-600 dark:text-blue-400"
         />
@@ -48,7 +45,7 @@ export const ProfileSection: React.FC = () => {
                 UD
               </div>
               <button className="absolute -bottom-1 sm:-bottom-2 -right-1 sm:-right-2 w-6 sm:w-8 h-6 sm:h-8 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 rounded-full flex items-center justify-center text-xs sm:text-sm hover:bg-gray-700 dark:hover:bg-gray-300 transition-colors">
-                ✏️
+                <ConfiguredIcon name="edit" size={16} />
               </button>
             </div>
             <div className="flex-1 text-center sm:text-left">
@@ -103,7 +100,7 @@ export const ProfileSection: React.FC = () => {
           {/* Email Field */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
-              <EmailIcon size={16} />
+              <ConfiguredIcon name="mail" size={16} />
               Correo electrónico
             </label>
             {isEditing ? (
@@ -122,7 +119,11 @@ export const ProfileSection: React.FC = () => {
                     {formData.email}
                   </span>
                   <div className="flex items-center gap-1">
-                    <VerificationIcon size={16} className="text-green-500" />
+                    <ConfiguredIcon
+                      name="check-circle"
+                      size={16}
+                      className="text-green-500"
+                    />
                     <span className="text-xs text-green-600 dark:text-green-400">
                       Verificado
                     </span>

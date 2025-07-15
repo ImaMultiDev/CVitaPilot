@@ -1,11 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { ThemeIcon } from "@/components/ui/icons/SettingsIcons";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 import { Card } from "@/components/ui/Card";
 import { Select } from "@/components/ui/Select";
 import { Toggle } from "@/components/ui/Toggle";
-import { SettingsIcon } from "@/components/ui/icons/SettingsIcons";
 
 export const PreferencesSection: React.FC = () => {
   const [preferences, setPreferences] = useState({
@@ -25,9 +24,9 @@ export const PreferencesSection: React.FC = () => {
   };
 
   const themeOptions = [
-    { value: "light", label: "☀️ Claro" },
-    { value: "dark", label: "🌙 Oscuro" },
-    { value: "system", label: "⚙️ Sistema" },
+    { value: "light", label: "Claro" },
+    { value: "dark", label: "Oscuro" },
+    { value: "system", label: "Sistema" },
   ];
 
   const languageOptions = [
@@ -47,7 +46,8 @@ export const PreferencesSection: React.FC = () => {
   return (
     <section id="preferences" className="mb-8 sm:mb-12">
       <div className="flex items-center gap-3 mb-4 sm:mb-6">
-        <SettingsIcon
+        <ConfiguredIcon
+          name="settings"
           size={28}
           className="text-purple-600 dark:text-purple-400"
         />
@@ -72,7 +72,7 @@ export const PreferencesSection: React.FC = () => {
             {/* Theme Selection */}
             <div className="space-y-3">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                <ThemeIcon size={16} />
+                <ConfiguredIcon name="moon" size={16} />
                 Tema de la aplicación
               </label>
               <div className="relative">
@@ -133,7 +133,11 @@ export const PreferencesSection: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-1">
-                  <span className="text-lg">💾</span>
+                  <ConfiguredIcon
+                    name="save"
+                    size={20}
+                    className="text-blue-500"
+                  />
                   <h4 className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">
                     Guardado automático
                   </h4>
@@ -155,7 +159,11 @@ export const PreferencesSection: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-1">
-                  <span className="text-lg">📊</span>
+                  <ConfiguredIcon
+                    name="bar-chart"
+                    size={20}
+                    className="text-green-500"
+                  />
                   <h4 className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">
                     Análisis de uso
                   </h4>
@@ -177,7 +185,11 @@ export const PreferencesSection: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-1">
-                  <span className="text-lg">🚀</span>
+                  <ConfiguredIcon
+                    name="zap"
+                    size={20}
+                    className="text-yellow-500"
+                  />
                   <h4 className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">
                     Funciones experimentales
                   </h4>

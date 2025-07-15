@@ -47,7 +47,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({
               fontSize: "1.125rem",
               fontWeight: "bold",
               color: "#ffffff",
-              lineHeight: "1.75rem",
+              lineHeight: "0.5rem",
             }}
           >
             Habilidades Técnicas

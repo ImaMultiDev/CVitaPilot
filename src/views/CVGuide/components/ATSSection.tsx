@@ -1,18 +1,13 @@
 import React from "react";
 import { Card } from "@/components/ui/Card";
-import {
-  ATSIcon,
-  WarningIcon,
-  ScanIcon,
-  RankingIcon,
-  KeywordsIcon,
-} from "@/components/ui/icons/CVGuideIcons";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 export const ATSSection: React.FC = () => {
   const atsProcess = [
     {
       icon: (
-        <ScanIcon
+        <ConfiguredIcon
+          name="search"
           size={20}
           className="text-blue-600 dark:text-blue-400 sm:w-6 sm:h-6"
         />
@@ -23,7 +18,8 @@ export const ATSSection: React.FC = () => {
     },
     {
       icon: (
-        <KeywordsIcon
+        <ConfiguredIcon
+          name="hash"
           size={20}
           className="text-green-600 dark:text-green-400 sm:w-6 sm:h-6"
         />
@@ -34,7 +30,8 @@ export const ATSSection: React.FC = () => {
     },
     {
       icon: (
-        <RankingIcon
+        <ConfiguredIcon
+          name="trophy"
           size={20}
           className="text-purple-600 dark:text-purple-400 sm:w-6 sm:h-6"
         />
@@ -96,7 +93,8 @@ export const ATSSection: React.FC = () => {
       <Card className="p-4 sm:p-6 lg:p-8">
         <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 mb-6 sm:mb-8">
           <div className="p-2 sm:p-2.5 lg:p-3 bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 rounded-lg sm:rounded-xl">
-            <ATSIcon
+            <ConfiguredIcon
+              name="bot"
               size={24}
               className="text-green-600 dark:text-green-400 sm:w-7 sm:h-7 lg:w-8 lg:h-8"
             />
@@ -110,7 +108,8 @@ export const ATSSection: React.FC = () => {
           {/* Alert importante */}
           <div className="bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 p-4 sm:p-6 rounded-xl border-l-4 border-red-500 dark:border-red-400">
             <div className="flex items-start gap-3 sm:gap-4">
-              <WarningIcon
+              <ConfiguredIcon
+                name="alert-triangle"
                 size={20}
                 className="text-red-600 dark:text-red-400 mt-1 flex-shrink-0 sm:w-6 sm:h-6"
               />
@@ -196,9 +195,11 @@ export const ATSSection: React.FC = () => {
               {/* Lo que SÍ debes hacer */}
               <div className="bg-green-50 dark:bg-green-900/20 p-4 sm:p-6 rounded-xl border border-green-200 dark:border-green-600">
                 <h4 className="font-semibold text-green-600 dark:text-green-400 mb-3 sm:mb-4 text-base sm:text-lg flex items-center gap-2">
-                  <div className="w-5 h-5 sm:w-6 sm:h-6 bg-green-600 dark:bg-green-400 text-white dark:text-gray-900 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold">
-                    ✓
-                  </div>
+                  <ConfiguredIcon
+                    name="check"
+                    size={16}
+                    className="text-green-600 dark:text-green-400"
+                  />
                   Lo que SÍ debes hacer:
                 </h4>
                 <ul className="space-y-2 sm:space-y-3 text-green-700 dark:text-green-400">
@@ -214,9 +215,11 @@ export const ATSSection: React.FC = () => {
               {/* Lo que NO debes hacer */}
               <div className="bg-red-50 dark:bg-red-900/20 p-4 sm:p-6 rounded-xl border border-red-200 dark:border-red-600">
                 <h4 className="font-semibold text-red-600 dark:text-red-400 mb-3 sm:mb-4 text-base sm:text-lg flex items-center gap-2">
-                  <div className="w-5 h-5 sm:w-6 sm:h-6 bg-red-600 dark:bg-red-400 text-white dark:text-gray-900 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold">
-                    ✗
-                  </div>
+                  <ConfiguredIcon
+                    name="x"
+                    size={16}
+                    className="text-red-600 dark:text-red-400"
+                  />
                   Lo que NO debes hacer:
                 </h4>
                 <ul className="space-y-2 sm:space-y-3 text-red-700 dark:text-red-400">

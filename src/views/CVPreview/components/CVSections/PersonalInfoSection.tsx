@@ -34,7 +34,7 @@ export const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
               fontSize: "1.125rem",
               fontWeight: "bold",
               color: "#ffffff",
-              lineHeight: "0.2rem",
+              lineHeight: "1.75rem",
             }}
           >
             Datos Personales
@@ -48,7 +48,7 @@ export const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
             <div
               style={{
                 display: "flex",
-                alignItems: "center",
+                alignItems: "flex-start",
                 gap: "0.75rem",
               }}
             >

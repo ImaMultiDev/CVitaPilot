@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { SupportIcon, EmailIcon } from "@/components/ui/icons/SettingsIcons";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Textarea } from "@/components/ui/Textarea";
@@ -30,12 +30,12 @@ export const SupportSection: React.FC = () => {
 
   const categoryOptions = [
     { value: "", label: "Selecciona una categoría" },
-    { value: "technical", label: "🔧 Problema técnico" },
-    { value: "account", label: "👤 Gestión de cuenta" },
-    { value: "billing", label: "💳 Facturación" },
-    { value: "feature", label: "✨ Solicitud de función" },
-    { value: "bug", label: "🐛 Reporte de error" },
-    { value: "other", label: "❓ Otro" },
+    { value: "technical", label: "Problema técnico" },
+    { value: "account", label: "Gestión de cuenta" },
+    { value: "billing", label: "Facturación" },
+    { value: "feature", label: "Solicitud de función" },
+    { value: "bug", label: "Reporte de error" },
+    { value: "other", label: "Otro" },
   ];
 
   const priorityOptions = [
@@ -48,7 +48,11 @@ export const SupportSection: React.FC = () => {
   return (
     <section id="support" className="mb-8 sm:mb-12">
       <div className="flex items-center gap-3 mb-4 sm:mb-6">
-        <SupportIcon size={28} className="text-blue-600 dark:text-blue-400" />
+        <ConfiguredIcon
+          name="help-circle"
+          size={28}
+          className="text-blue-600 dark:text-blue-400"
+        />
         <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
           Soporte y Ayuda
         </h2>
@@ -69,7 +73,11 @@ export const SupportSection: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <button className="p-4 text-left border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 dark:hover:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all">
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-xl">📚</span>
+                <ConfiguredIcon
+                  name="book"
+                  size={20}
+                  className="text-blue-500"
+                />
                 <span className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">
                   Guías de uso
                 </span>
@@ -81,7 +89,11 @@ export const SupportSection: React.FC = () => {
 
             <button className="p-4 text-left border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 dark:hover:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all">
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-xl">❓</span>
+                <ConfiguredIcon
+                  name="help-circle"
+                  size={20}
+                  className="text-green-500"
+                />
                 <span className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">
                   FAQ
                 </span>
@@ -93,7 +105,11 @@ export const SupportSection: React.FC = () => {
 
             <button className="p-4 text-left border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 dark:hover:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all">
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-xl">🎯</span>
+                <ConfiguredIcon
+                  name="target"
+                  size={20}
+                  className="text-purple-500"
+                />
                 <span className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">
                   Tutoriales
                 </span>
@@ -218,7 +234,11 @@ export const SupportSection: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <EmailIcon size={20} className="text-blue-500 mt-1" />
+                <ConfiguredIcon
+                  name="mail"
+                  size={20}
+                  className="text-blue-500 mt-1"
+                />
                 <div>
                   <h4 className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">
                     Email directo
@@ -329,12 +349,6 @@ export const SupportSection: React.FC = () => {
                 Operativo
               </span>
             </div>
-          </div>
-
-          <div className="mt-4 text-center">
-            <button className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 hover:underline">
-              Ver página de estado completa →
-            </button>
           </div>
         </Card>
       </div>

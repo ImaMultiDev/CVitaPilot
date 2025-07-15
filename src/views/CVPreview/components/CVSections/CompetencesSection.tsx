@@ -34,7 +34,7 @@ export const CompetencesSection: React.FC<CompetencesSectionProps> = ({
               fontSize: "1.125rem",
               fontWeight: "bold",
               color: "#ffffff",
-              lineHeight: "0.2rem",
+              lineHeight: "0.5rem",
             }}
           >
             Competencias

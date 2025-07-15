@@ -1,11 +1,12 @@
 import React from "react";
-import { SettingsIcon } from "@/components/ui/icons/SettingsIcons";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 export const SettingsHeader: React.FC = () => {
   return (
     <div className="text-center mb-6 sm:mb-8">
       <div className="inline-flex items-center justify-center w-16 sm:w-20 h-16 sm:h-20 bg-gradient-to-br from-gray-100 to-slate-100 dark:from-gray-800 dark:to-slate-800 rounded-2xl mb-4 sm:mb-6">
-        <SettingsIcon
+        <ConfiguredIcon
+          name="settings"
           size={32}
           className="text-gray-600 dark:text-gray-400 sm:w-10 sm:h-10"
         />

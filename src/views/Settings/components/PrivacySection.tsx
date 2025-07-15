@@ -2,11 +2,7 @@
 
 import React, { useState } from "react";
 import { signOut } from "next-auth/react";
-import {
-  PrivacyIcon,
-  ExportIcon,
-  DeleteAccountIcon,
-} from "@/components/ui/icons/SettingsIcons";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Toggle } from "@/components/ui/Toggle";
@@ -27,27 +23,33 @@ export const PrivacySection: React.FC = () => {
     {
       title: "Perfil público",
       description: "Permite que otros usuarios vean tu perfil y CVs públicos.",
-      icon: "👤",
+      icon: <ConfiguredIcon name="user" size={20} className="text-blue-500" />,
       enabled: false,
     },
     {
       title: "Recolección de datos",
       description:
         "Permitir la recolección de datos para mejorar la experiencia.",
-      icon: "📊",
+      icon: (
+        <ConfiguredIcon name="bar-chart" size={20} className="text-green-500" />
+      ),
       enabled: true,
     },
     {
       title: "Compartir con terceros",
       description:
         "Compartir datos agregados y anónimos con socios de confianza.",
-      icon: "🔗",
+      icon: (
+        <ConfiguredIcon name="link" size={20} className="text-purple-500" />
+      ),
       enabled: false,
     },
     {
       title: "Análisis de comportamiento",
       description: "Analizar patrones de uso para optimizar la aplicación.",
-      icon: "🔍",
+      icon: (
+        <ConfiguredIcon name="search" size={20} className="text-orange-500" />
+      ),
       enabled: true,
     },
   ]);
@@ -136,7 +138,11 @@ export const PrivacySection: React.FC = () => {
   return (
     <section id="privacy" className="mb-8 sm:mb-12">
       <div className="flex items-center gap-3 mb-4 sm:mb-6">
-        <PrivacyIcon size={28} className="text-green-600 dark:text-green-400" />
+        <ConfiguredIcon
+          name="shield"
+          size={28}
+          className="text-green-600 dark:text-green-400"
+        />
         <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
           Privacidad y Datos
         </h2>
@@ -196,7 +202,11 @@ export const PrivacySection: React.FC = () => {
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
-                <ExportIcon size={20} className="text-blue-500" />
+                <ConfiguredIcon
+                  name="download"
+                  size={20}
+                  className="text-blue-500"
+                />
                 <span className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">
                   Solicitar exportación
                 </span>
@@ -305,7 +315,11 @@ export const PrivacySection: React.FC = () => {
                 onClick={() => setShowDeleteModal(true)}
                 className="w-full flex sm:w-auto"
               >
-                <DeleteAccountIcon size={16} className="mr-2 inline-block" />
+                <ConfiguredIcon
+                  name="trash-2"
+                  size={16}
+                  className="mr-2 inline-block"
+                />
                 Eliminar cuenta
               </Button>
             </div>

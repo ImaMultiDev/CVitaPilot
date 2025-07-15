@@ -1,10 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  NotificationIcon,
-  EmailIcon,
-} from "@/components/ui/icons/SettingsIcons";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 import { Card } from "@/components/ui/Card";
 import { Toggle } from "@/components/ui/Toggle";
 
@@ -39,16 +36,14 @@ export const NotificationSection: React.FC = () => {
       key: "emailUpdates" as keyof NotificationSettings,
       title: "Actualizaciones por email",
       description: "Recibe notificaciones importantes sobre tu cuenta y CVs",
-      icon: <EmailIcon size={20} className="text-blue-500" />,
+      icon: <ConfiguredIcon name="mail" size={20} className="text-blue-500" />,
     },
     {
       key: "pushNotifications" as keyof NotificationSettings,
       title: "Notificaciones push",
       description: "Alertas instantáneas en tu navegador",
       icon: (
-        <div className="w-5 h-5 bg-orange-500 rounded text-white flex items-center justify-center text-xs">
-          🔔
-        </div>
+        <ConfiguredIcon name="bell" size={20} className="text-orange-500" />
       ),
     },
     {
@@ -56,29 +51,21 @@ export const NotificationSection: React.FC = () => {
       title: "Reportes semanales",
       description: "Resumen semanal de tu actividad y estadísticas",
       icon: (
-        <div className="w-5 h-5 bg-green-500 rounded text-white flex items-center justify-center text-xs">
-          📊
-        </div>
+        <ConfiguredIcon name="bar-chart" size={20} className="text-green-500" />
       ),
     },
     {
       key: "securityAlerts" as keyof NotificationSettings,
       title: "Alertas de seguridad",
       description: "Notificaciones críticas sobre la seguridad de tu cuenta",
-      icon: (
-        <div className="w-5 h-5 bg-red-500 rounded text-white flex items-center justify-center text-xs">
-          🔒
-        </div>
-      ),
+      icon: <ConfiguredIcon name="shield" size={20} className="text-red-500" />,
     },
     {
       key: "marketingEmails" as keyof NotificationSettings,
       title: "Emails promocionales",
       description: "Ofertas especiales, nuevas funciones y contenido educativo",
       icon: (
-        <div className="w-5 h-5 bg-purple-500 rounded text-white flex items-center justify-center text-xs">
-          ✨
-        </div>
+        <ConfiguredIcon name="star" size={20} className="text-purple-500" />
       ),
     },
     {
@@ -86,9 +73,11 @@ export const NotificationSection: React.FC = () => {
       title: "Recordatorios de CV",
       description: "Sugerencias para actualizar y mejorar tus CVs",
       icon: (
-        <div className="w-5 h-5 bg-indigo-500 rounded text-white flex items-center justify-center text-xs">
-          📝
-        </div>
+        <ConfiguredIcon
+          name="file-text"
+          size={20}
+          className="text-indigo-500"
+        />
       ),
     },
   ];
@@ -96,7 +85,8 @@ export const NotificationSection: React.FC = () => {
   return (
     <section id="notifications" className="mb-8 sm:mb-12">
       <div className="flex items-center gap-3 mb-4 sm:mb-6">
-        <NotificationIcon
+        <ConfiguredIcon
+          name="bell"
           size={28}
           className="text-blue-600 dark:text-blue-400"
         />

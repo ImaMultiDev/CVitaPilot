@@ -1,12 +1,6 @@
 import React from "react";
 import { Card } from "@/components/ui/Card";
-import {
-  TableOfContentsIcon,
-  StructureIcon,
-  ATSIcon,
-  LetterIcon,
-  TipsIcon,
-} from "@/components/ui/icons/CVGuideIcons";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 interface ContentSection {
   id: string;
@@ -24,7 +18,11 @@ export const TableOfContents: React.FC = () => {
       id: "estructura",
       title: "Estructura del CV",
       icon: (
-        <StructureIcon size={20} className="text-blue-600 dark:text-blue-400" />
+        <ConfiguredIcon
+          name="layout"
+          size={20}
+          className="text-blue-600 dark:text-blue-400"
+        />
       ),
       items: [
         { id: "estructura-cv", title: "Elementos esenciales" },
@@ -36,7 +34,11 @@ export const TableOfContents: React.FC = () => {
       id: "ats",
       title: "Optimización ATS",
       icon: (
-        <ATSIcon size={20} className="text-green-600 dark:text-green-400" />
+        <ConfiguredIcon
+          name="bot"
+          size={20}
+          className="text-green-600 dark:text-green-400"
+        />
       ),
       items: [
         { id: "que-es-ats", title: "¿Qué son los ATS?" },
@@ -48,7 +50,8 @@ export const TableOfContents: React.FC = () => {
       id: "carta",
       title: "Carta de Presentación",
       icon: (
-        <LetterIcon
+        <ConfiguredIcon
+          name="mail"
           size={20}
           className="text-purple-600 dark:text-purple-400"
         />
@@ -63,7 +66,11 @@ export const TableOfContents: React.FC = () => {
       id: "consejos",
       title: "Consejos Avanzados",
       icon: (
-        <TipsIcon size={20} className="text-orange-600 dark:text-orange-400" />
+        <ConfiguredIcon
+          name="lightbulb"
+          size={20}
+          className="text-orange-600 dark:text-orange-400"
+        />
       ),
       items: [
         { id: "errores-comunes", title: "Errores a evitar" },
@@ -84,7 +91,8 @@ export const TableOfContents: React.FC = () => {
     <Card className="mb-6 sm:mb-8 p-4 sm:p-6 bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 border-gray-200 dark:border-gray-600">
       <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
         <div className="p-1.5 sm:p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-          <TableOfContentsIcon
+          <ConfiguredIcon
+            name="list"
             size={20}
             className="text-blue-600 dark:text-blue-400 sm:w-6 sm:h-6"
           />

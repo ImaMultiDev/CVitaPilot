@@ -778,3 +778,136 @@ export const StatsIcon: React.FC<IconProps> = ({
     <circle cx="17" cy="10" r="1" fill="currentColor" />
   </svg>
 );
+
+// ✅ Icono de check/verificado
+export const CheckIcon: React.FC<IconProps> = ({
+  size = 24,
+  className = "",
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <circle
+      cx="12"
+      cy="12"
+      r="10"
+      stroke="currentColor"
+      strokeWidth="2"
+      fill="currentColor"
+      fillOpacity="0.1"
+    />
+    <path
+      d="M9 12L11 14L15 10"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+// ❌ Icono de cross/error
+export const CrossIcon: React.FC<IconProps> = ({
+  size = 24,
+  className = "",
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <circle
+      cx="12"
+      cy="12"
+      r="10"
+      stroke="currentColor"
+      strokeWidth="2"
+      fill="currentColor"
+      fillOpacity="0.1"
+    />
+    <path
+      d="M15 9L9 15M9 9L15 15"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+// ⚠️ Icono de advertencia (triángulo)
+export const WarningTriangleIcon: React.FC<IconProps> = ({
+  size = 24,
+  className = "",
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path
+      d="M12 2L22 20H2L12 2Z"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinejoin="round"
+      fill="currentColor"
+      fillOpacity="0.1"
+    />
+    <path
+      d="M12 9V13"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <circle cx="12" cy="17" r="1" fill="currentColor" />
+  </svg>
+);
+
+// 📊 Icono de gráfico de estadísticas
+export const StatsChartIcon: React.FC<IconProps> = ({
+  size = 24,
+  className = "",
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <rect
+      x="3"
+      y="3"
+      width="18"
+      height="18"
+      rx="2"
+      stroke="currentColor"
+      strokeWidth="2"
+      fill="currentColor"
+      fillOpacity="0.05"
+    />
+    <path
+      d="M7 14L10 11L13 14L17 10"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <circle cx="7" cy="14" r="1" fill="currentColor" />
+    <circle cx="10" cy="11" r="1" fill="currentColor" />
+    <circle cx="13" cy="14" r="1" fill="currentColor" />
+    <circle cx="17" cy="10" r="1" fill="currentColor" />
+  </svg>
+);

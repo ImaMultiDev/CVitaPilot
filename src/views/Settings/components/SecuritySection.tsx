@@ -1,10 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  SecurityIcon,
-  VerificationIcon,
-} from "@/components/ui/icons/SettingsIcons";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
@@ -33,7 +30,8 @@ export const SecuritySection: React.FC = () => {
   return (
     <section id="security" className="mb-8 sm:mb-12">
       <div className="flex items-center gap-3 mb-4 sm:mb-6">
-        <SecurityIcon
+        <ConfiguredIcon
+          name="shield"
           size={28}
           className="text-green-600 dark:text-green-400"
         />
@@ -137,7 +135,11 @@ export const SecuritySection: React.FC = () => {
                 </h3>
                 {twoFactorEnabled && (
                   <div className="flex items-center gap-1">
-                    <VerificationIcon size={16} className="text-green-500" />
+                    <ConfiguredIcon
+                      name="check-circle"
+                      size={16}
+                      className="text-green-500"
+                    />
                     <span className="text-xs text-green-600 dark:text-green-400 font-medium">
                       Activo
                     </span>

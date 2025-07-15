@@ -36,7 +36,7 @@ export const OtherInformationSection: React.FC<
               fontSize: "1.125rem",
               fontWeight: "bold",
               color: "#ffffff",
-              lineHeight: "0.2rem",
+              lineHeight: "1.75rem",
             }}
           >
             Other Information
@@ -49,12 +49,7 @@ export const OtherInformationSection: React.FC<
           {allItems.map((item) => (
             <div
               key={item.id}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                alignContent: "center",
-                gap: "0.5rem",
-              }}
+              style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
             >
               <div
                 style={{

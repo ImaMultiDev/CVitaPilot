@@ -8,8 +8,9 @@ import {
   NotificationSection,
   PreferencesSection,
   PrivacySection,
-  SupportSection,
 } from "./components";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
+import { SupportSection } from "./components/SupportSection";
 
 export const SettingsPage: React.FC = () => {
   return (
@@ -23,39 +24,39 @@ export const SettingsPage: React.FC = () => {
           <div className="grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center gap-2 text-xs sm:text-sm">
             <a
               href="#profile"
-              className="px-2 sm:px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors text-center whitespace-nowrap"
+              className="px-2 flex items-center gap-2 sm:px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors text-center whitespace-nowrap"
             >
-              👤 Perfil
+              <ConfiguredIcon name="user" size={16} /> Perfil
             </a>
             <a
               href="#security"
-              className="px-2 sm:px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-center whitespace-nowrap"
+              className="px-2 flex items-center gap-2 sm:px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-center whitespace-nowrap"
             >
-              🔒 Seguridad
+              <ConfiguredIcon name="shield" size={16} /> Seguridad
             </a>
             <a
               href="#notifications"
-              className="px-2 sm:px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-center whitespace-nowrap"
+              className="px-2 flex items-center gap-2 sm:px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-center whitespace-nowrap"
             >
-              🔔 Notificaciones
+              <ConfiguredIcon name="bell" size={16} /> Notificaciones
             </a>
             <a
               href="#preferences"
-              className="px-2 sm:px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-center whitespace-nowrap"
+              className="px-2 flex items-center gap-2 sm:px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-center whitespace-nowrap"
             >
-              ⚙️ Preferencias
+              <ConfiguredIcon name="settings" size={16} /> Preferencias
             </a>
             <a
               href="#privacy"
-              className="px-2 sm:px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-center whitespace-nowrap"
+              className="px-2 flex items-center gap-2 sm:px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-center whitespace-nowrap"
             >
-              🛡️ Privacidad
+              <ConfiguredIcon name="shield" size={16} /> Privacidad
             </a>
             <a
               href="#support"
-              className="px-2 sm:px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-center whitespace-nowrap"
+              className="px-2 flex items-center gap-2 sm:px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-center whitespace-nowrap"
             >
-              💬 Soporte
+              <ConfiguredIcon name="message-circle" size={16} /> Soporte
             </a>
           </div>
         </div>
@@ -68,42 +69,6 @@ export const SettingsPage: React.FC = () => {
           <PreferencesSection />
           <PrivacySection />
           <SupportSection />
-        </div>
-
-        {/* Footer */}
-        <div className="mt-12 sm:mt-16 text-center">
-          <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-gray-200/50 dark:border-gray-700/50">
-            <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 sm:mb-4">
-              ¿Necesitas ayuda adicional? Nuestro equipo está aquí para
-              ayudarte.
-            </p>
-            <div className="grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center gap-2 sm:gap-4 text-xs sm:text-sm">
-              <a
-                href="/guia-cv"
-                className="text-blue-600 dark:text-blue-400 hover:underline text-center"
-              >
-                📖 Guía completa de CV
-              </a>
-              <a
-                href="#support"
-                className="text-blue-600 dark:text-blue-400 hover:underline text-center"
-              >
-                💬 Contactar soporte
-              </a>
-              <a
-                href="https://cvitapilot.com/privacy"
-                className="text-blue-600 dark:text-blue-400 hover:underline text-center"
-              >
-                🔒 Política de privacidad
-              </a>
-              <a
-                href="https://cvitapilot.com/terms"
-                className="text-blue-600 dark:text-blue-400 hover:underline text-center"
-              >
-                📋 Términos de servicio
-              </a>
-            </div>
-          </div>
         </div>
       </div>
     </div>

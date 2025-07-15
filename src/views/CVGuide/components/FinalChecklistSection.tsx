@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Card } from "@/components/ui/Card";
-import { ChecklistIcon, StatsIcon } from "@/components/ui/icons/CVGuideIcons";
+import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 
 interface ChecklistItem {
   id: string;
@@ -130,7 +130,8 @@ export const FinalChecklistSection: React.FC = () => {
       <Card className="p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-900/20 dark:to-green-900/20 border-blue-200 dark:border-blue-600">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
           <div className="p-2 sm:p-2.5 lg:p-3 bg-gradient-to-br from-blue-100 to-green-100 dark:from-blue-900/30 dark:to-green-900/30 rounded-lg sm:rounded-xl">
-            <ChecklistIcon
+            <ConfiguredIcon
+              name="check-square"
               size={24}
               className="text-blue-600 dark:text-blue-400 sm:w-7 sm:h-7 lg:w-8 lg:h-8"
             />
@@ -249,7 +250,8 @@ export const FinalChecklistSection: React.FC = () => {
         {/* Estadísticas de éxito */}
         <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-4 sm:p-6 lg:p-8 rounded-xl border border-indigo-200 dark:border-indigo-600">
           <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-            <StatsIcon
+            <ConfiguredIcon
+              name="bar-chart"
               size={20}
               className="text-indigo-600 dark:text-indigo-400 sm:w-6 sm:h-6"
             />

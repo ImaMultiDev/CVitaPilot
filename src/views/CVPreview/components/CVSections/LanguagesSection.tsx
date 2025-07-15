@@ -32,7 +32,7 @@ export const LanguagesSection: React.FC<LanguagesSectionProps> = ({
               fontSize: "1.125rem",
               fontWeight: "bold",
               color: "#ffffff",
-              lineHeight: "0.2rem",
+              lineHeight: "1.75rem",
             }}
           >
             Idiomas
