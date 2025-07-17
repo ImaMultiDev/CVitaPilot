@@ -14,6 +14,7 @@ import {
   toggleAchievement,
   toggleReference,
   toggleOtherInformation,
+  togglePhoto,
   forceRevalidation,
 } from "@/lib/actions/cv-actions";
 import type { CVData } from "@/types/cv";
@@ -35,7 +36,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onClose,
 }) => {
   const router = useRouter();
-  const [activeSection, setActiveSection] = useState<string>("resumen");
+  const [activeSection, setActiveSection] = useState<string>("photo");
   const [isUpdating, setIsUpdating] = useState(false);
 
   const sections = [
@@ -93,6 +94,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
       id: "otherInformation",
       name: "Otra Información",
       description: "Información adicional",
+    },
+    {
+      id: "photo",
+      name: "Foto de Perfil",
+      description: "Control de visibilidad de la foto",
     },
   ];
 
@@ -154,6 +160,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
     await handleUpdate(() => toggleOtherInformation(otherInfoId));
   };
 
+  const handleTogglePhoto = async () => {
+    await handleUpdate(() => togglePhoto());
+  };
+
   // Encontrar descripción de la sección actual
   const currentSection = sections.find((s) => s.id === activeSection);
 
@@ -183,6 +193,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           onToggleAchievement={handleToggleAchievement}
           onToggleReference={handleToggleReference}
           onToggleOtherInformation={handleToggleOtherInformation}
+          onTogglePhoto={handleTogglePhoto}
         />
       </div>
 

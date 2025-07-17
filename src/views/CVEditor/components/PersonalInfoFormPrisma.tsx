@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -15,6 +15,8 @@ import {
 } from "@/lib/actions/cv-actions";
 import { PersonalInfo, SocialNetwork } from "@/types/cv";
 import { CVEditorIcons } from "@/components/ui/icons/CVEditorIcons";
+import { useCVPhoto } from "@/hooks/useCVPhoto";
+import Image from "next/image";
 
 interface PersonalInfoFormPrismaProps {
   initialData: PersonalInfo;
@@ -37,6 +39,36 @@ export const PersonalInfoFormPrisma: React.FC<PersonalInfoFormPrismaProps> = ({
     string | null
   >(null);
   const [editData, setEditData] = useState({ name: "", url: "" });
+
+  // Estados para la foto del CV
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const {
+    photoUrl,
+    isUploading,
+    isDeleting,
+    error: imageError,
+    success: imageSuccess,
+    uploadPhoto,
+    deletePhoto,
+  } = useCVPhoto(initialData.photo);
+
+  // Handlers para la foto
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      uploadPhoto(file);
+    }
+  };
+
+  const handleFileInputClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleDeleteImage = () => {
+    deletePhoto();
+  };
 
   // Opciones predefinidas para redes sociales
   const socialNetworkOptions = [
@@ -293,6 +325,95 @@ export const PersonalInfoFormPrisma: React.FC<PersonalInfoFormPrismaProps> = ({
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
         Información Personal
       </h3>
+
+      {/* Sección de Foto del CV */}
+      <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+        <h4 className="text-md font-semibold text-gray-900 dark:text-white mb-3">
+          Foto de Perfil
+        </h4>
+
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+          {/* Avatar Container */}
+          <div className="flex flex-col items-center gap-3">
+            <div className="relative">
+              {photoUrl ? (
+                <Image
+                  src={photoUrl}
+                  alt="Foto de perfil"
+                  className="w-16 sm:w-20 h-16 sm:h-20 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700"
+                  width={80}
+                  height={80}
+                  unoptimized
+                />
+              ) : (
+                <div className="w-16 sm:w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xl sm:text-2xl font-bold">
+                  {formData.name
+                    ? formData.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .toUpperCase()
+                        .slice(0, 2)
+                    : "CV"}
+                </div>
+              )}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col gap-2">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleFileInputClick}
+                disabled={isUploading}
+              >
+                {isUploading ? "Subiendo..." : "Cambiar foto"}
+              </Button>
+
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={handleDeleteImage}
+                disabled={isDeleting || !photoUrl}
+              >
+                {isDeleting ? "Eliminando..." : "Eliminar foto"}
+              </Button>
+            </div>
+          </div>
+
+          {/* Info Section */}
+          <div className="flex-1 text-center sm:text-left">
+            <h5 className="text-base font-semibold text-gray-900 dark:text-white mb-1">
+              Foto del CV
+            </h5>
+            <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-3">
+              Sube una imagen que te represente. Máximo 5MB, formatos: JPG, PNG.
+            </p>
+
+            {/* Mensajes de estado */}
+            {(imageError || imageSuccess) && (
+              <div
+                className={`mt-3 rounded text-xs ${
+                  imageError
+                    ? "bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800"
+                    : "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800"
+                }`}
+              >
+                {imageError || imageSuccess}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Input file oculto */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="hidden"
+        />
+      </div>
 
       {/* Indicador de actualización global */}
       {isUpdating && (

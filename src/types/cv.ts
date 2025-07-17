@@ -140,6 +140,7 @@ export interface CVData {
   otherInformation: OtherInformation[];
   drivingLicense: boolean;
   ownVehicle: boolean;
+  photoEnabled: boolean;
 }
 
 export interface SavedCV {

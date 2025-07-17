@@ -48,6 +48,9 @@ model CV {
 
   // Miniatura/preview del CV (dataURL de imagen, SVG, o HTML reducido)
   thumbnail        String?
+  
+  // Control de foto de perfil
+  photoEnabled     Boolean  @default(false)
 
   // Relaciones
   languages        Language[]

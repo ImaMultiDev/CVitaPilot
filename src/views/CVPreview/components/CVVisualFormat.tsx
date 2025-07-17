@@ -64,6 +64,8 @@ export const CVVisualFormat: React.FC<CVVisualFormatProps> = ({ cvData }) => {
             <PersonalInfoSection
               personalInfo={cvData.personalInfo}
               format="visual"
+              photoEnabled={cvData.photoEnabled}
+              isForPDF={true}
             />
 
             {/* Competencias */}

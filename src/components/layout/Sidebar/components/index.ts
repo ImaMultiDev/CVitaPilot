@@ -17,3 +17,4 @@ export { AchievementsSection } from "./AchievementsSection";
 export { ReferencesSection } from "./ReferencesSection";
 export { LanguagesSection } from "./LanguagesSection";
 export { OtherInformationSection } from "./OtherInformationSection";
+export { PhotoSection } from "./PhotoSection";

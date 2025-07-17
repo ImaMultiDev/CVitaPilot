@@ -1,18 +1,52 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { PersonalInfo, CVFormat } from "@/types/cv";
 import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
+import Image from "next/image";
 
 interface PersonalInfoSectionProps {
   personalInfo: PersonalInfo;
   format: CVFormat;
   className?: string;
+  photoEnabled?: boolean;
+  isForPDF?: boolean;
 }
 
 export const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   personalInfo,
   format,
   className = "",
+  photoEnabled = false,
+  isForPDF = false,
 }) => {
+  const [photoSrc, setPhotoSrc] = useState<string | null>(null);
+
+  // Convertir imagen a base64 para PDFs
+  useEffect(() => {
+    if (personalInfo?.photo && photoEnabled && isForPDF) {
+      const convertToBase64 = async () => {
+        try {
+          const response = await fetch(personalInfo.photo!);
+          const blob = await response.blob();
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            if (typeof reader.result === "string") {
+              setPhotoSrc(reader.result);
+            }
+          };
+          reader.readAsDataURL(blob);
+        } catch (error) {
+          console.error("Error converting image to base64:", error);
+          setPhotoSrc(personalInfo.photo!);
+        }
+      };
+      convertToBase64();
+    } else if (personalInfo?.photo && photoEnabled) {
+      setPhotoSrc(personalInfo.photo);
+    } else {
+      setPhotoSrc(null);
+    }
+  }, [personalInfo?.photo, photoEnabled, isForPDF]);
+
   if (format === "visual") {
     // Buscar GitHub en socialNetworks
     const githubNetwork = personalInfo?.socialNetworks?.find(
@@ -21,6 +55,27 @@ export const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
 
     return (
       <div className={className} style={{ marginBottom: "0.75rem" }}>
+        {/* Foto de perfil en formato visual */}
+        {photoSrc && (
+          <div style={{ marginBottom: "1rem", textAlign: "center" }}>
+            <Image
+              src={photoSrc}
+              alt="Foto de perfil"
+              style={{
+                width: "80px",
+                height: "80px",
+                borderRadius: "50%",
+                objectFit: "cover",
+                border: "2px solid #ffffff",
+                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+              }}
+              width={80}
+              height={80}
+              unoptimized
+            />
+          </div>
+        )}
+
         {/* Header con fondo turquesa */}
         <div
           style={{

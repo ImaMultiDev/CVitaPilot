@@ -81,6 +81,7 @@ export async function getCurrentCV(): Promise<CVData | null> {
         linkedin: cv.linkedin || "",
         website: cv.website || "",
         location: cv.location,
+        photo: cv.photo || undefined,
         socialNetworks: cv.socialNetworks.map((sn: any) => ({
           id: sn.id,
           name: sn.name,
@@ -188,6 +189,7 @@ export async function getCurrentCV(): Promise<CVData | null> {
         })) || [],
       drivingLicense: cv.drivingLicense,
       ownVehicle: cv.ownVehicle,
+      photoEnabled: cv.photoEnabled,
     };
   } catch (error) {
     console.error("Error getting current CV:", error);
@@ -2474,9 +2476,174 @@ export async function getCVById(cvId: string): Promise<CVData | null> {
         })) || [],
       drivingLicense: cv.drivingLicense,
       ownVehicle: cv.ownVehicle,
+      photoEnabled: cv.photoEnabled,
     };
   } catch (error) {
     console.error("Error getting CV by id:", error);
     return null;
+  }
+}
+
+// ===============================
+// FOTO DE PERFIL
+// ===============================
+
+// Subir foto del CV
+export async function uploadCVPhoto(formData: FormData) {
+  try {
+    const userId = await getCurrentUserId();
+
+    const file = formData.get("image") as File;
+    if (!file) {
+      return { success: false, error: "No se proporcionó ninguna imagen" };
+    }
+
+    // Validar tipo de archivo
+    if (!file.type.startsWith("image/")) {
+      return { success: false, error: "Solo se permiten archivos de imagen" };
+    }
+
+    // Validar tamaño (5B máximo)
+    if (file.size > 5 * 1024 * 1024) {
+      return { success: false, error: "La imagen no puede superar los 5 MB" };
+    }
+
+    // Convertir archivo a Buffer
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    // Subir a Cloudinary
+    const { uploadImage } = await import("@/lib/cloudinary");
+    const uploadResult = await uploadImage(buffer, {
+      folder: "cvPhotos",
+      transformation: [
+        { width: 400, height: 400, crop: "fill", gravity: "face" },
+        { quality: "auto:good" },
+      ],
+    });
+
+    if (!uploadResult.success) {
+      return { success: false, error: uploadResult.error };
+    }
+
+    // Obtener CV actual
+    const cv = await prisma.cV.findFirst({
+      where: { userId: userId, isActive: true },
+    });
+
+    if (!cv) {
+      return { success: false, error: "CV no encontrado" };
+    }
+
+    // Si ya tiene una foto, eliminar la anterior
+    if (cv.photo) {
+      const { deleteImage } = await import("@/lib/cloudinary");
+      const urlParts = cv.photo.split("/");
+      const publicId = urlParts[urlParts.length - 1].split(".")[0];
+      if (publicId) {
+        await deleteImage(`cvPhotos/${publicId}`);
+      }
+    }
+
+    // Actualizar CV con nueva imagen
+    await prisma.cV.update({
+      where: { id: cv.id },
+      data: { photo: uploadResult.url },
+    });
+
+    revalidatePath("/editor");
+    revalidatePath("/preview");
+    return {
+      success: true,
+      url: uploadResult.url,
+      message: "Foto del CV actualizada correctamente",
+    };
+  } catch (error) {
+    console.error("Error uploading CV photo:", error);
+    return {
+      success: false,
+      error: "Error al subir la imagen. Inténtalo de nuevo.",
+    };
+  }
+}
+
+// Eliminar foto del CV
+export async function deleteCVPhoto() {
+  try {
+    const userId = await getCurrentUserId();
+
+    const cv = await prisma.cV.findFirst({
+      where: { userId: userId, isActive: true },
+    });
+
+    if (!cv) {
+      return { success: false, error: "CV no encontrado" };
+    }
+
+    if (!cv.photo) {
+      return { success: false, error: "No hay foto del CV para eliminar" };
+    }
+
+    // Eliminar de Cloudinary
+    const { deleteImage } = await import("@/lib/cloudinary");
+    const urlParts = cv.photo.split("/");
+    const publicId = urlParts[urlParts.length - 1].split(".")[0];
+    if (publicId) {
+      await deleteImage(`cvPhotos/${publicId}`);
+    }
+
+    // Actualizar CV
+    await prisma.cV.update({
+      where: { id: cv.id },
+      data: { photo: null },
+    });
+
+    revalidatePath("/editor");
+    revalidatePath("/preview");
+    return {
+      success: true,
+      message: "Foto del CV eliminada correctamente",
+    };
+  } catch (error) {
+    console.error("Error deleting CV photo:", error);
+    return {
+      success: false,
+      error: "Error al eliminar la imagen. Inténtalo de nuevo.",
+    };
+  }
+}
+
+export async function togglePhoto() {
+  try {
+    const userId = await getCurrentUserId();
+    const cv = await prisma.cV.findFirst({
+      where: {
+        userId: userId,
+        isActive: true,
+      },
+    });
+
+    if (!cv) {
+      return { success: false, error: "CV no encontrado" };
+    }
+
+    await prisma.cV.update({
+      where: {
+        id: cv.id,
+      },
+      data: {
+        photoEnabled: !cv.photoEnabled,
+      },
+    });
+
+    revalidatePath("/");
+    revalidatePath("/editor");
+    revalidatePath("/preview");
+    revalidatePath("/saved-cvs");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error toggling photo:", error);
+    return { success: false, error: "Error al cambiar el estado de la foto" };
   }
 }

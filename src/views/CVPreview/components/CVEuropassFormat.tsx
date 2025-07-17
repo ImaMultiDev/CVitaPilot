@@ -64,7 +64,7 @@ export const CVEuropassFormat: React.FC<CVEuropassFormatProps> = ({
             }}
           >
             {/* Foto opcional */}
-            {cvData.personalInfo?.photo && (
+            {cvData.personalInfo?.photo && cvData.photoEnabled && (
               <div style={{ marginBottom: "1.5rem", textAlign: "center" }}>
                 <Image
                   src={cvData.personalInfo.photo}
@@ -77,6 +77,9 @@ export const CVEuropassFormat: React.FC<CVEuropassFormatProps> = ({
                     border: "3px solid #ffffff",
                     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
                   }}
+                  width={120}
+                  height={120}
+                  unoptimized
                 />
               </div>
             )}
@@ -85,6 +88,7 @@ export const CVEuropassFormat: React.FC<CVEuropassFormatProps> = ({
             <PersonalInfoSection
               personalInfo={cvData.personalInfo}
               format="europass"
+              isForPDF={true}
             />
 
             {/* Competencias */}
