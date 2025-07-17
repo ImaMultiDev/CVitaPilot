@@ -395,8 +395,9 @@ export const PrivacySection: React.FC = () => {
       {notifications.map((notification) => (
         <Notification
           key={notification.id}
-          notification={notification}
-          onClose={removeNotification}
+          type={notification.type}
+          message={notification.message}
+          onClose={() => removeNotification(notification.id)}
         />
       ))}
     </section>
