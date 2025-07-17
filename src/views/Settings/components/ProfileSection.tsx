@@ -1,26 +1,111 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
+import { useProfileImage } from "@/hooks/useProfileImage";
+import { updateProfileInfo } from "@/lib/actions/profile-actions";
+import Image from "next/image";
 
 export const ProfileSection: React.FC = () => {
+  const { data: session, update } = useSession();
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({
-    name: "Usuario Demo",
-    email: "usuario@ejemplo.com",
+    name: session?.user?.name || "",
+    email: session?.user?.email || "",
   });
+  const [profileError, setProfileError] = useState<string | null>(null);
+  const [profileSuccess, setProfileSuccess] = useState<string | null>(null);
 
-  const handleSave = () => {
-    // Aquí iría la lógica para guardar los cambios
-    setIsEditing(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const {
+    isUploading,
+    isDeleting,
+    error: imageError,
+    success: imageSuccess,
+    uploadImage,
+    deleteImage,
+    clearMessages: clearImageMessages,
+  } = useProfileImage();
+
+  // Actualizar formData cuando cambie la sesión
+  useEffect(() => {
+    if (session?.user) {
+      setFormData({
+        name: session.user.name || "",
+        email: session.user.email || "",
+      });
+    }
+  }, [session]);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      uploadImage(file);
+    }
+  };
+
+  const handleFileInputClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleDeleteImage = () => {
+    deleteImage();
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    setProfileError(null);
+    setProfileSuccess(null);
+
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("email", formData.email);
+
+      const result = await updateProfileInfo(formDataToSend);
+
+      if (result.success) {
+        setProfileSuccess(
+          result.message || "Información actualizada correctamente"
+        );
+        setIsEditing(false);
+        await update(); // Actualizar sesión
+      } else {
+        setProfileError(result.error || "Error al actualizar la información");
+      }
+    } catch (err) {
+      setProfileError("Error inesperado al actualizar la información");
+      console.error(err);
+    } finally {
+      setIsSaving(false);
+      clearImageMessages();
+    }
   };
 
   const handleCancel = () => {
-    // Restaurar datos originales
+    setFormData({
+      name: session?.user?.name || "",
+      email: session?.user?.email || "",
+    });
     setIsEditing(false);
+    setProfileError(null);
+    setProfileSuccess(null);
+  };
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
   };
 
   return (
@@ -40,14 +125,49 @@ export const ProfileSection: React.FC = () => {
         <div className="space-y-4 sm:space-y-6">
           {/* Avatar Section */}
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
-            <div className="relative">
-              <div className="w-16 sm:w-20 h-16 sm:h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xl sm:text-2xl font-bold">
-                UD
+            {/* Avatar Container */}
+            <div className="flex flex-col items-center gap-3">
+              <div className="relative">
+                {session?.user?.image &&
+                session.user.image.startsWith("http") ? (
+                  <Image
+                    src={session.user.image}
+                    alt="Foto de perfil"
+                    className="w-16 sm:w-20 h-16 sm:h-20 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700"
+                    width={80}
+                    height={80}
+                    unoptimized
+                  />
+                ) : (
+                  <div className="w-16 sm:w-20 h-16 sm:h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xl sm:text-2xl font-bold">
+                    {getInitials(session?.user?.name || "U")}
+                  </div>
+                )}
               </div>
-              <button className="absolute -bottom-1 sm:-bottom-2 -right-1 sm:-right-2 w-6 sm:w-8 h-6 sm:h-8 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 rounded-full flex items-center justify-center text-xs sm:text-sm hover:bg-gray-700 dark:hover:bg-gray-300 transition-colors">
-                <ConfiguredIcon name="edit" size={16} />
-              </button>
+
+              {/* Action Buttons */}
+              <div className="flex gap-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={handleFileInputClick}
+                  disabled={isUploading}
+                >
+                  {isUploading ? "Subiendo..." : "Cambiar foto"}
+                </Button>
+
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={handleDeleteImage}
+                  disabled={isDeleting || !session?.user?.image}
+                >
+                  {isDeleting ? "Eliminando..." : "Eliminar foto"}
+                </Button>
+              </div>
             </div>
+
+            {/* Info Section */}
             <div className="flex-1 text-center sm:text-left">
               <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-1">
                 Foto de perfil
@@ -56,15 +176,30 @@ export const ProfileSection: React.FC = () => {
                 Sube una imagen que te represente. Máximo 5MB, formatos: JPG,
                 PNG.
               </p>
-              <Button
-                variant="secondary"
-                size="sm"
-                className="w-full sm:w-auto"
-              >
-                Cambiar foto
-              </Button>
+
+              {/* Mensajes de estado */}
+              {(imageError || imageSuccess) && (
+                <div
+                  className={`mt-3 p-2 rounded text-xs ${
+                    imageError
+                      ? "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800"
+                      : "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800"
+                  }`}
+                >
+                  {imageError || imageSuccess}
+                </div>
+              )}
             </div>
           </div>
+
+          {/* Input file oculto */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="hidden"
+          />
 
           {/* Name Field */}
           <div className="space-y-2">
@@ -83,7 +218,7 @@ export const ProfileSection: React.FC = () => {
             ) : (
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 <span className="text-gray-900 dark:text-white break-words">
-                  {formData.name}
+                  {formData.name || "No especificado"}
                 </span>
                 <Button
                   variant="ghost"
@@ -144,16 +279,43 @@ export const ProfileSection: React.FC = () => {
           {/* Action Buttons */}
           {isEditing && (
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-4">
-              <Button onClick={handleSave} className="w-full sm:w-auto">
-                Guardar cambios
+              <Button
+                onClick={handleSave}
+                disabled={isSaving}
+                className="w-full sm:w-auto"
+              >
+                {isSaving ? "Guardando..." : "Guardar cambios"}
               </Button>
               <Button
                 variant="secondary"
                 onClick={handleCancel}
+                disabled={isSaving}
                 className="w-full sm:w-auto"
               >
                 Cancelar
               </Button>
+            </div>
+          )}
+
+          {/* Mensajes de estado para información del perfil */}
+          {(profileError || profileSuccess) && (
+            <div
+              className={`mt-4 p-3 rounded-lg ${
+                profileError
+                  ? "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800"
+                  : "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800"
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <ConfiguredIcon
+                  name={profileError ? "alert-circle" : "check-circle"}
+                  size={16}
+                  className={profileError ? "text-red-500" : "text-green-500"}
+                />
+                <span className="text-sm font-medium">
+                  {profileError || profileSuccess}
+                </span>
+              </div>
             </div>
           )}
 

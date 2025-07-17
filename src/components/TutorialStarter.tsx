@@ -7,33 +7,36 @@ import { useSession } from "next-auth/react";
 
 interface TutorialStarterProps {
   isNewUser?: boolean;
+  autoStart?: boolean; // Nueva prop para controlar el inicio automático
 }
 
-export function TutorialStarter({ isNewUser = false }: TutorialStarterProps) {
+export function TutorialStarter({
+  isNewUser = false,
+  autoStart = false,
+}: TutorialStarterProps) {
   const { startTutorial, state } = useTutorial();
   const { data: session } = useSession();
   const userId = session?.user?.id;
 
+  // Restaurar: iniciar automáticamente si es un usuario nuevo o autoStart
   useEffect(() => {
-    if (!userId) return;
-    const completedKey = `tutorial-completed-${userId}`;
-    const skippedKey = `tutorial-skipped-${userId}`;
-    const isTutorialCompleted = localStorage.getItem(completedKey) === "true";
-    const isTutorialSkipped = localStorage.getItem(skippedKey) === "true";
-    // Solo iniciar el tutorial si:
-    // 1. Es un usuario nuevo O
-    // 2. No ha completado ni saltado el tutorial
     if (
-      (isNewUser || (!isTutorialCompleted && !isTutorialSkipped)) &&
-      !state.isActive
+      (isNewUser || autoStart) &&
+      !state.isActive &&
+      !state.isCompleted &&
+      !state.isSkipped
     ) {
-      // Pequeño delay para asegurar que la página esté completamente cargada
-      const timer = setTimeout(() => {
-        startTutorial();
-      }, 1000);
-      return () => clearTimeout(timer);
+      startTutorial();
     }
-  }, [isNewUser, startTutorial, state.isActive, userId]);
+  }, [
+    isNewUser,
+    startTutorial,
+    state.isActive,
+    state.isCompleted,
+    state.isSkipped,
+    userId,
+    autoStart,
+  ]);
 
   return <TutorialOverlay />;
 }

@@ -193,12 +193,12 @@ export const tutorialSteps: TutorialStep[] = [
   },
 ];
 
-// Estado inicial
+// Estado inicial del tutorial
 const initialState: TutorialState = {
   isActive: false,
   currentStep: 0,
-  isCompleted: false,
-  isSkipped: false,
+  isCompleted: false, // No completado por defecto
+  isSkipped: false, // No saltado por defecto
   stepActionCompleted: false,
 };
 

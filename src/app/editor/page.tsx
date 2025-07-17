@@ -1,9 +1,10 @@
+// src/app/editor/page.tsx
+
 import { getCurrentCV, getCurrentCVName } from "@/lib/actions/cv-actions";
 import { initializeDefaultCVForUser } from "@/lib/actions/auth-actions";
 import { CVEditorPrisma } from "@/views/CVEditor/CVEditorPrisma";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { getCurrentUser } from "@/auth";
-import { TutorialOverlay } from "@/components/TutorialOverlay";
 
 // Forzar renderizado dinámico porque usa autenticación
 export const dynamic = "force-dynamic";
@@ -61,7 +62,7 @@ export default async function EditorPage() {
               <p className="font-semibold text-yellow-800 mb-2">
                 🔧 Ejecuta estos comandos:
               </p>
-              <code className="block bg-gray-900 text-green-400 p-3 rounded text-sm">
+              <code className="block bg-gray-900 text-green-400-3 rounded text-sm">
                 npx prisma generate
                 <br />
                 npx prisma db push
@@ -82,7 +83,6 @@ export default async function EditorPage() {
   return (
     <MainLayout showSidebar={false}>
       <CVEditorPrisma initialData={currentCV} currentCVName={currentCVName} />
-      <TutorialOverlay />
     </MainLayout>
   );
 }

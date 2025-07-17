@@ -90,7 +90,9 @@ export const QuickActionsSection: React.FC = () => {
               <Button
                 onClick={() => {
                   resetTutorial();
-                  startTutorial();
+                  setTimeout(() => {
+                    startTutorial();
+                  }, 0);
                 }}
                 variant="ghost"
                 className="text-white/80 hover:text-white text-sm underline"

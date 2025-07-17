@@ -44,11 +44,25 @@ export const authConfig = {
       }
       return token;
     },
-    session({ session, token }) {
+    async session({ session, token }) {
       if (token) {
         session.user.id = token.id;
         session.user.email = token.email;
         session.user.name = token.name;
+        // Obtener la imagen actualizada de la base de datos
+        try {
+          const { prisma } = await import("@/lib/prisma");
+          const user = await prisma.user.findUnique({
+            where: { email: token.email },
+            select: { image: true },
+          });
+          // Priorizar la imagen de la base de datos sobre la de OAuth
+          if (user?.image) {
+            session.user.image = user.image;
+          }
+        } catch (error) {
+          console.error("Error obteniendo imagen del usuario:", error);
+        }
       }
       return session;
     },

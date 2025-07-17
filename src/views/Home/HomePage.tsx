@@ -108,9 +108,9 @@ export const HomePage: React.FC = () => {
       {/* Hero Section con Logo, Título, Botones, Stats y CV Gallery */}
       <section className="relative overflow-hidden">
         {/* Animated Background Pattern */}
-        <div className="absolute inset-0 opacity-30">
+        <div className="absolute inset-0 opacity-30 pointer-events-none">
           <div
-            className="absolute inset-0 animate-pulse"
+            className="absolute inset-0 animate-pulse pointer-events-none"
             style={{
               background: `
                 radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),

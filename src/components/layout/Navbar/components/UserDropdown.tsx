@@ -4,9 +4,19 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
+import Image from "next/image";
 
 interface UserDropdownProps {
   className?: string;
+}
+
+function getInitials(name: string) {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 }
 
 export const UserDropdown: React.FC<UserDropdownProps> = React.memo(
@@ -59,6 +69,23 @@ export const UserDropdown: React.FC<UserDropdownProps> = React.memo(
       return null;
     }
 
+    // Avatar a mostrar
+    const avatar =
+      session.user.image && session.user.image.startsWith("http") ? (
+        <Image
+          src={session.user.image}
+          alt="Foto de perfil"
+          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover border-2 border-white/30 shadow"
+          width={36}
+          height={36}
+          unoptimized
+        />
+      ) : (
+        <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-base sm:text-lg font-bold border-2 border-white/30 shadow">
+          {getInitials(session.user.name || session.user.email || "U")}
+        </div>
+      );
+
     return (
       <div className={`relative ${className}`} ref={dropdownRef}>
         <button
@@ -66,7 +93,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = React.memo(
           className="flex items-center space-x-2 sm:space-x-3 px-2 sm:px-4 py-2 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 hover:border-white/30 transition-all duration-300 text-white group max-w-[200px] sm:max-w-none"
           disabled={isLoggingOut}
         >
-          {/* Eliminamos el UserAvatar y el círculo */}
+          {avatar}
           <span className="font-medium text-sm truncate">
             {session.user.name || session.user.email?.split("@")[0]}
           </span>
@@ -91,7 +118,23 @@ export const UserDropdown: React.FC<UserDropdownProps> = React.memo(
             {/* Header del dropdown */}
             <div className="p-6 bg-white/10 backdrop-blur-sm border-b border-white/20 text-white">
               <div className="flex items-center space-x-4">
-                {/* Eliminamos el UserAvatar grande */}
+                {/* Avatar grande */}
+                {session.user.image && session.user.image.startsWith("http") ? (
+                  <Image
+                    src={session.user.image}
+                    alt="Foto de perfil"
+                    className="w-14 h-14 rounded-full object-cover border-2 border-white/30 shadow"
+                    width={56}
+                    height={56}
+                    unoptimized
+                  />
+                ) : (
+                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold border-2 border-white/30 shadow">
+                    {getInitials(
+                      session.user.name || session.user.email || "U"
+                    )}
+                  </div>
+                )}
                 <div className="flex-1 min-w-0">
                   <p className="font-bold text-lg truncate">
                     {session.user.name || "Usuario"}

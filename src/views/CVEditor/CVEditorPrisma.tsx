@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
-import { PersonalInfoFormPrisma } from "@/components/forms/PersonalInfoFormPrisma";
 import { Sidebar } from "@/components/layout/Sidebar/Sidebar";
 import {
   saveCurrentCVAs,
@@ -25,10 +24,9 @@ import {
   SoftSkillsSection,
   ProfessionalProfileSection,
   OtherInformationSection,
+  PersonalInfoFormPrisma,
 } from "./components";
 import { CVData } from "@/types/cv";
-import { TutorialHighlight } from "@/components/TutorialOverlay";
-import { useTutorial } from "@/contexts/TutorialContext";
 
 interface CVEditorPrismaProps {
   initialData: CVData;
@@ -42,7 +40,6 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
   const router = useRouter();
   const [isUpdating, setIsUpdating] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { completeStepAction } = useTutorial();
 
   // Función helper para manejar actualizaciones (igual que en Sidebar)
   const handleUpdate = async (
@@ -183,28 +180,25 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
       )}
 
       {/* Botón flotante para abrir sidebar en mobile/tablet */}
-      <TutorialHighlight elementId="sidebar-toggle">
-        <button
-          onClick={() => {
-            toggleSidebar();
-            completeStepAction();
-          }}
-          className={`fixed top-20 left-4 z-[60] p-2 md:p-3 text-white justify-center items-center flex rounded-full border-2 transition-all duration-300 hover:scale-110 active:scale-95 backdrop-blur-sm ${
-            isSidebarOpen
-              ? "opacity-0 pointer-events-none"
-              : "border-white/30 dark:border-white/20 shadow-xl hover:shadow-2xl hover:border-white/50 dark:hover:border-white/40 ring-4 ring-indigo-500/20 hover:ring-indigo-500/40 animate-pulse hover:animate-none"
-          }`}
-          aria-label="Abrir panel de personalización"
-          style={{
-            boxShadow:
-              "0 10px 25px rgba(79, 70, 229, 0.4), 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
-            background:
-              "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
-          }}
-        >
-          <ConfiguredIcon name="menu" size={20} className="text-white" />
-        </button>
-      </TutorialHighlight>
+      <button
+        onClick={() => {
+          toggleSidebar();
+        }}
+        className={`fixed top-20 left-4 z-[60] p-2 md:p-3 text-white justify-center items-center flex rounded-full border-2 transition-all duration-300 hover:scale-110 active:scale-95 backdrop-blur-sm ${
+          isSidebarOpen
+            ? "opacity-0 pointer-events-none"
+            : "border-white/30 dark:border-white/20 shadow-xl hover:shadow-2xl hover:border-white/50 dark:hover:border-white/40 ring-4 ring-indigo-500/20 hover:ring-indigo-500/40 animate-pulse hover:animate-none"
+        }`}
+        aria-label="Abrir panel de personalización"
+        style={{
+          boxShadow:
+            "0 10px 25px rgba(79, 70, 229, 0.4), 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
+          background:
+            "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
+        }}
+      >
+        <ConfiguredIcon name="menu" size={20} className="text-white" />
+      </button>
 
       {/* Contenido principal */}
       <div className=" max-w-6xl mx-auto p-4 lg:p-6 pt-4 lg:pt-6 space-y-6 lg:space-y-8">

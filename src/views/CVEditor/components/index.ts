@@ -11,3 +11,4 @@ export { CompetencesSection } from "./CompetencesSection";
 export { SoftSkillsSection } from "./SoftSkillsSection";
 export { ProfessionalProfileSection } from "./ProfessionalProfileSection";
 export { OtherInformationSection } from "./OtherInformationSection";
+export { PersonalInfoFormPrisma } from "./PersonalInfoFormPrisma";
