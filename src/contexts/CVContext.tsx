@@ -181,6 +181,7 @@ const initialCVData: CVData = {
   ],
   drivingLicense: true,
   ownVehicle: true,
+  photoEnabled: false,
 };
 
 interface CVState {
