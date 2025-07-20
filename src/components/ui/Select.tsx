@@ -3,6 +3,7 @@
 // src/components/ui/Select.tsx
 
 import React, { useState, useEffect, useRef } from "react";
+import ReactDOM from "react-dom";
 
 interface SelectProps
   extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "onChange"> {
@@ -12,6 +13,7 @@ interface SelectProps
   variant?: "default" | "modern" | "glass";
   placeholder?: string;
   onChange?: (value: string) => void;
+  disabled?: boolean;
 }
 
 export const Select: React.FC<SelectProps> = ({
@@ -24,6 +26,7 @@ export const Select: React.FC<SelectProps> = ({
   id,
   onChange,
   value,
+  disabled = false,
   ...props
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,8 +36,14 @@ export const Select: React.FC<SelectProps> = ({
     options.find((opt) => opt.value === value) || null
   );
   const containerRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const selectId =
     id || `select-${label?.toLowerCase().replace(/\s+/g, "-") || "unnamed"}`;
+  const [dropdownPosition, setDropdownPosition] = useState({
+    top: 0,
+    left: 0,
+    width: 0,
+  });
 
   // Detectar tema oscuro
   useEffect(() => {
@@ -60,13 +69,18 @@ export const Select: React.FC<SelectProps> = ({
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      // No cerrar si el click es en el contenedor del select o en el dropdown
       if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
+        containerRef.current?.contains(target) ||
+        dropdownRef.current?.contains(target)
       ) {
-        setIsOpen(false);
-        setIsFocused(false);
+        return;
       }
+
+      setIsOpen(false);
+      setIsFocused(false);
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -105,8 +119,8 @@ export const Select: React.FC<SelectProps> = ({
             ? "border-red-500 focus:ring-2 focus:ring-red-500"
             : "border-blue-500 focus:ring-2 focus:ring-blue-500"
           : error
-          ? "border-red-300 dark:border-red-600"
-          : "border-gray-300 dark:border-gray-600",
+            ? "border-red-300 dark:border-red-600"
+            : "border-gray-300 dark:border-gray-600",
     },
     modern: {
       container: `relative ${isOpen ? "z-50" : "z-10"}`,
@@ -136,8 +150,8 @@ export const Select: React.FC<SelectProps> = ({
             ? "border-red-500 focus:ring-2 focus:ring-red-500"
             : "border-blue-500 focus:ring-2 focus:ring-blue-500"
           : error
-          ? "border-red-300 dark:border-red-600"
-          : "border-gray-300 dark:border-gray-600",
+            ? "border-red-300 dark:border-red-600"
+            : "border-gray-300 dark:border-gray-600",
     },
     glass: {
       container: `relative ${isOpen ? "z-50" : "z-10"}`,
@@ -164,8 +178,8 @@ export const Select: React.FC<SelectProps> = ({
             ? "border-red-400/60"
             : "border-blue-400/60"
           : error
-          ? "border-red-300/40 dark:border-red-600/40"
-          : "border-white/20 dark:border-gray-600/20",
+            ? "border-red-300/40 dark:border-red-600/40"
+            : "border-white/20 dark:border-gray-600/20",
     },
   };
 
@@ -182,9 +196,37 @@ export const Select: React.FC<SelectProps> = ({
     onChange?.(option.value);
   };
 
+  // Calcular la posición del dropdown al abrir
+  const openDropdown = () => {
+    if (containerRef.current) {
+      const button = containerRef.current.querySelector("button");
+      if (button) {
+        const rect = button.getBoundingClientRect();
+        setDropdownPosition({
+          top: rect.bottom + window.scrollY,
+          left: rect.left + window.scrollX,
+          width: rect.width,
+        });
+      }
+    }
+    setIsOpen(true);
+    setIsFocused(true);
+  };
+
+  const closeDropdown = () => {
+    setIsOpen(false);
+    setIsFocused(false);
+  };
+
+  // Modificar toggleDropdown para usar openDropdown
   const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-    setIsFocused(!isOpen);
+    if (disabled) return;
+
+    if (isOpen) {
+      closeDropdown();
+    } else {
+      openDropdown();
+    }
   };
 
   return (
@@ -206,9 +248,11 @@ export const Select: React.FC<SelectProps> = ({
             ${currentVariant.border}
             ${error ? "pr-10" : "pr-8"}
             ${className}
+            ${disabled ? "opacity-50 cursor-not-allowed" : ""}
           `}
           onClick={toggleDropdown}
           onFocus={() => setIsFocused(true)}
+          disabled={disabled}
         >
           <div className="flex items-center space-x-2 flex-1 text-left">
             {selectedOption?.icon && (
@@ -253,52 +297,34 @@ export const Select: React.FC<SelectProps> = ({
           </div>
         )}
 
-        {/* Dropdown Menu */}
-        {isOpen && (
-          <div
-            data-dropdown="true"
-            className={`
-              absolute top-full left-0 right-0 mt-1 
-              rounded-lg shadow-2xl z-[9999] max-h-60 overflow-y-auto
-              border-2
-            `}
-            style={{
-              backgroundColor: isDark
-                ? "rgb(17, 24, 39)"
-                : "rgb(249, 250, 251)", // bg-gray-900 : bg-gray-50
-              borderColor: isDark ? "rgb(75, 85, 99)" : "rgb(209, 213, 219)", // border-gray-600 : border-gray-300
-              color: isDark ? "rgb(243, 244, 246)" : "rgb(17, 24, 39)", // text-gray-100 : text-gray-900
-            }}
-          >
-            {options.map((option) => (
-              <div
-                key={option.value}
-                className="px-3 py-2 md:px-4 md:py-3 cursor-pointer transition-colors duration-200 flex items-center space-x-2"
-                style={{
-                  backgroundColor: "transparent",
-                  color: isDark ? "rgb(243, 244, 246)" : "rgb(17, 24, 39)", // text-gray-100 : text-gray-900
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = isDark
-                    ? "rgb(31, 41, 55)"
-                    : "rgb(243, 244, 246)"; // bg-gray-800 : bg-gray-100
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "transparent";
-                }}
-                onClick={() => handleSelect(option)}
-              >
-                {option.icon && (
-                  <span className="text-gray-500">{option.icon}</span>
-                )}
-                <span>{option.label}</span>
-                {selectedOption?.value === option.value && (
-                  <span className="ml-auto text-blue-500">✓</span>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+        {/* Dropdown Menu en portal */}
+        {isOpen &&
+          ReactDOM.createPortal(
+            <div
+              ref={dropdownRef}
+              className={currentVariant.dropdown + " bg-white dark:bg-gray-900"}
+              style={{
+                position: "absolute",
+                top: dropdownPosition.top,
+                left: dropdownPosition.left,
+                width: dropdownPosition.width,
+                zIndex: 9999,
+                backgroundColor: isDark ? "#111827" : "#fff",
+              }}
+            >
+              {options.map((option, _idx) => (
+                <div
+                  key={option.value}
+                  className={currentVariant.option}
+                  onClick={() => handleSelect(option)}
+                >
+                  {option.icon && <span className="mr-2">{option.icon}</span>}
+                  {option.label}
+                </div>
+              ))}
+            </div>,
+            document.body
+          )}
       </div>
 
       {/* Error Message */}

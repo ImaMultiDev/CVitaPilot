@@ -430,56 +430,6 @@ export const SecuritySection: React.FC = () => {
             </div>
           </div>
         </Card>
-
-        {/* Recent Activity */}
-        <Card className="p-4 sm:p-6">
-          <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            Actividad reciente
-          </h3>
-          <div className="space-y-3">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-900 dark:text-white">
-                  Inicio de sesión desde Windows
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  IP: 192.168.1.100 • Madrid, España
-                </p>
-              </div>
-              <span className="text-xs text-gray-500 dark:text-gray-400 self-start sm:self-center">
-                Hace 2 horas
-              </span>
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-900 dark:text-white">
-                  Cambio de configuración
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Preferencias de notificaciones
-                </p>
-              </div>
-              <span className="text-xs text-gray-500 dark:text-gray-400 self-start sm:self-center">
-                Ayer
-              </span>
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 py-2">
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-900 dark:text-white">
-                  Creación de nuevo CV
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 break-words">
-                  CV_Desarrollador_Frontend.pdf
-                </p>
-              </div>
-              <span className="text-xs text-gray-500 dark:text-gray-400 self-start sm:self-center">
-                Hace 3 días
-              </span>
-            </div>
-          </div>
-        </Card>
       </div>
     </section>
   );

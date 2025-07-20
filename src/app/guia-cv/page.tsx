@@ -1,7 +1,12 @@
+import { MainLayout } from "@/components/layout/MainLayout";
 import { CVGuidePage } from "@/views/CVGuide";
 
 export default function GuiaCV() {
-  return <CVGuidePage />;
+  return (
+    <MainLayout showSidebar={false}>
+      <CVGuidePage />
+    </MainLayout>
+  );
 }
 
 export const metadata = {

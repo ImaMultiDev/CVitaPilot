@@ -7,6 +7,7 @@ import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import crypto from "crypto";
+import { logUserActivity } from "./activity-actions";
 
 // Schema de validación para cambio de contraseña
 const changePasswordSchema = z
@@ -87,6 +88,16 @@ export async function changePassword(formData: FormData) {
     });
 
     revalidatePath("/settings");
+
+    // Registrar actividad
+    console.log("Registrando actividad de cambio de contraseña...");
+    const activityResult = await logUserActivity(
+      "password_changed",
+      "Contraseña actualizada",
+      "Se cambió la contraseña de la cuenta",
+      { details: { method: "manual" } }
+    );
+    console.log("Resultado del logging:", activityResult);
 
     return {
       success: true,
@@ -279,6 +290,13 @@ export async function enableTwoFactor(secret: string, code: string) {
 
     revalidatePath("/settings");
 
+    // Registrar actividad
+    await logUserActivity(
+      "two_factor_enabled",
+      "Autenticación de dos factores habilitada",
+      "Se activó la autenticación de dos factores para la cuenta"
+    );
+
     return {
       success: true,
       message: "Autenticación de dos factores habilitada correctamente",
@@ -307,6 +325,13 @@ export async function disableTwoFactor() {
     });
 
     revalidatePath("/settings");
+
+    // Registrar actividad
+    await logUserActivity(
+      "two_factor_disabled",
+      "Autenticación de dos factores deshabilitada",
+      "Se desactivó la autenticación de dos factores de la cuenta"
+    );
 
     return {
       success: true,

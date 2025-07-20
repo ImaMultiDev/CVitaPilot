@@ -1,14 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { signOut } from "next-auth/react";
 import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { Toggle } from "@/components/ui/Toggle";
 import { Modal } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/Input";
-import { exportUserData, deleteUserAccount } from "@/lib/actions/auth-actions";
+import {
+  exportUserData,
+  deleteUserAccount,
+  getUserStorageUsage,
+} from "@/lib/actions/auth-actions";
 import { useNotification } from "@/hooks/useNotification";
 import { Notification } from "@/components/ui/Notification";
 
@@ -19,47 +22,46 @@ export const PrivacySection: React.FC = () => {
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [isExporting, setIsExporting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [privacySettings, setPrivacySettings] = useState([
-    {
-      title: "Perfil público",
-      description: "Permite que otros usuarios vean tu perfil y CVs públicos.",
-      icon: <ConfiguredIcon name="user" size={20} className="text-blue-500" />,
-      enabled: false,
-    },
-    {
-      title: "Recolección de datos",
-      description:
-        "Permitir la recolección de datos para mejorar la experiencia.",
-      icon: (
-        <ConfiguredIcon name="bar-chart" size={20} className="text-green-500" />
-      ),
-      enabled: true,
-    },
-    {
-      title: "Compartir con terceros",
-      description:
-        "Compartir datos agregados y anónimos con socios de confianza.",
-      icon: (
-        <ConfiguredIcon name="link" size={20} className="text-purple-500" />
-      ),
-      enabled: false,
-    },
-    {
-      title: "Análisis de comportamiento",
-      description: "Analizar patrones de uso para optimizar la aplicación.",
-      icon: (
-        <ConfiguredIcon name="search" size={20} className="text-orange-500" />
-      ),
-      enabled: true,
-    },
-  ]);
+  const [storageData, setStorageData] = useState<{
+    cvs: number;
+    totalSize: number;
+    breakdown: {
+      cvs: number;
+      configurations: number;
+      activities: number;
+    };
+  } | null>(null);
+  const [isLoadingStorage, setIsLoadingStorage] = useState(true);
 
-  const togglePrivacySetting = (index: number) => {
-    setPrivacySettings((prev) =>
-      prev.map((setting, i) =>
-        i === index ? { ...setting, enabled: !setting.enabled } : setting
-      )
-    );
+  // Cargar datos de uso de almacenamiento
+  useEffect(() => {
+    const loadStorageData = async () => {
+      try {
+        setIsLoadingStorage(true);
+        const result = await getUserStorageUsage();
+
+        if (result.success && result.data) {
+          setStorageData(result.data);
+        } else {
+          console.error("Error loading storage data:", result.error);
+        }
+      } catch (error) {
+        console.error("Error loading storage data:", error);
+      } finally {
+        setIsLoadingStorage(false);
+      }
+    };
+
+    loadStorageData();
+  }, []);
+
+  // Función para formatear bytes en formato legible
+  const formatBytes = (bytes: number): string => {
+    if (bytes === 0) return "0 B";
+    const k = 1024;
+    const sizes = ["B", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
   };
 
   const handleDataExport = async () => {
@@ -149,8 +151,8 @@ export const PrivacySection: React.FC = () => {
       </div>
 
       <div className="space-y-4 sm:space-y-6">
-        {/* Privacy Controls */}
-        <Card className="p-4 sm:p-6">
+        {/* Privacy Controls - TEMPORARILY HIDDEN */}
+        {/* <Card className="p-4 sm:p-6">
           <div className="mb-4 sm:mb-6">
             <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-2">
               Control de privacidad
@@ -186,7 +188,7 @@ export const PrivacySection: React.FC = () => {
               </div>
             ))}
           </div>
-        </Card>
+        </Card> */}
 
         {/* Data Export */}
         <Card className="p-4 sm:p-6">
@@ -195,7 +197,8 @@ export const PrivacySection: React.FC = () => {
               Exportación de datos
             </h3>
             <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm">
-              Descarga una copia de todos tus datos almacenados en CVitaPilot.
+              Descarga una copia completa de todos tus datos almacenados en
+              CVitaPilot.
             </p>
           </div>
 
@@ -212,7 +215,8 @@ export const PrivacySection: React.FC = () => {
                 </span>
               </div>
               <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm">
-                Incluye CVs, configuraciones y datos del perfil en formato JSON.
+                Incluye todos tus CVs, configuraciones, preferencias y datos del
+                perfil en formato JSON.
               </p>
             </div>
             <Button
@@ -238,54 +242,69 @@ export const PrivacySection: React.FC = () => {
             </p>
           </div>
 
-          <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                <span className="text-sm text-gray-700 dark:text-gray-300">
-                  CVs y documentos
-                </span>
-              </div>
-              <span className="text-sm font-medium text-gray-900 dark:text-white">
-                12.4 MB
+          {isLoadingStorage ? (
+            <div className="flex justify-center items-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+              <span className="ml-3 text-gray-600 dark:text-gray-400">
+                Cargando datos...
               </span>
             </div>
-
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span className="text-sm text-gray-700 dark:text-gray-300">
-                  Configuraciones
-                </span>
-              </div>
-              <span className="text-sm font-medium text-gray-900 dark:text-white">
-                2.1 KB
-              </span>
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-                <span className="text-sm text-gray-700 dark:text-gray-300">
-                  Caché y temporales
-                </span>
-              </div>
-              <span className="text-sm font-medium text-gray-900 dark:text-white">
-                1.8 MB
-              </span>
-            </div>
-
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+          ) : storageData ? (
+            <div className="space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                <span className="font-medium text-gray-900 dark:text-white">
-                  Total utilizado
-                </span>
-                <span className="font-bold text-gray-900 dark:text-white">
-                  14.3 MB
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">
+                    CVs y documentos ({storageData.cvs} CVs)
+                  </span>
+                </div>
+                <span className="text-sm font-medium text-gray-900 dark:text-white">
+                  {formatBytes(storageData.breakdown.cvs)}
                 </span>
               </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">
+                    Configuraciones y preferencias
+                  </span>
+                </div>
+                <span className="text-sm font-medium text-gray-900 dark:text-white">
+                  {formatBytes(storageData.breakdown.configurations)}
+                </span>
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">
+                    Actividad y logs
+                  </span>
+                </div>
+                <span className="text-sm font-medium text-gray-900 dark:text-white">
+                  {formatBytes(storageData.breakdown.activities)}
+                </span>
+              </div>
+
+              <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <span className="font-medium text-gray-900 dark:text-white">
+                    Total utilizado
+                  </span>
+                  <span className="font-bold text-gray-900 dark:text-white">
+                    {formatBytes(storageData.totalSize)}
+                  </span>
+                </div>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-gray-600 dark:text-gray-400">
+                No hay datos de almacenamiento disponibles.
+              </p>
+            </div>
+          )}
         </Card>
 
         {/* Danger Zone */}

@@ -5,7 +5,6 @@ import {
   SettingsHeader,
   ProfileSection,
   SecuritySection,
-  NotificationSection,
   PreferencesSection,
   PrivacySection,
 } from "./components";
@@ -34,12 +33,13 @@ export const SettingsPage: React.FC = () => {
             >
               <ConfiguredIcon name="shield" size={16} /> Seguridad
             </a>
-            <a
+            {/*<a
               href="#notifications"
               className="px-2 flex items-center gap-2 sm:px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-center whitespace-nowrap"
             >
               <ConfiguredIcon name="bell" size={16} /> Notificaciones
-            </a>
+            </a>*/}
+
             <a
               href="#preferences"
               className="px-2 flex items-center gap-2 sm:px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-center whitespace-nowrap"
@@ -65,7 +65,6 @@ export const SettingsPage: React.FC = () => {
         <div className="space-y-6 sm:space-y-8 relative isolation-isolate">
           <ProfileSection />
           <SecuritySection />
-          <NotificationSection />
           <PreferencesSection />
           <PrivacySection />
           <SupportSection />

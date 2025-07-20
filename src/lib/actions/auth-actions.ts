@@ -1,9 +1,13 @@
 "use server";
 
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/auth";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { randomBytes } from "crypto";
+import { addDays } from "date-fns";
+import { logUserActivity } from "./activity-actions";
 
 // Función auxiliar para obtener el ID del usuario actual
 async function getCurrentUserId(): Promise<string> {
@@ -316,8 +320,35 @@ export async function deleteUserAccount(): Promise<{
 }
 
 // Funciones para verificación de email
-import { randomBytes } from "crypto";
-import { addDays } from "date-fns";
+
+// Función para registrar actividad de login
+export async function logUserLogin(userAgent?: string, ip?: string) {
+  try {
+    const session = await auth();
+    if (!session?.user?.email) {
+      return { success: false, error: "No autorizado" };
+    }
+
+    await logUserActivity(
+      "login",
+      "Inicio de sesión",
+      "Sesión iniciada correctamente",
+      {
+        userAgent,
+        ip,
+        details: {
+          method: "credentials", // o "oauth" según el provider
+          timestamp: new Date().toISOString(),
+        },
+      }
+    );
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error logging login activity:", error);
+    return { success: false, error: "Error al registrar actividad de login" };
+  }
+}
 
 // Función para generar token de verificación
 async function generateVerificationToken(email: string): Promise<string> {
@@ -650,6 +681,125 @@ export async function getCleanupStats(): Promise<{
     return {
       unverifiedUsers: 0,
       expiredTokens: 0,
+    };
+  }
+}
+
+// Función para calcular el uso de almacenamiento del usuario
+export async function getUserStorageUsage(): Promise<{
+  success: boolean;
+  data?: {
+    cvs: number;
+    totalSize: number;
+    breakdown: {
+      cvs: number;
+      configurations: number;
+      activities: number;
+    };
+  };
+  error?: string;
+}> {
+  try {
+    const userId = await getCurrentUserId();
+
+    // Obtener estadísticas de CVs
+    const cvsCount = await prisma.cV.count({
+      where: { userId },
+    });
+
+    // Obtener datos para calcular tamaño
+    const userData = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        cvs: {
+          include: {
+            languages: true,
+            skills: true,
+            skillCategories: true,
+            competences: true,
+            interests: true,
+            softSkills: true,
+            experiences: true,
+            education: true,
+            certifications: true,
+            achievements: true,
+            references: true,
+            deliveries: true,
+            socialNetworks: true,
+            otherInformation: true,
+          },
+        },
+        activities: true,
+      },
+    });
+
+    if (!userData) {
+      return {
+        success: false,
+        error: "Usuario no encontrado",
+      };
+    }
+
+    // Calcular tamaño aproximado en bytes
+    let totalSize = 0;
+    let cvsSize = 0;
+    let configSize = 0;
+    let activitiesSize = 0;
+
+    // Tamaño de CVs y datos relacionados
+    userData.cvs.forEach((cv) => {
+      // Tamaño base del CV
+      cvsSize += JSON.stringify(cv).length;
+
+      // Tamaño de datos relacionados
+      cvsSize += cv.languages.length * 100; // Aproximado
+      cvsSize += cv.skills.length * 150;
+      cvsSize += cv.skillCategories.length * 120;
+      cvsSize += cv.competences.length * 100;
+      cvsSize += cv.interests.length * 100;
+      cvsSize += cv.softSkills.length * 100;
+      cvsSize += cv.experiences.length * 300;
+      cvsSize += cv.education.length * 200;
+      cvsSize += cv.certifications.length * 250;
+      cvsSize += cv.achievements.length * 300;
+      cvsSize += cv.references.length * 250;
+      cvsSize += cv.deliveries.length * 200;
+      cvsSize += cv.socialNetworks.length * 150;
+      cvsSize += cv.otherInformation.length * 100;
+    });
+
+    // Tamaño de configuraciones (preferencias del usuario)
+    configSize = JSON.stringify({
+      theme: userData.theme,
+      language: userData.language,
+      timezone: userData.timezone,
+      autoSave: userData.autoSave,
+      analytics: userData.analytics,
+      betaFeatures: userData.betaFeatures,
+    }).length;
+
+    // Tamaño de actividades
+    activitiesSize = userData.activities.length * 200; // Aproximado por actividad
+
+    totalSize = cvsSize + configSize + activitiesSize;
+
+    return {
+      success: true,
+      data: {
+        cvs: cvsCount,
+        totalSize,
+        breakdown: {
+          cvs: cvsSize,
+          configurations: configSize,
+          activities: activitiesSize,
+        },
+      },
+    };
+  } catch (error) {
+    console.error("Error calculando uso de almacenamiento:", error);
+    return {
+      success: false,
+      error: "Error interno del servidor",
     };
   }
 }

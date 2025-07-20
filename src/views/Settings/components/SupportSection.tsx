@@ -1,12 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ConfiguredIcon } from "@/components/ui/ConfiguredIcon";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Textarea } from "@/components/ui/Textarea";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
+import { sendSupportMessage } from "@/lib/actions/support-actions";
+import {
+  getSystemStatus,
+  SystemStatus,
+} from "@/lib/actions/system-status-actions";
 
 export const SupportSection: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -15,17 +20,107 @@ export const SupportSection: React.FC = () => {
     message: "",
     priority: "medium",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitResult, setSubmitResult] = useState<{
+    success: boolean;
+    message: string;
+  } | null>(null);
+  const [systemStatus, setSystemStatus] = useState<SystemStatus[]>([]);
+  const [isLoadingStatus, setIsLoadingStatus] = useState(true);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Cargar estado del sistema
+  useEffect(() => {
+    const loadSystemStatus = async () => {
+      try {
+        const status = await getSystemStatus();
+        setSystemStatus(status);
+      } catch (error) {
+        console.error("Error cargando estado del sistema:", error);
+      } finally {
+        setIsLoadingStatus(false);
+      }
+    };
+
+    loadSystemStatus();
+  }, []);
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "operational":
+        return "bg-green-500";
+      case "degraded":
+        return "bg-yellow-500";
+      case "down":
+        return "bg-red-500";
+      default:
+        return "bg-gray-500";
+    }
+  };
+
+  const getStatusBgColor = (status: string) => {
+    switch (status) {
+      case "operational":
+        return "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800";
+      case "degraded":
+        return "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800";
+      case "down":
+        return "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800";
+      default:
+        return "bg-gray-50 dark:bg-gray-900/20 border-gray-200 dark:border-gray-800";
+    }
+  };
+
+  const getStatusTextColor = (status: string) => {
+    switch (status) {
+      case "operational":
+        return "text-green-800 dark:text-green-200";
+      case "degraded":
+        return "text-yellow-800 dark:text-yellow-200";
+      case "down":
+        return "text-red-800 dark:text-red-200";
+      default:
+        return "text-gray-800 dark:text-gray-200";
+    }
+  };
+
+  const getStatusMessageColor = (status: string) => {
+    switch (status) {
+      case "operational":
+        return "text-green-700 dark:text-green-300";
+      case "degraded":
+        return "text-yellow-700 dark:text-yellow-300";
+      case "down":
+        return "text-red-700 dark:text-red-300";
+      default:
+        return "text-gray-700 dark:text-gray-300";
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí iría la lógica para enviar el mensaje
-    alert("Mensaje enviado. Te responderemos pronto.");
-    setFormData({
-      subject: "",
-      category: "",
-      message: "",
-      priority: "medium",
-    });
+    setIsSubmitting(true);
+    setSubmitResult(null);
+
+    try {
+      const result = await sendSupportMessage(formData);
+      setSubmitResult(result);
+
+      if (result.success) {
+        setFormData({
+          subject: "",
+          category: "",
+          message: "",
+          priority: "medium",
+        });
+      }
+    } catch (_error) {
+      setSubmitResult({
+        success: false,
+        message: "Error inesperado. Por favor, inténtalo de nuevo.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const categoryOptions = [
@@ -71,7 +166,10 @@ export const SupportSection: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <button className="p-4 text-left border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 dark:hover:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all">
+            <button
+              onClick={() => (window.location.href = "/guia-cv")}
+              className="p-4 text-left border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 dark:hover:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all cursor-pointer"
+            >
               <div className="flex items-center gap-3 mb-2">
                 <ConfiguredIcon
                   name="book"
@@ -87,7 +185,10 @@ export const SupportSection: React.FC = () => {
               </p>
             </button>
 
-            <button className="p-4 text-left border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 dark:hover:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all">
+            <button
+              onClick={() => (window.location.href = "/faq")}
+              className="p-4 text-left border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 dark:hover:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all cursor-pointer"
+            >
               <div className="flex items-center gap-3 mb-2">
                 <ConfiguredIcon
                   name="help-circle"
@@ -103,18 +204,24 @@ export const SupportSection: React.FC = () => {
               </p>
             </button>
 
-            <button className="p-4 text-left border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 dark:hover:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all">
+            <button
+              disabled
+              className="p-4 text-left border border-gray-200 dark:border-gray-700 rounded-lg opacity-50 cursor-not-allowed"
+            >
               <div className="flex items-center gap-3 mb-2">
                 <ConfiguredIcon
                   name="target"
                   size={20}
-                  className="text-purple-500"
+                  className="text-gray-400"
                 />
-                <span className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">
+                <span className="font-medium text-gray-500 dark:text-gray-400 text-sm sm:text-base">
                   Tutoriales
                 </span>
+                <span className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-2 py-1 rounded">
+                  Próximamente
+                </span>
               </div>
-              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                 Videos paso a paso
               </p>
             </button>
@@ -146,6 +253,7 @@ export const SupportSection: React.FC = () => {
                     }
                     options={categoryOptions}
                     placeholder="Selecciona una categoría"
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
@@ -162,6 +270,7 @@ export const SupportSection: React.FC = () => {
                     }
                     options={priorityOptions}
                     placeholder="Selecciona prioridad"
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
@@ -179,6 +288,7 @@ export const SupportSection: React.FC = () => {
                 }
                 placeholder="Describe brevemente tu consulta"
                 required
+                disabled={isSubmitting}
               />
             </div>
 
@@ -194,25 +304,85 @@ export const SupportSection: React.FC = () => {
                 placeholder="Describe tu problema o consulta en detalle..."
                 rows={5}
                 required
+                disabled={isSubmitting}
               />
             </div>
 
+            {/* Result Message */}
+            {submitResult && (
+              <div
+                className={`p-4 rounded-lg ${
+                  submitResult.success
+                    ? "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800"
+                    : "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <ConfiguredIcon
+                    name={
+                      submitResult.success ? "check-circle" : "alert-circle"
+                    }
+                    size={20}
+                    className={
+                      submitResult.success
+                        ? "text-green-600 dark:text-green-400"
+                        : "text-red-600 dark:text-red-400"
+                    }
+                  />
+                  <span
+                    className={`text-sm font-medium ${
+                      submitResult.success
+                        ? "text-green-800 dark:text-green-200"
+                        : "text-red-800 dark:text-red-200"
+                    }`}
+                  >
+                    {submitResult.message}
+                  </span>
+                </div>
+              </div>
+            )}
+
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-4">
-              <Button type="submit" className="w-full sm:w-auto">
-                Enviar mensaje
+              <Button
+                type="submit"
+                className="w-full sm:w-auto"
+                disabled={
+                  isSubmitting ||
+                  !formData.subject ||
+                  !formData.message ||
+                  !formData.category
+                }
+              >
+                {isSubmitting ? (
+                  <>
+                    <ConfiguredIcon
+                      name="loader-2"
+                      size={16}
+                      className="animate-spin mr-2"
+                    />
+                    Enviando...
+                  </>
+                ) : (
+                  <>
+                    <ConfiguredIcon name="send" size={16} className="mr-2" />
+                    Enviar mensaje
+                  </>
+                )}
               </Button>
               <Button
                 type="button"
                 variant="secondary"
-                onClick={() =>
+                onClick={() => {
                   setFormData({
                     category: "",
-                    priority: "",
+                    priority: "medium",
                     subject: "",
                     message: "",
-                  })
-                }
+                  });
+                  setSubmitResult(null);
+                }}
                 className="w-full sm:w-auto"
+                disabled={isSubmitting}
               >
                 Limpiar formulario
               </Button>
@@ -220,8 +390,8 @@ export const SupportSection: React.FC = () => {
           </form>
         </Card>
 
-        {/* Contact Information */}
-        <Card className="p-4 sm:p-6">
+        {/* Contact Information - OCULTO TEMPORALMENTE */}
+        {/* <Card className="p-4 sm:p-6">
           <div className="mb-4 sm:mb-6">
             <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-2">
               Información de contacto
@@ -300,7 +470,7 @@ export const SupportSection: React.FC = () => {
               </div>
             </div>
           </div>
-        </Card>
+        </Card> */}
 
         {/* System Status */}
         <Card className="p-4 sm:p-6">
@@ -314,41 +484,45 @@ export const SupportSection: React.FC = () => {
           </div>
 
           <div className="space-y-3">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span className="font-medium text-green-800 dark:text-green-200 text-sm sm:text-base">
-                  Plataforma principal
+            {isLoadingStatus ? (
+              <div className="flex justify-center items-center py-8">
+                <ConfiguredIcon
+                  name="loader-2"
+                  size={32}
+                  className="animate-spin text-blue-500"
+                />
+                <span className="ml-2 text-gray-600 dark:text-gray-400">
+                  Cargando estado del sistema...
                 </span>
               </div>
-              <span className="text-xs sm:text-sm text-green-700 dark:text-green-300">
-                Operativo
-              </span>
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span className="font-medium text-green-800 dark:text-green-200 text-sm sm:text-base">
-                  Generación de PDFs
-                </span>
+            ) : systemStatus.length === 0 ? (
+              <div className="flex justify-center items-center py-8 text-gray-600 dark:text-gray-400">
+                No hay información de estado disponible.
               </div>
-              <span className="text-xs sm:text-sm text-green-700 dark:text-green-300">
-                Operativo
-              </span>
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span className="font-medium text-green-800 dark:text-green-200 text-sm sm:text-base">
-                  Base de datos
-                </span>
-              </div>
-              <span className="text-xs sm:text-sm text-green-700 dark:text-green-300">
-                Operativo
-              </span>
-            </div>
+            ) : (
+              systemStatus.map((item, index) => (
+                <div
+                  key={index}
+                  className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-lg ${getStatusBgColor(item.status)}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-3 h-3 rounded-full ${getStatusColor(item.status)}`}
+                    ></div>
+                    <span
+                      className={`font-medium ${getStatusTextColor(item.status)} text-sm sm:text-base`}
+                    >
+                      {item.service}
+                    </span>
+                  </div>
+                  <span
+                    className={`text-xs sm:text-sm ${getStatusMessageColor(item.status)}`}
+                  >
+                    {item.message}
+                  </span>
+                </div>
+              ))
+            )}
           </div>
         </Card>
       </div>

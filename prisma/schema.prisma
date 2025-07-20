@@ -281,12 +281,23 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   
+  // Preferencias del usuario
+  theme         String    @default("system") // light, dark, system
+  language      String    @default("es")     // es, en, fr, de
+  timezone      String    @default("Europe/Madrid")
+  autoSave      Boolean   @default(true)
+  analytics     Boolean   @default(false)
+  betaFeatures  Boolean   @default(false)
+  
   // Relaciones Auth.js
   accounts Account[]
   sessions Session[]
   
   // Relaciones de la aplicación - Conectar CVs con usuario
   cvs       CV[]
+  
+  // Actividad reciente del usuario
+  activities UserActivity[]
   
   @@map("users")
 }
@@ -357,4 +368,20 @@ model OtherInformation {
   cvId     String
   
   @@map("other_information")
+}
+
+// Actividad reciente del usuario
+model UserActivity {
+  id          String   @id @default(cuid())
+  type        String   // login, logout, cv_created, cv_updated, cv_deleted, settings_changed, etc.
+  title       String   // Título descriptivo de la actividad
+  description String?  // Descripción opcional
+  metadata    Json?    // Datos adicionales (IP, ubicación, detalles, etc.)
+  createdAt   DateTime @default(now())
+  
+  // Relación con el usuario
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  
+  @@map("user_activities")
 }
