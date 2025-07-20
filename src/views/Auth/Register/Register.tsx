@@ -80,13 +80,30 @@ export default function Register() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <div className="bg-white dark:bg-gray-900 shadow-xl rounded-2xl border border-gray-200 dark:border-gray-700 p-8 text-center">
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+      <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+        {/* Logo de fondo grande */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-5 dark:opacity-10 pointer-events-none">
+          <div className="relative w-96 h-96">
+            <Image
+              src={getLogoSrc()}
+              alt="CVitaPilot Background"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
+        </div>
+
+        {/* Patrón de fondo decorativo */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_50%)] dark:bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent_50%)]"></div>
+
+        {/* Contenido principal */}
+        <div className="relative w-full max-w-md z-10">
+          <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-2xl rounded-3xl border border-white/20 dark:border-gray-700/50 p-8 text-center">
+            <div className="flex justify-center mb-6">
+              <div className="w-20 h-20 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center shadow-xl">
                 <svg
-                  className="w-8 h-8 text-green-600 dark:text-green-400"
+                  className="w-10 h-10 text-green-600 dark:text-green-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -100,18 +117,18 @@ export default function Register() {
                 </svg>
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
               ¡Registro Exitoso!
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
+            <p className="text-gray-600 dark:text-gray-400 mb-6 text-lg">
               Tu cuenta ha sido creada. Te hemos enviado un email de
               verificación.
             </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
               Por favor, revisa tu bandeja de entrada y haz clic en el enlace de
               verificación para activar tu cuenta.
             </p>
-            <div className="animate-spin h-6 w-6 border-2 border-blue-600 border-t-transparent rounded-full mx-auto"></div>
+            <div className="animate-spin h-8 w-8 border-3 border-blue-600 border-t-transparent rounded-full mx-auto"></div>
           </div>
         </div>
       </div>
@@ -119,28 +136,45 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-gray-900 shadow-xl rounded-2xl border border-gray-200 dark:border-gray-700 p-8">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+      {/* Logo de fondo grande */}
+      <div className="absolute inset-0 flex items-center justify-center opacity-5 dark:opacity-10 pointer-events-none">
+        <div className="relative w-96 h-96">
+          <Image
+            src={getLogoSrc()}
+            alt="CVitaPilot Background"
+            fill
+            className="object-contain"
+            priority
+          />
+        </div>
+      </div>
+
+      {/* Patrón de fondo decorativo */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_50%)] dark:bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent_50%)]"></div>
+
+      {/* Contenido principal */}
+      <div className="relative w-full max-w-md z-10">
+        <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-2xl rounded-3xl border border-white/20 dark:border-gray-700/50 p-8">
           {/* Logo y Título */}
           <div className="text-center mb-8">
-            <div className="flex justify-center mb-4">
-              <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 border-2 border-blue-200 dark:border-gray-600 flex items-center justify-center shadow-lg">
+            <div className="flex justify-center mb-6">
+              <div className="w-28 h-28 rounded-3xl bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-gray-700 dark:to-gray-800 border-2 border-blue-200 dark:border-gray-600 flex items-center justify-center shadow-xl">
                 <Image
                   src={getLogoSrc()}
                   alt="CVitaPilot"
-                  width={60}
-                  height={60}
+                  width={70}
+                  height={70}
                   priority
-                  className="rounded-xl"
+                  className="rounded-2xl"
                 />
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Crear Cuenta
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              Únete a CVitaPilot
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-2">
-              Únete a CVitaPilot y crea tu CV profesional
+            <p className="text-gray-600 dark:text-gray-400 text-lg">
+              Crea tu CV profesional en minutos
             </p>
           </div>
 
