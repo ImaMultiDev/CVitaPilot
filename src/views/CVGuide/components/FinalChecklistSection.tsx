@@ -131,9 +131,9 @@ export const FinalChecklistSection: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
           <div className="p-2 sm:p-2.5 lg:p-3 bg-gradient-to-br from-blue-100 to-green-100 dark:from-blue-900/30 dark:to-green-900/30 rounded-lg sm:rounded-xl">
             <ConfiguredIcon
-              name="check-square"
+              name="check-circle"
               size={24}
-              className="text-blue-600 dark:text-blue-400 sm:w-7 sm:h-7 lg:w-8 lg:h-8"
+              className="mb-6 text-blue-600 dark:text-blue-400 sm:w-7 sm:h-7 lg:w-8 lg:h-8"
             />
           </div>
           <div className="flex-1 w-full">
@@ -283,8 +283,13 @@ export const FinalChecklistSection: React.FC = () => {
           {/* Mensaje final */}
           <div className="mt-6 sm:mt-8 text-center">
             <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
+              <ConfiguredIcon
+                name="thumbs-up"
+                size={24}
+                className="text-blue-600 dark:text-blue-400 sm:w-7 sm:h-7 lg:w-8 lg:h-8"
+              />
               <h4 className="text-base sm:text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2 sm:mb-3">
-                🎯 ¡Estás listo para destacar!
+                ¡Estás listo para destacar!
               </h4>
               <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                 Al completar este checklist, tu CV tendrá las mejores

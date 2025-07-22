@@ -19,7 +19,7 @@ export const TableOfContents: React.FC = () => {
       title: "Estructura del CV",
       icon: (
         <ConfiguredIcon
-          name="layout"
+          name="file-spreadsheet"
           size={20}
           className="text-blue-600 dark:text-blue-400"
         />
@@ -92,7 +92,7 @@ export const TableOfContents: React.FC = () => {
       <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
         <div className="p-1.5 sm:p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
           <ConfiguredIcon
-            name="list"
+            name="table-of-contents"
             size={20}
             className="text-blue-600 dark:text-blue-400 sm:w-6 sm:h-6"
           />

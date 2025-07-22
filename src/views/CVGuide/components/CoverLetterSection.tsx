@@ -83,7 +83,7 @@ export const CoverLetterSection: React.FC = () => {
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-4 sm:p-6 rounded-xl border-l-4 border-blue-500 dark:border-blue-400">
             <div className="flex items-start gap-3 sm:gap-4">
               <ConfiguredIcon
-                name="user-check"
+                name="letter-e"
                 size={20}
                 className="text-blue-600 dark:text-blue-400 mt-1 flex-shrink-0 sm:w-6 sm:h-6"
               />
@@ -201,10 +201,15 @@ export const CoverLetterSection: React.FC = () => {
 
                     {section.note && (
                       <div
-                        className={`mt-3 sm:mt-4 p-3 sm:p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-600 ml-8 sm:ml-12`}
+                        className={`flex items-center gap-2 mt-3 sm:mt-4 p-3 sm:p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-600 ml-8 sm:ml-12`}
                       >
+                        <ConfiguredIcon
+                          name="lightbulb"
+                          size={16}
+                          className="text-orange-600 dark:text-orange-400 sm:w-7 sm:h-7 lg:w-8 lg:h-8"
+                        />
                         <p className="text-yellow-800 dark:text-yellow-300 text-xs sm:text-sm">
-                          💡 {section.note}
+                          {section.note}
                         </p>
                       </div>
                     )}
@@ -222,7 +227,7 @@ export const CoverLetterSection: React.FC = () => {
             <div className="bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 p-4 sm:p-6 lg:p-8 rounded-xl border border-yellow-200 dark:border-yellow-600">
               <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
                 <ConfiguredIcon
-                  name="briefcase"
+                  name="search"
                   size={20}
                   className="text-yellow-600 dark:text-yellow-400 sm:w-6 sm:h-6"
                 />

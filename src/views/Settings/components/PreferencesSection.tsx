@@ -41,7 +41,7 @@ export const PreferencesSection: React.FC = () => {
     <section id="preferences" className="mb-8 sm:mb-12">
       <div className="flex items-center gap-3 mb-4 sm:mb-6">
         <ConfiguredIcon
-          name="settings"
+          name="file-sliders"
           size={28}
           className="text-purple-600 dark:text-purple-400"
         />

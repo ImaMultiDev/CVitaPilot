@@ -89,7 +89,7 @@ export const AdvancedTipsSection: React.FC = () => {
           <div>
             <h3 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
               <ConfiguredIcon
-                name="alert-circle"
+                name="alert-triangle"
                 size={20}
                 className="text-red-600 dark:text-red-400 sm:w-6 sm:h-6"
               />

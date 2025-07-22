@@ -141,7 +141,7 @@ export const PrivacySection: React.FC = () => {
     <section id="privacy" className="mb-8 sm:mb-12">
       <div className="flex items-center gap-3 mb-4 sm:mb-6">
         <ConfiguredIcon
-          name="shield"
+          name="shield-user"
           size={28}
           className="text-green-600 dark:text-green-400"
         />
@@ -332,10 +332,10 @@ export const PrivacySection: React.FC = () => {
               <Button
                 variant="danger"
                 onClick={() => setShowDeleteModal(true)}
-                className="w-full flex sm:w-auto"
+                className="w-full flex sm:w-auto items-center justify-center"
               >
                 <ConfiguredIcon
-                  name="trash-2"
+                  name="alert-triangle"
                   size={16}
                   className="mr-2 inline-block"
                 />

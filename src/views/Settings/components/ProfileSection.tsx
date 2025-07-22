@@ -323,7 +323,11 @@ export const ProfileSection: React.FC = () => {
           <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 sm:p-4">
             <div className="flex items-start gap-3">
               <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-white text-xs">i</span>
+                <ConfiguredIcon
+                  name="badge-info"
+                  size={16}
+                  className="text-white"
+                />
               </div>
               <div className="text-xs sm:text-sm text-blue-800 dark:text-blue-200">
                 <p className="font-medium mb-1">Información importante</p>

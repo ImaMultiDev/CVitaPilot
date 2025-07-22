@@ -41,11 +41,11 @@ const socialLinks = [
   {
     name: "Portfolio",
     href: "https://imamultidev.dev",
-    icon: "user", // Usamos 'user' como portfolio personal
+    icon: "globe", // Usamos 'user' como portfolio personal
   },
   {
     name: "GitHub",
-    href: "https://github.com/kodebidean",
+    href: "https://github.com/imamultidev",
     icon: "github", // Usamos 'code' como icono representativo de GitHub
   },
   {

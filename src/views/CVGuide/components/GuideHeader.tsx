@@ -6,7 +6,7 @@ export const GuideHeader: React.FC = () => {
     <div className="text-center mb-8 sm:mb-12 px-2 sm:px-4">
       <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-2xl mb-4 sm:mb-6">
         <ConfiguredIcon
-          name="book"
+          name="book-reading"
           size={32}
           className="text-blue-600 dark:text-blue-400 sm:w-10 sm:h-10"
         />
@@ -25,7 +25,7 @@ export const GuideHeader: React.FC = () => {
       <div className="mt-6 sm:mt-8 flex flex-wrap justify-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400 px-4">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-          <span>Actualizado 2024-2025</span>
+          <span>Actualizado Julio 2025</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-blue-500 rounded-full"></div>

@@ -101,7 +101,7 @@ export const SecuritySection: React.FC = () => {
     <section id="security" className="mb-8 sm:mb-12">
       <div className="flex items-center gap-3 mb-4 sm:mb-6">
         <ConfiguredIcon
-          name="shield"
+          name="lock"
           size={28}
           className="text-green-600 dark:text-green-400"
         />

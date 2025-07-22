@@ -303,6 +303,8 @@ export const Select: React.FC<SelectProps> = ({
             <div
               ref={dropdownRef}
               className={currentVariant.dropdown + " bg-white dark:bg-gray-900"}
+              data-select-dropdown="true"
+              data-sidebar-exclude="true"
               style={{
                 position: "absolute",
                 top: dropdownPosition.top,

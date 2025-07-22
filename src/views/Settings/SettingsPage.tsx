@@ -31,7 +31,7 @@ export const SettingsPage: React.FC = () => {
               href="#security"
               className="px-2 flex items-center gap-2 sm:px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-center whitespace-nowrap"
             >
-              <ConfiguredIcon name="shield" size={16} /> Seguridad
+              <ConfiguredIcon name="lock" size={16} /> Seguridad
             </a>
             {/*<a
               href="#notifications"
@@ -44,19 +44,19 @@ export const SettingsPage: React.FC = () => {
               href="#preferences"
               className="px-2 flex items-center gap-2 sm:px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-center whitespace-nowrap"
             >
-              <ConfiguredIcon name="settings" size={16} /> Preferencias
+              <ConfiguredIcon name="file-sliders" size={16} /> Preferencias
             </a>
             <a
               href="#privacy"
               className="px-2 flex items-center gap-2 sm:px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-center whitespace-nowrap"
             >
-              <ConfiguredIcon name="shield" size={16} /> Privacidad
+              <ConfiguredIcon name="shield-user" size={16} /> Privacidad
             </a>
             <a
               href="#support"
               className="px-2 flex items-center gap-2 sm:px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-center whitespace-nowrap"
             >
-              <ConfiguredIcon name="message-circle" size={16} /> Soporte
+              <ConfiguredIcon name="badge-question-mark" size={16} /> Soporte
             </a>
           </div>
         </div>

@@ -144,7 +144,7 @@ export const SupportSection: React.FC = () => {
     <section id="support" className="mb-8 sm:mb-12">
       <div className="flex items-center gap-3 mb-4 sm:mb-6">
         <ConfiguredIcon
-          name="help-circle"
+          name="badge-question-mark"
           size={28}
           className="text-blue-600 dark:text-blue-400"
         />
@@ -172,7 +172,7 @@ export const SupportSection: React.FC = () => {
             >
               <div className="flex items-center gap-3 mb-2">
                 <ConfiguredIcon
-                  name="book"
+                  name="documentation"
                   size={20}
                   className="text-blue-500"
                 />
@@ -191,7 +191,7 @@ export const SupportSection: React.FC = () => {
             >
               <div className="flex items-center gap-3 mb-2">
                 <ConfiguredIcon
-                  name="help-circle"
+                  name="message-circle-question-mark"
                   size={20}
                   className="text-green-500"
                 />
@@ -210,7 +210,7 @@ export const SupportSection: React.FC = () => {
             >
               <div className="flex items-center gap-3 mb-2">
                 <ConfiguredIcon
-                  name="target"
+                  name="film"
                   size={20}
                   className="text-gray-400"
                 />

@@ -174,11 +174,15 @@ export const UserDropdown: React.FC<UserDropdownProps> = React.memo(
                 disabled={isLoggingOut}
                 className="flex items-center space-x-3 w-full px-4 py-3 text-red-200 hover:bg-red-500/20 rounded-2xl transition-all duration-200 group disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <ConfiguredIcon
-                  name="log-out"
-                  size={20}
-                  className={`text-red-200 ${isLoggingOut ? "animate-spin" : ""} group-hover:text-white transition-colors`}
-                />
+                {isLoggingOut ? (
+                  <div className="w-5 h-5 border-2 border-red-200 border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <ConfiguredIcon
+                    name="log-out"
+                    size={20}
+                    className="text-red-200 group-hover:text-white transition-colors"
+                  />
+                )}
                 <span className="font-medium">
                   {isLoggingOut ? "Cerrando sesión..." : "Cerrar sesión"}
                 </span>

@@ -7,7 +7,7 @@ export const ATSSection: React.FC = () => {
     {
       icon: (
         <ConfiguredIcon
-          name="search"
+          name="scan"
           size={20}
           className="text-blue-600 dark:text-blue-400 sm:w-6 sm:h-6"
         />
@@ -19,7 +19,7 @@ export const ATSSection: React.FC = () => {
     {
       icon: (
         <ConfiguredIcon
-          name="hash"
+          name="search"
           size={20}
           className="text-green-600 dark:text-green-400 sm:w-6 sm:h-6"
         />
@@ -31,7 +31,7 @@ export const ATSSection: React.FC = () => {
     {
       icon: (
         <ConfiguredIcon
-          name="trophy"
+          name="award"
           size={20}
           className="text-purple-600 dark:text-purple-400 sm:w-6 sm:h-6"
         />

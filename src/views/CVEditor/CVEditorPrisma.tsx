@@ -122,7 +122,10 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
       if (
         isSidebarOpen &&
         !target.closest(".sidebar-container") &&
-        !target.closest("button[aria-label*='panel de personalización']")
+        !target.closest("button[aria-label*='panel de personalización']") &&
+        // Excluir clics en dropdowns de Select y otros elementos que deben excluirse del sidebar
+        !target.closest("[data-sidebar-exclude]") &&
+        !target.closest("[data-select-dropdown]")
       ) {
         setIsSidebarOpen(false);
       }
@@ -135,6 +138,31 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
       window.removeEventListener("popstate", handleRouteChange);
       document.removeEventListener("mousedown", handleClickOutside);
     };
+  }, [isSidebarOpen]);
+
+  // Prevenir scroll del body cuando el sidebar está abierto
+  useEffect(() => {
+    if (isSidebarOpen) {
+      // Guardar la posición actual del scroll
+      const scrollY = window.scrollY;
+
+      // Aplicar estilos para prevenir scroll
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
+
+      // Limpiar al desmontar o cerrar sidebar
+      return () => {
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.width = "";
+        document.body.style.overflow = "";
+
+        // Restaurar la posición del scroll
+        window.scrollTo(0, scrollY);
+      };
+    }
   }, [isSidebarOpen]);
 
   useEffect(() => {
@@ -162,13 +190,29 @@ export const CVEditorPrisma: React.FC<CVEditorPrismaProps> = ({
         <>
           {/* Overlay */}
           <div
-            className="fixed inset-0 bg-black/50 z-[1000] transition-opacity duration-300"
+            className="fixed inset-0 bg-black/50 z-[1000] transition-opacity duration-300 backdrop-blur-sm"
             onClick={closeSidebar}
+            style={{
+              touchAction: "none", // Prevenir gestos táctiles en el overlay
+              WebkitTouchCallout: "none", // Prevenir callouts en iOS
+            }}
           />
 
           {/* Sidebar Panel */}
-          <div className="fixed left-0 top-0 h-full w-72 md:w-80 z-[1100] transform transition-transform duration-300 ease-out animate-in slide-in-from-left">
-            <div className="h-full pt-16">
+          <div
+            className="fixed left-0 top-0 h-full w-72 md:w-80 z-[1100] transform transition-transform duration-300 ease-out animate-in slide-in-from-left shadow-2xl"
+            style={{
+              touchAction: "pan-y", // Permitir solo scroll vertical
+              WebkitOverflowScrolling: "touch", // Scroll suave en iOS
+            }}
+          >
+            <div
+              className="h-full pt-16 overflow-y-auto"
+              style={{
+                scrollbarWidth: "thin",
+                scrollbarColor: "rgba(99, 102, 241, 0.3) transparent",
+              }}
+            >
               <Sidebar
                 cvData={initialData}
                 isMobile={true}

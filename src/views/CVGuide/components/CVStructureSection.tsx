@@ -7,7 +7,7 @@ export const CVStructureSection: React.FC = () => {
     {
       icon: (
         <ConfiguredIcon
-          name="phone"
+          name="user"
           size={20}
           className="text-blue-600 dark:text-blue-400"
         />
@@ -25,7 +25,7 @@ export const CVStructureSection: React.FC = () => {
     {
       icon: (
         <ConfiguredIcon
-          name="user"
+          name="captions"
           size={20}
           className="text-green-600 dark:text-green-400"
         />
@@ -42,7 +42,7 @@ export const CVStructureSection: React.FC = () => {
     {
       icon: (
         <ConfiguredIcon
-          name="briefcase"
+          name="toolbox"
           size={20}
           className="text-purple-600 dark:text-purple-400"
         />
@@ -137,7 +137,7 @@ export const CVStructureSection: React.FC = () => {
         <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 mb-6 sm:mb-8">
           <div className="p-2 sm:p-2.5 lg:p-3 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-lg sm:rounded-xl">
             <ConfiguredIcon
-              name="layout"
+              name="layout-dashboard"
               size={24}
               className="text-blue-600 dark:text-blue-400 sm:w-7 sm:h-7 lg:w-8 lg:h-8"
             />
